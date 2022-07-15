@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Main-Class: IDPrinter
+Class-Path: jt400-10.3.jar pdfbox-2.0.17.jar miglayout-3.7.3.1.jar commo
+ ns-logging-1.2.jar fontbox-2.0.17.jar
+
