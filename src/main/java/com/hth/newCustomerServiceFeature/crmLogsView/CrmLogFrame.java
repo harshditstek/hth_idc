@@ -3,6 +3,7 @@ package com.hth.newCustomerServiceFeature.crmLogsView;
 import com.hth.backend.beans.CRMLOGS;
 import com.hth.backend.iSeries;
 import com.hth.id_card.user_interface.HTH_ControlButton;
+import com.hth.id_card.user_interface.HTH_Dialog;
 import com.hth.id_card.user_interface.HTH_PromptButton;
 import com.hth.images.HTH_Image;
 import com.hth.newCustomerServiceFeature.CRMLogsFiles;
@@ -40,23 +41,33 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
     private JLabel title;
     private JLabel referenceNumber;
     private JTextField tReferenceNumber;
+    private JLabel refNumValidation;
     private JButton bReferenceNumber;
     private JLabel provider;
     private JComboBox tProvider;
     private JLabel phoneNum;
+
+    private JLabel nameValidation;
     private JTextField tPhoneNum;
     private MaskFormatter phoneFormatter;
+
+    private JLabel phoneValidation;
     private JLabel name;
     private JTextField tFName;
     private JTextField tLName;
     private JLabel company;
     private JTextField tCompanyName;
+    private JLayeredPane contentScreen, promptScreen;
+
+    private JLabel companyValidation;
     private JLabel customerGroup;
     private JTextField tCustomerGroup;
     private JLabel ssn;
     private JTextField tssn;
+    private JLabel ssnValidation;
     private JLabel claim;
     private JTextField tClaim;
+    private JLabel claimValidation;
     private JLabel phoneNotes;
     private JTextField tPhoneNotes;
     private JLabel callNotes;
@@ -85,6 +96,17 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
         setResizable(false);
         c = getContentPane();
         c.setLayout(null);
+
+        JPanel contentPanel = new JPanel();
+        contentPanel.setOpaque(true);
+        contentPanel.setBackground(Color.WHITE);
+        contentPanel.setLayout(new BorderLayout());
+        contentScreen = new JLayeredPane();
+        contentScreen.setOpaque(false);
+        contentPanel.add(contentScreen, BorderLayout.CENTER);
+        //contentPanel.add(controlPanel, BorderLayout.SOUTH);
+        add(contentPanel, BorderLayout.CENTER);
+
         try {
             setIconImage(ImageIO.read(HTH_Image.getImageURL("hth_block.png")));
         } catch (Exception e) {
@@ -101,18 +123,22 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
         setReference();
         setProvider();
         setPhone();
-        setName();
-        setCompanyName();
-        setCustomerGroup();
-        setCustomerSSN();
-        setClaim();
-        //setName();
+
         name = new JLabel("<html><nobr>First/Last Name <font color='#ffbebe'>*</font></nobr></html>");
         name.setFont(new Font("Arial", Font.PLAIN, 18));
         name.setSize(200, 30);
         name.setLocation(250, 420);
         //name.getText();
         c.add(name);
+
+        nameValidation = new JLabel("Invalid");
+        nameValidation.setFont(new Font("Arial", Font.PLAIN, 10));
+        nameValidation.setForeground(Color.RED);
+        nameValidation.setSize(40, 30);
+        nameValidation.setLocation(505, 420);
+        nameValidation.setVisible(false);
+//        container.add(nameValidation);
+        add(nameValidation);
 
         tFName = new JTextField();
         tFName.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -134,6 +160,12 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
         searchName.setLocation(955, 423);
         searchName.addActionListener(new SearchByName());
         add(searchName);
+
+        setCompanyName();
+        setCustomerGroup();
+        setCustomerSSN();
+        setClaim();
+
         setNote();
         setButton();
         this.getContentPane().setBackground(Color.WHITE);
@@ -147,6 +179,15 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
         referenceNumber.setSize(200, 30);
         referenceNumber.setLocation(250, 300);
         c.add(referenceNumber);
+
+        refNumValidation = new JLabel("Invalid");
+        refNumValidation.setFont(new Font("Arial", Font.PLAIN, 10));
+        refNumValidation.setForeground(Color.RED);
+        refNumValidation.setSize(40, 30);
+        refNumValidation.setLocation(505, 300);
+        refNumValidation.setVisible(false);
+//        container.add(refNumValidation);
+        c.add(refNumValidation);
 
         tReferenceNumber = new JTextField();
         tReferenceNumber.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -193,6 +234,15 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
         phoneNum.setLocation(250, 380);
         c.add(phoneNum);
 
+        phoneValidation = new JLabel("Invalid");
+        phoneValidation.setFont(new Font("Arial", Font.PLAIN, 10));
+        phoneValidation.setForeground(Color.RED);
+        phoneValidation.setSize(40, 30);
+        phoneValidation.setLocation(505, 380);
+        phoneValidation.setVisible(false);
+//        container.add(phoneValidation);
+        add(phoneValidation);
+
         try {
             phoneFormatter = new MaskFormatter("(###) ###-####");
         } catch (ParseException e) {
@@ -207,16 +257,22 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
         c.add(tPhoneNum);
     }
 
-    public void setName() {
-
-    }
-
     public void setCompanyName() {
-        company = new JLabel("Company Name");
+        company = new JLabel("<html><nobr>Company Name <font color='#ffbebe'>*</font></nobr></html>");
         company.setFont(new Font("Arial", Font.PLAIN, 18));
         company.setSize(200, 30);
         company.setLocation(250, 460);
         c.add(company);
+
+        companyValidation = new JLabel("Invalid");
+        companyValidation.setFont(new Font("Arial", Font.PLAIN, 10));
+        companyValidation.setForeground(Color.RED);
+        companyValidation.setSize(40, 30);
+        companyValidation.setLocation(505, 460);
+        companyValidation.setVisible(false);
+//        container.add(phoneValidation);
+        add(companyValidation);
+
 
         tCompanyName = new JTextField();
         tCompanyName.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -225,6 +281,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
         ((AbstractDocument) tCompanyName.getDocument()).setDocumentFilter(filter);
         c.add(tCompanyName);
     }
+
     public void setCustomerGroup() {
         customerGroup = new JLabel("Customer Group");
         customerGroup.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -247,6 +304,15 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
         ssn.setLocation(250, 540);
         c.add(ssn);
 
+        ssnValidation = new JLabel("Invalid");
+        ssnValidation.setFont(new Font("Arial", Font.PLAIN, 10));
+        ssnValidation.setForeground(Color.RED);
+        ssnValidation.setSize(40, 30);
+        ssnValidation.setLocation(505, 540);
+        ssnValidation.setVisible(false);
+//        container.add(memberIdValidation);
+        add(ssnValidation);
+
         tssn = new JTextField();
         tssn.setFont(new Font("Arial", Font.PLAIN, 15));
         tssn.setSize(190, 30);
@@ -260,6 +326,15 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
         claim.setSize(200, 30);
         claim.setLocation(250, 580);
         c.add(claim);
+
+        claimValidation = new JLabel("Invalid");
+        claimValidation.setFont(new Font("Arial", Font.PLAIN, 10));
+        claimValidation.setForeground(Color.RED);
+        claimValidation.setSize(40, 30);
+        claimValidation.setLocation(505, 580);
+        claimValidation.setVisible(false);
+//        container.add(memberIdValidation);
+        add(claimValidation);
 
         tClaim = new JTextField();
         tClaim.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -322,17 +397,19 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             Repository repo = Repository.getInstance("");
-            //if (checkData()) {
+            if (checkData()) {
 
-            System.out.println("submit button clicked");
-            CrmLogRecord2 record = getData();
-            CRMLOGS.insertCrmLogs(record);
-            //repo.insertIntoCrmLog(record);
+                System.out.println("submit button clicked");
+                CrmLogRecord2 record = getData();
+                CRMLOGS.insertCrmLogs(record);
+                //repo.insertIntoCrmLog(record);
 
-            //String loadCardCL = "CALL PDLIB.CRMLOG PARM(TRT)";
+                //String loadCardCL = "CALL PDLIB.CRMLOG PARM(TRT)";
 
-            //iSeries.executeCL(loadCardCL);
-            close();
+                //iSeries.executeCL(loadCardCL);
+                close();
+            }
+            //new CrmLogFrame();
         }
 
     };
@@ -351,9 +428,9 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
             tProvider = (JComboBox) e.getSource();
             String provider = (String) tProvider.getSelectedItem();
             System.out.println(provider);
-            if (provider.trim().equals("Member")) {
+            if (provider.trim().equals("Provider")) {
                 company.setText("<html><nobr>Company Name <font color='#ffbebe'>*</font></nobr></html>");
-            }else{
+            } else {
                 company.setText("Company Name");
             }
         }
@@ -371,15 +448,17 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
         if (format.length() == 10) {
             List<String[]> resultList = CRMLOGS.searchByPhone(format);
             //String[] result;
-            tReferenceNumber.setText(resultList.get(0)[0].trim());
-            tFName.setText(resultList.get(0)[1].trim());
-            tLName.setText(resultList.get(0)[2].trim());
-            tCompanyName.setText(resultList.get(0)[3].trim());
-            tCustomerGroup.setText(resultList.get(0)[4].trim());
-            //tCustomerGroup.setText(resultList.get(0)[5].trim());
-            tssn.setText(resultList.get(0)[5].trim());
-            tClaim.setText(resultList.get(0)[6].trim());
-            tCallNotes.setText(resultList.get(0)[7].trim());
+            if (resultList.size() > 0) {
+                //tReferenceNumber.setText(resultList.get(0)[0].trim());
+                tFName.setText(resultList.get(0)[1].trim());
+                tLName.setText(resultList.get(0)[2].trim());
+                tCompanyName.setText(resultList.get(0)[3].trim());
+                tCustomerGroup.setText(resultList.get(0)[4].trim());
+                //tCustomerGroup.setText(resultList.get(0)[5].trim());
+                tssn.setText(resultList.get(0)[5].trim());
+                tClaim.setText(resultList.get(0)[6].trim());
+                tCallNotes.setText(resultList.get(0)[7].trim());
+            }
         }
     }
 
@@ -405,6 +484,77 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
         System.exit(0);
     }
 
+    private boolean checkData() {
+        String refNum = tReferenceNumber.getText().trim().toUpperCase();
+        String providerOrMember = "P";
+        if (tProvider.getSelectedIndex() == 1) {
+            providerOrMember = "M";
+        }
+        String phoneNum = tPhoneNum.getText().trim();
+        String fName = tFName.getText().trim().toUpperCase();
+        String lName = tLName.getText().trim().toUpperCase();
+        String company = tCompanyName.getText().trim().toUpperCase();
+        String ssn = tssn.getText().trim().toUpperCase();
+        String claimNum = tClaim.getText().trim().toUpperCase();
+        String errMsg = "";
+        if (refNum.length() != 10) {
+            errMsg = "Invalid Reference Number";
+            contentScreen = new JLayeredPane();
+            contentScreen.setOpaque(false);
+            Dimension dialogSize = new Dimension(contentScreen.getSize().width * 40 / 100, contentScreen.getSize().height * 2 / 10);
+            showMessage("CRM LOgsFile", errMsg, dialogSize, JOptionPane.ERROR_MESSAGE);
+            //refNumValidation.setVisible(true);
+            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            System.out.println("validation error checkData: refname");
+            return false;
+        }
+        if (ssn.length() != 9) {
+            errMsg = "Invalid SSN Number";
+            ssnValidation.setVisible(true);
+            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            System.out.println("validation error checkData: memberid");
+
+            return false;
+        }
+        if (claimNum.length() != 7) {
+            errMsg = "Invalid Claim Number";
+            //claimValidation.setVisible(true);
+            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            System.out.println("validation error checkData: claimNum");
+
+            return false;
+        }
+
+        if (phoneNum.length() != 14) {
+            //phoneValidation.setVisible(true);
+            System.out.println(phoneNum.length() + ": MyFrame");
+            System.out.println("validation error checkData: phoneNum");
+
+            return false;
+        }
+        if (fName.length() < 2) {
+            //nameValidation.setVisible(true);
+            System.out.println("validation error checkData: fName");
+
+            return false;
+        }
+        if (lName.length() < 2) {
+            //nameValidation.setVisible(true);
+            System.out.println("validation error checkData: lName");
+            return false;
+        }
+        if (providerOrMember.equals("P")) {
+            errMsg = "Please Add Compnay";
+            //companyValidation.setVisible(true);
+            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            System.out.println("validation error checkData: company");
+            return false;
+        }
+
+        return true;
+
+    }
+
     private CrmLogRecord2 getData() {
         String refNum = tReferenceNumber.getText().trim().toUpperCase();
         String providerOrMember = "P";
@@ -413,9 +563,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
         }
         String formattedPhoneNum = tPhoneNum.getText().trim();
         String fName = tFName.getText().trim().toUpperCase();
-        System.out.println("fN:" + fName);
         String lName = tLName.getText().trim().toUpperCase();
-        System.out.println("ln:" + lName);
         String company = tCompanyName.getText().trim().toUpperCase();
         String customerGroup = tCustomerGroup.getText().trim().toUpperCase();
         String ssn = tssn.getText().trim().toUpperCase();
@@ -581,6 +729,10 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+    }
+
+    private void showMessage(String title, String msg, Dimension size, int type) {
+        //HTH_Dialog.showMessageDialogFrame(this, title, msg, size, type);
     }
 }
 
