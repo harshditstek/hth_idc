@@ -23,8 +23,8 @@ public class iSeries {
 	private static final String DRIVER = "com.ibm.as400.access.AS400JDBCDriver";
 	private static final String SERVER = "printers.hi-techhealth.com";
 	private static final String URL = "jdbc:as400://printers.hi-techhealth.com";
-	private static final String HOSTNAME = "JAVA2018";
-	//private static final String HOSTNAME = "JAVALOOK";
+	//private static final String HOSTNAME = "JAVA2018";
+	private static final String HOSTNAME = "JAVALOOK";
 	private static final String PASSWORD = "TWMC1990";
 
 	private static AS400 system = null;

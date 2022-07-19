@@ -75,6 +75,19 @@ public class CrmLogRecord2 {
         return filler;
     }
 
+    public CrmLogRecord2(String refNum, String claimType, String phoneNum, String fName, String lName, String companyName, String customerGroup, String ssn, String claimNum, String note) {
+        this.refNum = refNum;
+        this.claimType = claimType;
+        this.phoneNum = phoneNum;
+        this.fName = fName;
+        this.lName = lName;
+        this.companyName = companyName;
+        this.customerGroup = customerGroup;
+        this.ssn = ssn;
+        this.claimNum = claimNum;
+        this.note = note;
+    }
+
     public CrmLogRecord2(com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord2.Builder builder) {
         this.refNum = builder.refNum;
         this.claimType = builder.claimType;

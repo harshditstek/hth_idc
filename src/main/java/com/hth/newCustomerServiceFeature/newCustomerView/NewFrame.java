@@ -5,8 +5,6 @@ import com.hth.id_card.user_interface.HTH_PromptButton;
 import com.hth.images.HTH_Image;
 import com.hth.newCustomerServiceFeature.Repository.Repository;
 import com.hth.newCustomerServiceFeature.UppercaseDocumentFilter;
-import com.hth.newCustomerServiceFeature.View.MyFrame;
-import com.sun.glass.ui.Pixels;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

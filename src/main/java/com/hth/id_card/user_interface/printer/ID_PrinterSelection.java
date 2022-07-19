@@ -317,7 +317,7 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
 				Color.BLACK));
 		contentScreen.add(reqBorderPanel, JLayeredPane.DEFAULT_LAYER);
 
-		JLabel grpLabel = getLabel("Group ID");
+		JLabel grpLabel = getLabel("Group ID Print");
 		grpLabel.setBounds(endLineX - grpLabel.getPreferredSize().width, 150, grpLabel.getPreferredSize().width, grpLabel.getPreferredSize().height);
 		contentScreen.add(grpLabel, JLayeredPane.DEFAULT_LAYER);
 
