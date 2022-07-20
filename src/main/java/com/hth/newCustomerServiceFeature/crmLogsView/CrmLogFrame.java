@@ -803,27 +803,18 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
         }
         final Object[][] data = new Object[matched.size()][];
-        String[] insert = new String[4];
-        System.out.println("mat:"+matched.size());
         for(int i = 0; i < matched.size();i++){
+            String[] insert = new String[4];
             insert[0] = matched.get(i).getlName();
             insert[1] = matched.get(i).getfName();
             insert[2] = matched.get(i).getSsn();
-            insert[3] = matched.get(i).getPhone();
+            //insert[3] = matched.get(i).getPhone();
             System.out.println("phone:" + matched.get(i).getPhone());
             data[i] = insert;
-            //insert = new String[];
         }
 
-
-        //String[] result;
-        //List<String[]> resultList = CRMLOGS.searchByName(name);
         final String[] columnNames = {"Last Name", "First Name", "EmployeeID"};
-        //final Object[][] data = new Object[resultList.size()][];
-//        for (int idx = 0; idx < resultList.size(); idx++) {
-//            result = resultList.get(idx);
-//            data[idx] = result;
-//        }
+
         searchNameFrame = new JFrame();
         searchNameFrame.setBounds(400, 90, 1180, 800);
         searchNameFrame.setTitle("Name Search From Databse");
@@ -863,7 +854,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         JScrollPane scroll = new JScrollPane(searchNameTable);
         scroll.setPreferredSize(new Dimension(300, 300));
         searchNameFrame.getContentPane().add(scroll);
-        searchNameFrame.setSize(1200, 1200);
+        searchNameFrame.setSize(800, 800);
         searchNameFrame.setVisible(true);
     }
 
