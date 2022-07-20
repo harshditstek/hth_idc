@@ -36,9 +36,7 @@ public class CRMLogsSingleton {
        else{
            //result = crmlogList.stream().max(crmlogList.get(crmlogList.size()));
            result = crmlogList.get(crmlogList.size()-1)[0];
-           System.out.println(result);
        }
-        System.out.println(result);
        return result;
     }
 
@@ -48,13 +46,6 @@ public class CRMLogsSingleton {
             list_instance = new CRMLogsSingleton();
         }
         return list_instance;
-    }
-
-    public static void main(String[] args) {
-        List<String[]> list = CRMLogsSingleton.singleton().getCrmlogList();
-        System.out.println(":"+list.size());
-        System.out.println("::"+CRMLogsSingleton.singleton().crmlogList.size());
-        //System.out.println(list.get(0)[0]);
     }
 
 }

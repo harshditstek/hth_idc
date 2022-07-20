@@ -1012,7 +1012,7 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
 		informationPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0));
 		promptScreen.add(informationPane, JLayeredPane.MODAL_LAYER);
 
-		JLabel searchLabel = getLabel("Search Here");
+		JLabel searchLabel = getLabel("Search");
 		searchLabel.setBounds(20, 10, searchLabel.getPreferredSize().width, searchLabel.getPreferredSize().height);
 		promptScreen.add(searchLabel, JLayeredPane.MODAL_LAYER);
 
@@ -1103,7 +1103,7 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
 			nameField.setText("Name");
 			nameField.setForeground(Color.BLACK);
 
-			blockField.setText("Block ID Blank");
+			blockField.setText("Block ID");
 			blockField.setForeground(Color.BLACK);
 
 			statusField.setText("Status");
@@ -1681,7 +1681,7 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
 				removePromptScreen();
 			}
 		};
-		HTH_FunctionButton exitBtn = new HTH_FunctionButton("Exit1");
+		HTH_FunctionButton exitBtn = new HTH_FunctionButton("Exit");
 		exitBtn.setToolTipText("F3=Exit");
 		exitBtn.addActionListener(exitAction);
 		exitBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), exitKey);

@@ -4,6 +4,7 @@ import com.hth.backend.iSeries;
 import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord;
 import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord2;
 import com.hth.util.Division;
+import com.hth.util.Insure;
 
 import java.util.List;
 
@@ -12,21 +13,6 @@ public class CRMLOGS {
         String alias = "QTEMP.CRMLOG";
         String file = "PDLIB.CRMLOG(TRT)";
         String sql = "SELECT * FROM QTEMP.CRMLOG where CREF# > '" + maxId + "'";
-        List<String[]> resultList = iSeries.executeSQLByAlias(sql, alias, file);
-//        String[] result;
-//        for (int idx = 0; idx < resultList.size(); idx++) {
-//           result = resultList.get(idx);
-//           for(int i=0;i<result.length;i++){
-//               System.out.println(result[i].toString());
-//           }
-//      }
-        return resultList;
-    }
-
-    public static List<String[]> getCrmLogsByReference(String reference) {
-        String alias = "QTEMP.CRMLOG";
-        String file = "PDLIB.CRMLOG(TRT)";
-        String sql = "SELECT * FROM QTEMP.CRMLOG where CREF# > '" + reference + "'";
         List<String[]> resultList = iSeries.executeSQLByAlias(sql, alias, file);
 //        String[] result;
 //        for (int idx = 0; idx < resultList.size(); idx++) {
@@ -107,14 +93,38 @@ public class CRMLOGS {
         String[] result;
         String reference, provider;
 
-        for (int idx = 0; idx < resultList.size(); idx++) {
-            result = resultList.get(idx);
-            for (int i = 0; i < result.length; i++) {
-                System.out.println(result[i].toString());
-            }
-        }
+//        for (int idx = 0; idx < resultList.size(); idx++) {
+//            result = resultList.get(idx);
+//            for (int i = 0; i < result.length; i++) {
+//                System.out.println(result[i].toString());
+//            }
+//        }
         return resultList;
     }
+
+    public static Insure[] searchByName() {
+        String alias = "qtemp.insure";
+        String file = "testdata.insure(trt)";
+        String sql = "SELECT ILNAM,IFNAM,ISSN,IHPHN FROM qtemp.insure";
+        List<String[]> resultList = iSeries.executeSQLByAlias(sql, alias, file);
+
+        Insure[] insureList = new Insure[resultList.size()];
+        String[] result;
+        String fName, lName, ssn, phone;
+
+        for (int idx = 0; idx < insureList.length; idx++) {
+            result = resultList.get(idx);
+            fName = result[0].trim();
+            lName = result[1].trim();
+            ssn = result[2].trim();
+            phone = result[3].trim();
+
+            insureList[idx] = new Insure(fName,lName,ssn,phone);
+        }
+
+        return insureList;
+    }
+
 
     public static List<String[]> searchByPhone(String phoneNumber) {
         String alias = "qtemp.insure";

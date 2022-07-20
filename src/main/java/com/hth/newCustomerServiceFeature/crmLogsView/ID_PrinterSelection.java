@@ -974,7 +974,7 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
 		informationPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0));
 		promptScreen.add(informationPane, JLayeredPane.MODAL_LAYER);
 
-		JLabel searchLabel = getLabel("Search Here");
+		JLabel searchLabel = getLabel("Search");
 		searchLabel.setBounds(20, 10, searchLabel.getPreferredSize().width, searchLabel.getPreferredSize().height);
 		promptScreen.add(searchLabel, JLayeredPane.MODAL_LAYER);
 

@@ -4,11 +4,13 @@ import com.hth.backend.beans.CRMLOGS;
 import com.hth.id_card.user_interface.HTH_ControlButton;
 import com.hth.id_card.user_interface.HTH_FunctionButton;
 import com.hth.id_card.user_interface.HTH_PromptButton;
+import com.hth.id_card.user_interface.HTH_TextField;
 import com.hth.images.HTH_Image;
 import com.hth.newCustomerServiceFeature.CRMLogsFiles;
 import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord2;
 import com.hth.newCustomerServiceFeature.Repository.Repository;
 import com.hth.newCustomerServiceFeature.UppercaseDocumentFilter;
+import com.hth.util.Insure;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -23,6 +25,7 @@ import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.*;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, ListSelectionListener {
@@ -87,6 +90,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     String referenceS = "";
     boolean checkReference = true;
 
+    private final List<String> keywords;
+
     public CrmLogFrame() {
         setTitle("Crm Log Files");
         setBounds(355, 140, 1180, 900);
@@ -129,14 +134,26 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         name.setLocation(250, 420);
         c.add(name);
 
-        tFName = new JTextField();
+        tFName = new HTH_TextField(25, HTH_FONT);
+
+        keywords = new ArrayList<String>(5);
+        keywords.add("harsh");
+        keywords.add("harshit");
+        keywords.add("harash");
+        keywords.add("harisson");
+        keywords.add("harr");
+        keywords.add("smith");
+        keywords.add("sam");
+        Autocomplete autoComplete = new Autocomplete(tFName, keywords);
+        tFName.getDocument().addDocumentListener(autoComplete);
+
         tFName.setFont(new Font("Arial", Font.PLAIN, 15));
         tFName.setSize(200, 30);
         tFName.setLocation(550, 420);
         ((AbstractDocument) tFName.getDocument()).setDocumentFilter(filter);
         c.add(tFName);
 
-        tLName = new JTextField();
+        tLName = new HTH_TextField(25, HTH_FONT);
         tLName.setFont(new Font("Arial", Font.PLAIN, 15));
         tLName.setSize(200, 30);
         tLName.setLocation(751, 420);
@@ -169,7 +186,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         referenceNumber.setLocation(250, 300);
         c.add(referenceNumber);
 
-        tReferenceNumber = new JTextField();
+        tReferenceNumber = new HTH_TextField(10, HTH_FONT);
+        tReferenceNumber.setForeground(new Color(0, 0, 150));
         tReferenceNumber.setFont(new Font("Arial", Font.PLAIN, 15));
         tReferenceNumber.setSize(100, 30);
         tReferenceNumber.setLocation(550, 300);
@@ -222,6 +240,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         }
 
         tPhoneNum = new JFormattedTextField(phoneFormatter);
+        tPhoneNum.setForeground(new Color(0, 0, 150));
         tPhoneNum.setFont(new Font("Arial", Font.PLAIN, 15));
         tPhoneNum.setSize(200, 30);
         tPhoneNum.setLocation(550, 380);
@@ -236,7 +255,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         company.setLocation(250, 460);
         c.add(company);
 
-        tCompanyName = new JTextField();
+        tCompanyName = new HTH_TextField(25, HTH_FONT);
+        tCompanyName.setForeground(new Color(0, 0, 150));
         tCompanyName.setFont(new Font("Arial", Font.PLAIN, 15));
         tCompanyName.setSize(200, 30);
         tCompanyName.setLocation(550, 460);
@@ -251,7 +271,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         customerGroup.setLocation(250, 500);
         c.add(customerGroup);
 
-        tCustomerGroup = new JTextField();
+        tCustomerGroup = new HTH_TextField(10, HTH_FONT);
+        tCustomerGroup.setForeground(new Color(0, 0, 150));
         tCustomerGroup.setFont(new Font("Arial", Font.PLAIN, 15));
         tCustomerGroup.setSize(200, 30);
         tCustomerGroup.setLocation(550, 500);
@@ -266,13 +287,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         ssn.setLocation(250, 540);
         c.add(ssn);
 
-        try {
-            ssnFormatter = new MaskFormatter("**********");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        tssn = new JFormattedTextField(ssnFormatter);
+        tssn = new HTH_TextField(10, HTH_FONT);
+        tssn.setForeground(new Color(0, 0, 150));
         tssn.setFont(new Font("Arial", Font.PLAIN, 15));
         tssn.setSize(200, 30);
         tssn.setLocation(550, 540);
@@ -286,13 +302,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         claim.setLocation(250, 580);
         c.add(claim);
 
-        try {
-            claimFormatter = new MaskFormatter("#######");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        tClaim = new JFormattedTextField(claimFormatter);
+        tClaim = new HTH_TextField(7, HTH_FONT);
+        tClaim.setForeground(new Color(0, 0, 150));
         tClaim.setFont(new Font("Arial", Font.PLAIN, 15));
         tClaim.setSize(200, 30);
         tClaim.setLocation(550, 580);
@@ -308,6 +319,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         c.add(callNotes);
 
         tCallNotes = new JTextArea();
+        tCallNotes.setForeground(new Color(0, 0, 150));
         tCallNotes.setFont(new Font("Arial", Font.PLAIN, 15));
         tCallNotes.setSize(410, 60);
         tCallNotes.setLocation(550, 620);
@@ -352,6 +364,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         public void actionPerformed(ActionEvent e) {
             Repository repo = Repository.getInstance("");
             String reference = tReferenceNumber.getText().trim();
+            System.out.println("refe:" + reference);
+            System.out.println(reference.equals(referenceS));
             if (reference.equals(referenceS) || checkReference) {
                 if (checkData()) {
                     System.out.println("Submit button clicked");
@@ -775,17 +789,47 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     };
 
     private void nameSearchFromDataBase(String name) {
-        String[] result;
-        List<String[]> resultList = CRMLOGS.searchByName(name);
-        final String[] columnNames = {"Last Name", "First Name", "EmployeeID"};
-        final Object[][] data = new Object[resultList.size()][];
-        for (int idx = 0; idx < resultList.size(); idx++) {
-            result = resultList.get(idx);
-            data[idx] = result;
+
+        InsureDataSingleton isd = InsureDataSingleton.singleton();
+        List<Insure[]> dataI = isd.getInsureList();
+
+        List<Insure> matched = new ArrayList<Insure>();
+        for(int i = 0; i < dataI.size(); i++){
+            for(Insure search : dataI.get(i)){
+                if(search.getfName().contains(name) || search.getlName().contains(name)){
+                    matched.add(search);
+                }
+            }
+
         }
+        final Object[][] data = new Object[matched.size()][];
+        String[] insert = new String[4];
+        System.out.println("mat:"+matched.size());
+        for(int i = 0; i < matched.size();i++){
+            insert[0] = matched.get(i).getlName();
+            insert[1] = matched.get(i).getfName();
+            insert[2] = matched.get(i).getSsn();
+            insert[3] = matched.get(i).getPhone();
+            System.out.println("phone:" + matched.get(i).getPhone());
+            data[i] = insert;
+            //insert = new String[];
+        }
+
+
+        //String[] result;
+        //List<String[]> resultList = CRMLOGS.searchByName(name);
+        final String[] columnNames = {"Last Name", "First Name", "EmployeeID"};
+        //final Object[][] data = new Object[resultList.size()][];
+//        for (int idx = 0; idx < resultList.size(); idx++) {
+//            result = resultList.get(idx);
+//            data[idx] = result;
+//        }
         searchNameFrame = new JFrame();
         searchNameFrame.setBounds(400, 90, 1180, 800);
         searchNameFrame.setTitle("Name Search From Databse");
+        //final Object[][] finalData = data;
+        System.out.println("final:" + data.length);
+        System.out.println("col:" + data[0].length);
         TableModel model = new AbstractTableModel() {
             public int getColumnCount() {
                 return columnNames.length;
@@ -819,7 +863,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         JScrollPane scroll = new JScrollPane(searchNameTable);
         scroll.setPreferredSize(new Dimension(300, 300));
         searchNameFrame.getContentPane().add(scroll);
-        searchNameFrame.setSize(800, 800);
+        searchNameFrame.setSize(1200, 1200);
         searchNameFrame.setVisible(true);
     }
 
