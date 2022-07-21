@@ -30,6 +30,11 @@ import java.util.List;
 
 public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, ListSelectionListener {
 
+    private JTextField fNameTF;
+    private JTextField lNameTF;
+    private JLabel fNameSearchLb;
+    private JLabel lNameSearchLb;
+
     private static final Font HTH_FONT = new Font("Arial", Font.PLAIN, 18);
     private Container c;
     private JFrame auditLog;
@@ -483,22 +488,38 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
     @Override
     public void keyPressed(KeyEvent e) {
-        String phone = tPhoneNum.getText().trim();
-        String format = gePhoneNum(phone);
-        if (format.length() == 9) {
-            List<String[]> resultList = CRMLOGS.searchByPhone(format);
-            if (resultList.size() > 0) {
-                //tReferenceNumber.setText(resultList.get(0)[0].trim());
-                tFName.setText(resultList.get(0)[1].trim());
-                tLName.setText(resultList.get(0)[2].trim());
-                tssn.setText(resultList.get(0)[3].trim());
-            }
-        }
+
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+        String phone = tPhoneNum.getText().trim();
+        String format = gePhoneNum(phone);
+        if (format.length() == 9) {
+//            List<String[]> resultList = CRMLOGS.searchByPhone(format);
+//            if (resultList.size() > 0) {
+//                //tReferenceNumber.setText(resultList.get(0)[0].trim());
+//                tFName.setText(resultList.get(0)[1].trim());
+//                tLName.setText(resultList.get(0)[2].trim());
+//                tssn.setText(resultList.get(0)[3].trim());
+//            }
+            InsureDataSingleton isd = InsureDataSingleton.singleton();
+            List<Insure[]> list = isd.getInsureList();
+            System.out.println("size:"+list.size());
 
+            for (int i = 0; i < list.size(); i++) {
+                for (Insure data : list.get(i)) {
+                    System.out.println("pp:"+data.getPhone());
+                    if (data.getPhone().contains(format)) {
+                        System.out.println("phone:"+data.getPhone());
+                        tFName.setText(data.getfName());
+                        tLName.setText(data.getlName());
+                        tssn.setText(data.getSsn());
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -792,24 +813,23 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
         InsureDataSingleton isd = InsureDataSingleton.singleton();
         List<Insure[]> dataI = isd.getInsureList();
+        System.out.println("nam:"+dataI.size());
 
         List<Insure> matched = new ArrayList<Insure>();
-        for(int i = 0; i < dataI.size(); i++){
-            for(Insure search : dataI.get(i)){
-                if(search.getfName().contains(name) || search.getlName().contains(name)){
+        for (int i = 0; i < dataI.size(); i++) {
+            for (Insure search : dataI.get(i)) {
+                if (search.getfName().contains(name) || search.getlName().contains(name)) {
                     matched.add(search);
                 }
             }
-
         }
         final Object[][] data = new Object[matched.size()][];
-        for(int i = 0; i < matched.size();i++){
+        for (int i = 0; i < matched.size(); i++) {
             String[] insert = new String[4];
             insert[0] = matched.get(i).getlName();
             insert[1] = matched.get(i).getfName();
             insert[2] = matched.get(i).getSsn();
             //insert[3] = matched.get(i).getPhone();
-            System.out.println("phone:" + matched.get(i).getPhone());
             data[i] = insert;
         }
 
@@ -818,9 +838,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         searchNameFrame = new JFrame();
         searchNameFrame.setBounds(400, 90, 1180, 800);
         searchNameFrame.setTitle("Name Search From Databse");
-        //final Object[][] finalData = data;
-        System.out.println("final:" + data.length);
-        System.out.println("col:" + data[0].length);
         TableModel model = new AbstractTableModel() {
             public int getColumnCount() {
                 return columnNames.length;
@@ -848,6 +865,17 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         };
 
         searchNameTable = new JTable(model);
+
+//        fNameTF = new JTextField(10);
+//        fNameSearchLb = new JLabel("First Name");
+//        lNameTF = new JTextField(10);
+//        lNameSearchLb = new JLabel("Last Name");
+//
+//        searchNameFrame.add(fNameTF);
+//        searchNameFrame.add(fNameSearchLb);
+//        searchNameFrame.add(lNameTF);
+//        searchNameFrame.add(lNameSearchLb);
+
         ListSelectionModel listModel = searchNameTable.getSelectionModel();
         listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listModel.addListSelectionListener(fLastNameList);
@@ -871,7 +899,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                     tLName.setText(tm.getValueAt(sel[0], 0).toString().trim());
                     tFName.setText(tm.getValueAt(sel[0], 1).toString().trim());
                     tssn.setText(tm.getValueAt(sel[0], 2).toString().trim());
-                    tPhoneNum.setText(tm.getValueAt(sel[0], 3).toString().trim());
+                    //tPhoneNum.setText(tm.getValueAt(sel[0], 3).toString().trim());
                 }
             }
         }
