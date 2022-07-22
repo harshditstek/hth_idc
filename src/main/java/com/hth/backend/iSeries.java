@@ -118,6 +118,64 @@ public class iSeries {
 
 		return resultList;
 	}
+
+
+	public static List<String[]> executeSQLByAlias(String sql, String[] alias, String[] file) {
+		String[] aliasSQL = new String[alias.length];
+		
+		//String aliasSQL = "CREATE ALIAS " + alias + " FOR " + file;
+		for(int i=0;i<alias.length;i++){
+			aliasSQL[i] = "CREATE ALIAS " + alias[i] + " FOR " + file[i];
+		}
+		System.out.println("l:"+aliasSQL.length);
+		List<String[]> resultList = new ArrayList<>();
+		String[] result;
+		Statement statement;
+		ResultSet resultSet;
+		ResultSetMetaData resultSetMetaData;
+		Connection connection = null;
+
+		try {
+			Class.forName(DRIVER);
+			connection = DriverManager.getConnection(URL, HOSTNAME, PASSWORD);
+			statement = connection.createStatement();
+			for(int i=0;i<aliasSQL.length;i++){
+				statement.execute(aliasSQL[i]);
+			}
+
+
+			if (sql.substring(0, 6).equalsIgnoreCase("SELECT")) {
+				resultSet = statement.executeQuery(sql);
+				resultSetMetaData = resultSet.getMetaData();
+
+				while (resultSet.next()) {
+					result = new String[resultSetMetaData.getColumnCount()];
+					for (int idx = 0; idx < result.length; idx++) {
+						result[idx] = resultSet.getString(idx + 1);
+					}
+					resultList.add(result);
+				}
+			} else {
+				String rowCount = Integer.toString(statement.executeUpdate(sql));
+				result = new String[] {rowCount};
+				resultList.add(result);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (connection != null) {
+					connection.close();
+				}
+			} catch (SQLException sqle) {
+				sqle.printStackTrace();
+			}
+		}
+
+		return resultList;
+	}
+	
+	
 	//-----added to create  alias
 	public static void createAlias(String alias, String file){
 		String aliasSQL = "CREATE ALIAS " + alias + " FOR " + file;

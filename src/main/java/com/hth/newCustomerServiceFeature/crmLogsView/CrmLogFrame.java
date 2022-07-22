@@ -30,16 +30,13 @@ import java.util.List;
 
 public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, ListSelectionListener {
 
-    private JTextField fNameTF;
-    private JTextField lNameTF;
-    private JLabel fNameSearchLb;
-    private JLabel lNameSearchLb;
-
     private static final Font HTH_FONT = new Font("Arial", Font.PLAIN, 18);
     private Container c;
     private JFrame auditLog;
+    private JFrame showDataF;
     private JFrame searchNameFrame;
     private JTable logTable;
+    private JTable showTable;
     private JTable searchNameTable;
 
     private JLabel title;
@@ -48,6 +45,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     private JButton bReferenceNumber;
     private JLabel provider;
     private JComboBox tProvider;
+    private JComboBox select;
     private JLabel phoneNum;
     private JLabel nameValidation;
     private JTextField tPhoneNum;
@@ -67,6 +65,9 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     private MaskFormatter ssnFormatter;
     private JLabel claim;
     private JTextField tClaim;
+    private JTextField startDate;
+    private JTextField endDate;
+    private JTextField showingSelect;
     private MaskFormatter claimFormatter;
     private JLabel phoneNotes;
     private JTextField tPhoneNotes;
@@ -74,6 +75,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     private JTextArea tCallNotes;
     private JButton exit;
     private JButton ok;
+    private JButton searchData;
     private JPanel functionPanel;
     private JPanel functionKeyPanel;
     private JLabel titleLabel;
@@ -86,6 +88,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     String submitKey = "submitBtn";
     private HTH_PromptButton searchName;
     private String providerOrMember[] = {"Provider", "Member"};
+    private String selectList[] = {"Service"};
     DocumentFilter filter = new UppercaseDocumentFilter();
 
     private JButton claimListBTN;
@@ -99,7 +102,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
     public CrmLogFrame() {
         setTitle("Crm Log Files");
-        setBounds(355, 140, 1180, 900);
+        setBounds(355, 10, 1180, 1000);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBackground(Color.white);
         setResizable(false);
@@ -145,10 +148,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         keywords.add("harsh");
         keywords.add("harshit");
         keywords.add("harash");
-        keywords.add("harisson");
-        keywords.add("harr");
-        keywords.add("smith");
-        keywords.add("sam");
         Autocomplete autoComplete = new Autocomplete(tFName, keywords);
         tFName.getDocument().addDocumentListener(autoComplete);
 
@@ -179,6 +178,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
         setNote();
         setButton();
+        queryField();
         this.getContentPane().setBackground(Color.WHITE);
 
         setVisible(true);
@@ -259,6 +259,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         company.setSize(200, 30);
         company.setLocation(250, 460);
         c.add(company);
+
 
         tCompanyName = new HTH_TextField(25, HTH_FONT);
         tCompanyName.setForeground(new Color(0, 0, 150));
@@ -353,6 +354,60 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
     }
 
+    public void queryField(){
+        JLabel startLabel = new JLabel("Enter Start Date");
+        startLabel.setSize(200, 30);
+        startLabel.setLocation(250, 760);
+        startLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        c.add(startLabel);
+        startDate = new HTH_TextField(6, HTH_FONT);
+        startDate.setForeground(new Color(0, 0, 150));
+        startDate.setFont(new Font("Arial", Font.PLAIN, 15));
+        startDate.setSize(200, 30);
+        startDate.setLocation(250, 790);
+        ((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
+        c.add(startDate);
+
+        JLabel endLabel = new JLabel("Enter End Date");
+        endLabel.setSize(200, 30);
+        endLabel.setLocation(550, 760);
+        endLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        c.add(endLabel);
+
+        endDate = new HTH_TextField(6, HTH_FONT);
+        endDate.setForeground(new Color(0, 0, 150));
+        endDate.setFont(new Font("Arial", Font.PLAIN, 15));
+        endDate.setSize(200, 30);
+        endDate.setLocation(550, 790);
+        ((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
+        c.add(endDate);
+
+        select = new JComboBox(selectList);
+        select.setFont(new Font("Arial", Font.PLAIN, 15));
+        select.setSize(200, 30);
+        select.setLocation(250, 840);
+        select.setForeground(new Color(79, 145, 200));
+        select.setBackground(Color.white);
+        //select.addActionListener(providerS);
+        c.add(select);
+
+        showingSelect = new HTH_TextField(6, HTH_FONT);
+        showingSelect.setForeground(new Color(0, 0, 150));
+        showingSelect.setFont(new Font("Arial", Font.PLAIN, 15));
+        showingSelect.setSize(200, 30);
+        showingSelect.setLocation(550, 840);
+        ((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
+        c.add(showingSelect);
+
+        searchData = new HTH_ControlButton("Search Data");
+        searchData.setFont(new Font("Arial", Font.PLAIN, 15));
+        searchData.setSize(100, 27);
+        searchData.setLocation(900, 880);
+        searchData.addActionListener(searchDatabase);
+        //claimListBTN2.addActionListener(claimList);
+        c.add(searchData);
+    }
+
     Action exitAction = new AbstractAction(exitKey) {
         private static final long serialVersionUID = 10110L;
 
@@ -389,6 +444,28 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         }
 
     };
+
+    Action searchDatabase = new AbstractAction(okKey) {
+        private static final long serialVersionUID = 10110L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //Repository repo = Repository.getInstance("");
+            String startDat = startDate.getText().trim();
+            String endDat = endDate.getText().trim();
+            String service = "Serivce";
+            String keyword = showingSelect.getText().trim();
+
+
+            List<String[]> data = CRMLOGS.searchData(startDat, endDat, keyword);
+            System.out.println(data.size());
+            showDataFunction(data);
+
+
+        }
+
+    };
+
 
     Action claimList = new AbstractAction(listKey) {
         private static final long serialVersionUID = 10110L;
@@ -646,7 +723,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         JPanel borderPanel = new JPanel();
         borderPanel.setOpaque(false);
         // borderPanel.setBackground(Color.WHITE);
-        borderPanel.setBounds(230, 260, 800, 500);
+        borderPanel.setBounds(230, 260, 800, 700);
         borderPanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true),
                 "CRM Log Files",
@@ -693,7 +770,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         functionPanel.setBackground(new Color(83, 89, 105));
         functionPanel.setPreferredSize(new Dimension(200, 0));
         functionPanel.setLocation(0, 148);
-        functionPanel.setSize(220, 710);
+        functionPanel.setSize(220, 800);
 
         claimListBTN2 = new HTH_FunctionButton("Audit Log");
         claimListBTN2.setSize(220, 32);
@@ -810,7 +887,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     };
 
     private void nameSearchFromDataBase(String name) {
-
         InsureDataSingleton isd = InsureDataSingleton.singleton();
         List<Insure[]> dataI = isd.getInsureList();
         System.out.println("nam:"+dataI.size());
@@ -865,17 +941,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         };
 
         searchNameTable = new JTable(model);
-
-//        fNameTF = new JTextField(10);
-//        fNameSearchLb = new JLabel("First Name");
-//        lNameTF = new JTextField(10);
-//        lNameSearchLb = new JLabel("Last Name");
-//
-//        searchNameFrame.add(fNameTF);
-//        searchNameFrame.add(fNameSearchLb);
-//        searchNameFrame.add(lNameTF);
-//        searchNameFrame.add(lNameSearchLb);
-
         ListSelectionModel listModel = searchNameTable.getSelectionModel();
         listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listModel.addListSelectionListener(fLastNameList);
@@ -920,6 +985,27 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         tFName.setText("");
         tLName.setText("");
         tPhoneNum.setText("");
+    }
+
+    private void showDataFunction(List<String[]> showData) {
+        String[] result;
+        final Object[][] data = new Object[showData.size()][];
+        for (int idx = 0; idx < showData.size(); idx++) {
+            result = showData.get(idx);
+            System.out.println("method:"+result.length);
+            data[idx] = result;
+        }
+        final String[] columnNames = {"CLAIM_NUMBER", "LINE_NO", "3", "DATE_OF_SERVICE", "5", "6", "PATIENT_NAME", "8", "9", "9", "10", "11", "12", "13", "14","15","16","17","18","19","20","21","22","23","24","25","26"};
+
+        showDataF = new JFrame("Show Data");
+        showDataF.setBounds(400, 90, 1180, 800);
+
+        showTable = new JTable(data, columnNames);
+        JScrollPane scroll = new JScrollPane(showTable);
+        scroll.setPreferredSize(new Dimension(300, 300));
+        showDataF.getContentPane().add(scroll);
+        showDataF.setSize(800, 800);
+        showDataF.setVisible(true);
     }
 }
 
