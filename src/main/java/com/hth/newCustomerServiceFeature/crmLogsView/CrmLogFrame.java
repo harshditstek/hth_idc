@@ -11,6 +11,8 @@ import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord2;
 import com.hth.newCustomerServiceFeature.Repository.Repository;
 import com.hth.newCustomerServiceFeature.UppercaseDocumentFilter;
 import com.hth.util.Insure;
+import com.opencsv.CSVWriter;
+import org.jdesktop.swingx.JXDatePicker;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -24,14 +26,26 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, ListSelectionListener {
 
     private static final Font HTH_FONT = new Font("Arial", Font.PLAIN, 18);
     private Container c;
+    private JXDatePicker pickerFrom;
+    private JXDatePicker pickerTo;
     private JFrame auditLog;
     private JFrame showDataF;
     private JFrame searchNameFrame;
@@ -354,19 +368,19 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
     }
 
-    public void queryField(){
+    public void queryField() {
         JLabel startLabel = new JLabel("Enter Start Date");
         startLabel.setSize(200, 30);
         startLabel.setLocation(250, 760);
         startLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         c.add(startLabel);
-        startDate = new HTH_TextField(6, HTH_FONT);
-        startDate.setForeground(new Color(0, 0, 150));
-        startDate.setFont(new Font("Arial", Font.PLAIN, 15));
-        startDate.setSize(200, 30);
-        startDate.setLocation(250, 790);
-        ((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
-        c.add(startDate);
+
+        pickerFrom = new JXDatePicker();
+        pickerFrom.setDate(Calendar.getInstance().getTime());
+        pickerFrom.setFormats(new SimpleDateFormat("dd/MM/yyyy"));
+        pickerFrom.setSize(200, 30);
+        pickerFrom.setLocation(250, 790);
+        c.add(pickerFrom);
 
         JLabel endLabel = new JLabel("Enter End Date");
         endLabel.setSize(200, 30);
@@ -374,13 +388,12 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         endLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         c.add(endLabel);
 
-        endDate = new HTH_TextField(6, HTH_FONT);
-        endDate.setForeground(new Color(0, 0, 150));
-        endDate.setFont(new Font("Arial", Font.PLAIN, 15));
-        endDate.setSize(200, 30);
-        endDate.setLocation(550, 790);
-        ((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
-        c.add(endDate);
+        pickerTo = new JXDatePicker();
+        pickerTo.setDate(Calendar.getInstance().getTime());
+        pickerTo.setFormats(new SimpleDateFormat("dd/MM/yyyy"));
+        pickerTo.setSize(200, 30);
+        pickerTo.setLocation(550, 790);
+        c.add(pickerTo);
 
         select = new JComboBox(selectList);
         select.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -424,8 +437,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         public void actionPerformed(ActionEvent e) {
             Repository repo = Repository.getInstance("");
             String reference = tReferenceNumber.getText().trim();
-            System.out.println("refe:" + reference);
-            System.out.println(reference.equals(referenceS));
             if (reference.equals(referenceS) || checkReference) {
                 if (checkData()) {
                     System.out.println("Submit button clicked");
@@ -442,7 +453,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                 clearForm();
             }
         }
-
     };
 
     Action searchDatabase = new AbstractAction(okKey) {
@@ -450,20 +460,25 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            //Repository repo = Repository.getInstance("");
-            String startDat = startDate.getText().trim();
-            String endDat = endDate.getText().trim();
+            Date from = pickerFrom.getDate();
+            DateFormat fromFormat = new SimpleDateFormat("yyMMdd");
+            String fromDate = fromFormat.format(from);
+
+            Date to = pickerTo.getDate();
+            DateFormat toFormat = new SimpleDateFormat("yyMMdd");
+            String toDate = toFormat.format(to);
+
             String service = "Serivce";
             String keyword = showingSelect.getText().trim();
 
-
-            List<String[]> data = CRMLOGS.searchData(startDat, endDat, keyword);
-            System.out.println(data.size());
+            List<String[]> data = null;
+            try {
+                data = CRMLOGS.searchData(fromDate, toDate, keyword);
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
             showDataFunction(data);
-
-
         }
-
     };
 
 
@@ -582,13 +597,13 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 //            }
             InsureDataSingleton isd = InsureDataSingleton.singleton();
             List<Insure[]> list = isd.getInsureList();
-            System.out.println("size:"+list.size());
+            System.out.println("size:" + list.size());
 
             for (int i = 0; i < list.size(); i++) {
                 for (Insure data : list.get(i)) {
-                    System.out.println("pp:"+data.getPhone());
+                    System.out.println("pp:" + data.getPhone());
                     if (data.getPhone().contains(format)) {
-                        System.out.println("phone:"+data.getPhone());
+                        System.out.println("phone:" + data.getPhone());
                         tFName.setText(data.getfName());
                         tLName.setText(data.getlName());
                         tssn.setText(data.getSsn());
@@ -797,8 +812,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     private List<String[]> showAuditLog() {
         CRMLogsSingleton cr = CRMLogsSingleton.singleton();
         List<String[]> resultList = CRMLOGS.getCrmLogs(cr.getMaxId());
-        //cr.crmlogList = resultList;
-        System.out.println("first:" + resultList.size());
         if (resultList.size() > 0) {
             cr.setCrmlogList(resultList);
         }
@@ -889,7 +902,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     private void nameSearchFromDataBase(String name) {
         InsureDataSingleton isd = InsureDataSingleton.singleton();
         List<Insure[]> dataI = isd.getInsureList();
-        System.out.println("nam:"+dataI.size());
+        System.out.println("nam:" + dataI.size());
 
         List<Insure> matched = new ArrayList<Insure>();
         for (int i = 0; i < dataI.size(); i++) {
@@ -988,24 +1001,69 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     }
 
     private void showDataFunction(List<String[]> showData) {
-        String[] result;
-        final Object[][] data = new Object[showData.size()][];
-        for (int idx = 0; idx < showData.size(); idx++) {
-            result = showData.get(idx);
-            System.out.println("method:"+result.length);
-            data[idx] = result;
+        try {
+            String[][] data = new String[showData.size()][];
+            for (int idx = 0; idx < showData.size(); idx++) {
+                String[] result = new String[showData.get(idx).length];
+                result = showData.get(idx);
+                //for (int i = 0; i < result.length; i++) {
+                    //if (i == 3) {
+                        Date d = new SimpleDateFormat("yyMMdd").parse(result[3]);
+                        SimpleDateFormat d2 = new SimpleDateFormat("MM/dd/yy");
+                        System.out.println(d2.format(d));
+                        //result[i] = d2.format(d);
+                        //result[3] = result[3].replaceAll(result[3],d2.format(d));
+                        result[3] = d2.format(d).toString();
+                    //}
+                //}
+                data[idx] = result;
+            }
+            final String[] columnNames = {"CLAIM_NUMBER", "LINE_NO", "3", "DATE_OF_SERVICE", "DIVISION", "POLICY_ID", "PATIENT_NAME", "DEPENDENT_CODE", "COVERAGE", "AMOUNT_CLAIMED", "DAMTEX", "TOTAL_PAID", "DEXCD", "13", "HICD1", "HICD2", "HICD3", "HICD4", "HICD5", "HICD6", "HICD7", "HICD8", "HICD9", "HICD10", "TYPE_OF_SERVICE", "25", "26"};
+            writeDataLineByLine(columnNames, data);
+//        showDataF = new JFrame("Show Data");
+//        showDataF.setBounds(400, 90, 1180, 800);
+//
+//        showTable = new JTable(data, columnNames);
+//        JScrollPane scroll = new JScrollPane(showTable);
+//        scroll.setPreferredSize(new Dimension(300, 300));
+//        showDataF.getContentPane().add(scroll);
+//        showDataF.setSize(800, 800);
+//        showDataF.setVisible(true);
+        }catch (Exception e){
+
         }
-        final String[] columnNames = {"CLAIM_NUMBER", "LINE_NO", "3", "DATE_OF_SERVICE", "5", "6", "PATIENT_NAME", "8", "9", "9", "10", "11", "12", "13", "14","15","16","17","18","19","20","21","22","23","24","25","26"};
-
-        showDataF = new JFrame("Show Data");
-        showDataF.setBounds(400, 90, 1180, 800);
-
-        showTable = new JTable(data, columnNames);
-        JScrollPane scroll = new JScrollPane(showTable);
-        scroll.setPreferredSize(new Dimension(300, 300));
-        showDataF.getContentPane().add(scroll);
-        showDataF.setSize(800, 800);
-        showDataF.setVisible(true);
     }
+
+    public static void writeDataLineByLine(String[] header, String data[][]) {
+        File file = null;
+        JFrame parentFrame = new JFrame();
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Select a Location");
+        int userSelection = fileChooser.showSaveDialog(parentFrame);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+            file = new File(fileToSave.getAbsolutePath()+".csv");
+        }
+        try {
+
+            FileWriter outputfile = new FileWriter(file);
+
+            //CSVWriter writer = new CSVWriter(outputfile);
+            CSVWriter writer = new CSVWriter(outputfile,',',CSVWriter.NO_QUOTE_CHARACTER);
+            writer.writeNext(header);
+
+            for(int i=0;i< data.length;i++){
+                writer.writeNext(data[i]);
+            }
+            writer.close();
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
 }
 
