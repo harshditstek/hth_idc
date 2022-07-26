@@ -11,7 +11,6 @@ import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord2;
 import com.hth.newCustomerServiceFeature.Repository.Repository;
 import com.hth.newCustomerServiceFeature.UppercaseDocumentFilter;
 import com.hth.util.Insure;
-import com.opencsv.CSVWriter;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.imageio.ImageIO;
@@ -26,18 +25,8 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, ListSelectionListener {
@@ -529,6 +518,12 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                 List<String[]> resultList = cr.getCrmlogList();
                 //System.out.println(resultList.get(0)[0]);
                 String[] result;
+                Repository repo = Repository.getInstance("");
+                Integer referenceCheck = repo.generateRefNumTest();
+                referenceS = String.valueOf(referenceCheck);
+                if(Integer.valueOf(reference)<referenceCheck){
+                    checkReference = false;
+                }
                 for (int i = 0; i < resultList.size(); i++) {
                     System.out.println(i + " " + resultList.get(i)[0].trim());
                     if (resultList.get(i)[0].trim().equals(reference)) {
