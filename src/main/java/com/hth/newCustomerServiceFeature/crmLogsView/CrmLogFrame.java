@@ -75,6 +75,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     DocumentFilter filter = new UppercaseDocumentFilter();
     private HTH_FunctionButton claimListBTN2;
     Integer referenceCheck = 0;
+    Integer reference = 0;
     String referenceS = "";
     boolean checkReference = true;
     private final List<String> keywords;
@@ -184,9 +185,9 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             @Override
             public void actionPerformed(ActionEvent e) {
                 Repository repo = Repository.getInstance("");
-                referenceCheck = repo.generateRefNumTest();
-                referenceS = String.valueOf(referenceCheck);
-                tReferenceNumber.setText(referenceCheck.toString());
+                reference = repo.generateRefNumTest();
+                referenceS = String.valueOf(reference);
+                tReferenceNumber.setText(reference.toString());
                 clearFormGenerate();
             }
         });
