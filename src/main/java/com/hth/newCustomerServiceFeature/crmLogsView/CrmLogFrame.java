@@ -561,7 +561,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     public void keyReleased(KeyEvent e) {
         String phone = tPhoneNum.getText().trim();
         String format = gePhoneNum(phone);
-        if (format.length() == 9) {
+        if (format.length() == 10) {
 //            List<String[]> resultList = CRMLOGS.searchByPhone(format);
 //            if (resultList.size() > 0) {
 //                //tReferenceNumber.setText(resultList.get(0)[0].trim());
