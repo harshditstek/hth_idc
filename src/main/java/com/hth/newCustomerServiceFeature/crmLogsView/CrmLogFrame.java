@@ -11,7 +11,6 @@ import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord2;
 import com.hth.newCustomerServiceFeature.Repository.Repository;
 import com.hth.newCustomerServiceFeature.UppercaseDocumentFilter;
 import com.hth.util.Insure;
-import org.jdesktop.swingx.JXDatePicker;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -33,28 +32,18 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
     private static final Font HTH_FONT = new Font("Arial", Font.PLAIN, 18);
     private Container c;
-    private JXDatePicker pickerFrom;
-    private JXDatePicker pickerTo;
     private JFrame auditLog;
-    private JFrame showDataF;
     private JFrame searchNameFrame;
     private JTable logTable;
-    private JTable showTable;
     private JTable searchNameTable;
-
-    private JLabel title;
     private JLabel referenceNumber;
     private JTextField tReferenceNumber;
     private JButton bReferenceNumber;
     private JLabel provider;
     private JComboBox tProvider;
-    private JComboBox select;
     private JLabel phoneNum;
-    private JLabel nameValidation;
     private JTextField tPhoneNum;
     private MaskFormatter phoneFormatter;
-
-    private JLabel phoneValidation;
     private JLabel name;
     private JTextField tFName;
     private JTextField tLName;
@@ -65,20 +54,12 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     private JTextField tCustomerGroup;
     private JLabel ssn;
     private JTextField tssn;
-    private MaskFormatter ssnFormatter;
     private JLabel claim;
     private JTextField tClaim;
-    private JTextField startDate;
-    private JTextField endDate;
-    private JTextField showingSelect;
-    private MaskFormatter claimFormatter;
-    private JLabel phoneNotes;
-    private JTextField tPhoneNotes;
     private JLabel callNotes;
     private JTextArea tCallNotes;
     private JButton exit;
     private JButton ok;
-    private JButton searchData;
     private JPanel functionPanel;
     private JPanel functionKeyPanel;
     private JLabel titleLabel;
@@ -91,16 +72,11 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     String submitKey = "submitBtn";
     private HTH_PromptButton searchName;
     private String providerOrMember[] = {"Provider", "Member"};
-    private String selectList[] = {"Service"};
     DocumentFilter filter = new UppercaseDocumentFilter();
-
-    private JButton claimListBTN;
     private HTH_FunctionButton claimListBTN2;
-
-    Integer reference = 0;
+    Integer referenceCheck = 0;
     String referenceS = "";
     boolean checkReference = true;
-
     private final List<String> keywords;
 
     public CrmLogFrame() {
@@ -150,7 +126,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         keywords = new ArrayList<String>(5);
         keywords.add("harsh");
         keywords.add("harshit");
-        keywords.add("harash");
         Autocomplete autoComplete = new Autocomplete(tFName, keywords);
         tFName.getDocument().addDocumentListener(autoComplete);
 
@@ -209,9 +184,9 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             @Override
             public void actionPerformed(ActionEvent e) {
                 Repository repo = Repository.getInstance("");
-                Integer reference = repo.generateRefNumTest();
-                referenceS = String.valueOf(reference);
-                tReferenceNumber.setText(reference.toString());
+                referenceCheck = repo.generateRefNumTest();
+                referenceS = String.valueOf(referenceCheck);
+                tReferenceNumber.setText(referenceCheck.toString());
                 clearFormGenerate();
             }
         });
@@ -243,7 +218,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         c.add(phoneNum);
 
         try {
-            phoneFormatter = new MaskFormatter("(###) ###-####");
+            phoneFormatter = new MaskFormatter("(***) ***-****");
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -263,7 +238,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         company.setSize(200, 30);
         company.setLocation(250, 460);
         c.add(company);
-
 
         tCompanyName = new HTH_TextField(25, HTH_FONT);
         tCompanyName.setForeground(new Color(0, 0, 150));
@@ -519,8 +493,13 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                 //System.out.println(resultList.get(0)[0]);
                 String[] result;
                 Repository repo = Repository.getInstance("");
-                Integer referenceCheck = repo.generateRefNumTest();
-                referenceS = String.valueOf(referenceCheck);
+
+
+                if(referenceCheck == 0){
+                    referenceCheck = repo.generateRefNumTest();
+                    referenceS = String.valueOf(referenceCheck);
+                }
+
                 if(Integer.valueOf(reference)<referenceCheck){
                     checkReference = false;
                 }
@@ -529,8 +508,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                     if (resultList.get(i)[0].trim().equals(reference)) {
                         //result = resultList.get(idx);
                         //for (int i = 0; i < result.length; i++) {
-                        System.out.println(resultList.get(i)[0]);
-
                         System.out.println("con:" + resultList.get(i)[0].trim());
                         checkReference = false;
                         //tReferenceNumber.setText(resultList.get(0)[0].trim());
@@ -548,7 +525,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                         tssn.setText(resultList.get(i)[7].trim());
                         tClaim.setText(resultList.get(i)[8].trim());
                         tCallNotes.setText(resultList.get(i)[12].trim());
-
                     }
                 }
 
@@ -633,6 +609,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             providerOrMember = "M";
         }
         String phoneNum = tPhoneNum.getText().trim();
+       String formattedPhone = gePhoneNum(phoneNum);
+        System.out.println("for:"+formattedPhone.length());
         String fName = tFName.getText().trim().toUpperCase();
         String lName = tLName.getText().trim().toUpperCase();
         String company = tCompanyName.getText().trim().toUpperCase();
@@ -649,7 +627,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             System.out.println("validation error checkData: refname");
             return false;
         }
-        if (phoneNum.length() != 14) {
+        System.out.println("::"+phoneNum.length());
+        if (formattedPhone.length() != 10) {
             errMsg = "Invalid Phone Number";
             System.out.println(phoneNum.length() + ": MyFrame");
             JOptionPane.showMessageDialog(new JLabel(), errMsg);
