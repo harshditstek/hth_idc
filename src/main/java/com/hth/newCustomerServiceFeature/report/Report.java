@@ -28,10 +28,15 @@ public class Report extends JFrame {
     private JXDatePicker pickerFrom;
     private JXDatePicker pickerTo;
     private JComboBox dateDropdown;
+    private JComboBox queryDropdown;
+    private JComboBox providerDropdown;
+    private JComboBox serviceTypeDropdown;
+    private JComboBox exclusionDropdown;
     private JLayeredPane contentScreen, promptScreen;
     private JTextField cptText;
     private JTextField providerText;
     private JTextField serviceText;
+    private JTextField exclusionCodeText;
     private JButton searchData;
     private JPanel functionPanel;
     private JPanel functionKeyPanel;
@@ -39,6 +44,11 @@ public class Report extends JFrame {
     private JPanel mainPanel;
     String okKey = "okBtn";
     private String dateList[] = {"Date Of Service", "Process date", "Receieve Date"};
+    private String queryList[] = {"OR", "And"};
+
+    private JFrame showDataF;
+    private JTable showTable;
+    private JScrollPane jsp;
 
     public Report() {
         setTitle("Report Logs");
@@ -131,7 +141,7 @@ public class Report extends JFrame {
         c.add(pickerTo);
 
         JLabel cptLabel = new JLabel("CPT Code");
-        cptLabel.setSize(200, 30);
+        cptLabel.setSize(150, 30);
         cptLabel.setLocation(250, 400);
         cptLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         c.add(cptLabel);
@@ -139,13 +149,22 @@ public class Report extends JFrame {
         cptText = new HTH_TextField(100, HTH_FONT);
         cptText.setForeground(new Color(0, 0, 150));
         cptText.setFont(new Font("Arial", Font.PLAIN, 15));
-        cptText.setSize(200, 30);
+        cptText.setSize(150, 30);
         cptText.setLocation(250, 430);
         //((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
         c.add(cptText);
 
+        providerDropdown = new JComboBox(queryList);
+        providerDropdown.setFont(new Font("Arial", Font.PLAIN, 15));
+        providerDropdown.setSize(60, 30);
+        providerDropdown.setLocation(420, 430);
+        providerDropdown.setForeground(new Color(79, 145, 200));
+        providerDropdown.setBackground(Color.white);
+        //select.addActionListener(providerS);
+        c.add(providerDropdown);
+
         JLabel providerLabel = new JLabel("Provider Name");
-        providerLabel.setSize(200, 30);
+        providerLabel.setSize(150, 30);
         providerLabel.setLocation(500, 400);
         providerLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         c.add(providerLabel);
@@ -153,13 +172,22 @@ public class Report extends JFrame {
         providerText = new HTH_TextField(100, HTH_FONT);
         providerText.setForeground(new Color(0, 0, 150));
         providerText.setFont(new Font("Arial", Font.PLAIN, 15));
-        providerText.setSize(200, 30);
+        providerText.setSize(150, 30);
         providerText.setLocation(500, 430);
         //((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
         c.add(providerText);
 
+        serviceTypeDropdown = new JComboBox(queryList);
+        serviceTypeDropdown.setFont(new Font("Arial", Font.PLAIN, 15));
+        serviceTypeDropdown.setSize(60, 30);
+        serviceTypeDropdown.setLocation(670, 430);
+        serviceTypeDropdown.setForeground(new Color(79, 145, 200));
+        serviceTypeDropdown.setBackground(Color.white);
+        //select.addActionListener(providerS);
+        c.add(serviceTypeDropdown);
+
         JLabel serviceLabel = new JLabel("Service Type");
-        serviceLabel.setSize(200, 30);
+        serviceLabel.setSize(150, 30);
         serviceLabel.setLocation(750, 400);
         serviceLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         c.add(serviceLabel);
@@ -167,10 +195,42 @@ public class Report extends JFrame {
         serviceText = new HTH_TextField(100, HTH_FONT);
         serviceText.setForeground(new Color(0, 0, 150));
         serviceText.setFont(new Font("Arial", Font.PLAIN, 15));
-        serviceText.setSize(200, 30);
+        serviceText.setSize(150, 30);
         serviceText.setLocation(750, 430);
         //((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
         c.add(serviceText);
+
+        exclusionDropdown = new JComboBox(queryList);
+        exclusionDropdown.setFont(new Font("Arial", Font.PLAIN, 15));
+        exclusionDropdown.setSize(60, 30);
+        exclusionDropdown.setLocation(920, 430);
+        exclusionDropdown.setForeground(new Color(79, 145, 200));
+        exclusionDropdown.setBackground(Color.white);
+        //select.addActionListener(providerS);
+        c.add(exclusionDropdown);
+
+        JLabel exclusionCodeLabel = new JLabel("Exclusion Code");
+        exclusionCodeLabel.setSize(200, 30);
+        exclusionCodeLabel.setLocation(250, 490);
+        exclusionCodeLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        c.add(exclusionCodeLabel);
+
+        exclusionCodeText = new HTH_TextField(100, HTH_FONT);
+        exclusionCodeText.setForeground(new Color(0, 0, 150));
+        exclusionCodeText.setFont(new Font("Arial", Font.PLAIN, 15));
+        exclusionCodeText.setSize(150, 30);
+        exclusionCodeText.setLocation(250, 520);
+        //((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
+        c.add(exclusionCodeText);
+
+//        queryDropdown = new JComboBox(queryList);
+//        queryDropdown.setFont(new Font("Arial", Font.PLAIN, 15));
+//        queryDropdown.setSize(200, 30);
+//        queryDropdown.setLocation(500, 520);
+//        queryDropdown.setForeground(new Color(79, 145, 200));
+//        queryDropdown.setBackground(Color.white);
+//        //select.addActionListener(providerS);
+//        c.add(queryDropdown);
 
         searchData = new HTH_ControlButton("OK");
         searchData.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -207,13 +267,20 @@ public class Report extends JFrame {
             String cpt = cptText.getText().toUpperCase().trim();
             String provider = providerText.getText().toUpperCase().trim();
             String serviceType = serviceText.getText().toUpperCase().trim();
+            String exclusionCode = exclusionCodeText.getText().toUpperCase().trim();
+            String query = "or";
+            System.out.println("sel:"+queryDropdown.getSelectedIndex());
+            if(queryDropdown.getSelectedIndex() == 1){
+                query = "and";
+            }
+            System.out.println("query:"+query);
 //
 //            String service = "Serivce";
 //            String keyword = showingSelect.getText().trim();
 
             List<String[]> data = null;
             try {
-                data = CRMLOGS.searchData(fromDate, toDate, cpt, provider, serviceType);
+                data = CRMLOGS.reportData(fromDate, toDate, cpt, provider, serviceType);
                 if (data.size() == 0) {
                     JOptionPane.showMessageDialog(new JLabel(), "No data found");
                 } else {
@@ -243,12 +310,16 @@ public class Report extends JFrame {
                 //}
                 data[idx] = result;
             }
-            final String[] columnNames = {"CLAIM_NUMBER", "LINE_NO", "3", "DATE_OF_SERVICE", "DIVISION", "POLICY_ID", "PATIENT_NAME", "DEPENDENT_CODE", "COVERAGE", "AMOUNT_CLAIMED", "DAMTEX", "TOTAL_PAID", "DEXCD", "13", "HICD1", "HICD2", "HICD3", "HICD4", "HICD5", "HICD6", "HICD7", "HICD8", "HICD9", "HICD10", "TYPE_OF_SERVICE", "PROVIDER_ID", "PROVIDER_NAME"};
+            final String[] columnNames = {"CLAIM_NUMBER", "LINE_NO", "3", "DATE_OF_SERVICE", "DIVISION", "POLICY_ID", "PATIENT_NAME", "DEPENDENT_CODE", "COVERAGE", "AMOUNT_CLAIMED", "DAMTEX", "TOTAL_PAID", "DEXCD", "13", "HICD1", "HICD2", "HICD3", "HICD4", "HICD5", "HICD6", "HICD7", "HICD8", "HICD9", "HICD10", "TYPE_OF_SERVICE", "PROVIDER_ID", "PROVIDER_NAME", "Exclusion_Code"};
             writeDataLineByLine(columnNames, data);
-//        showDataF = new JFrame("Show Data");
-//        showDataF.setBounds(400, 90, 1180, 800);
-//
-//        showTable = new JTable(data, columnNames);
+            showDataF = new JFrame("Show Data");
+            showDataF.setBounds(400, 90, 1180, 800);
+            JButton download = new JButton("Download");
+            showTable = new JTable(data, columnNames);
+            jsp = new JScrollPane(showTable);
+            showDataF.add(download);
+            showDataF.add(jsp);
+            showDataF.setLayout(new FlowLayout(FlowLayout.CENTER));
 //        JScrollPane scroll = new JScrollPane(showTable);
 //        scroll.setPreferredSize(new Dimension(300, 300));
 //        showDataF.getContentPane().add(scroll);

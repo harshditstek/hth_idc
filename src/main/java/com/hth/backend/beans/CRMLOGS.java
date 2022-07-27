@@ -1,9 +1,7 @@
 package com.hth.backend.beans;
 
 import com.hth.backend.iSeries;
-import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord;
 import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord2;
-import com.hth.util.Division;
 import com.hth.util.Insure;
 
 import java.util.List;
@@ -119,7 +117,7 @@ public class CRMLOGS {
             ssn = result[2].trim();
             phone = result[3].trim();
 
-            insureList[idx] = new Insure(fName,lName,ssn,phone);
+            insureList[idx] = new Insure(fName, lName, ssn, phone);
         }
 
         return insureList;
@@ -179,40 +177,81 @@ public class CRMLOGS {
     }
 
 
-    public static List<String[]> searchData(String startDate, String endDate, String keyword){
+    public static List<String[]> reportData(String startDate, String endDate, String cptType, String provider, String serviceType) {
+        StringBuilder sb = new StringBuilder();
+        String[] alias = {"qtemp.clmdet", "qtemp.clmhdr", "qtemp.clmnot", "qtemp.codfil", "qtemp.insur3", "qtemp.insure", "qtemp.insdep", "qtemp.provdr"};
+        String[] file = {"testdata.clmdet(TRT)", "testdata.clmhdr(TRT)", "testdata.clmnot(TRT)", "testdata.codfil(TRT)", "testdata.insur3(TRT)", "testdata.insure(TRT)", "testdata.insdep(TRT)", "testdata.provdr(TRT)"};
+//        String sql = "select c.dprc,a.HCLMNO as CLAIM_NUMBER ,c.DLINE as LINE_NO,"+
+//                "concat(concat(Substring(digits((c.DDOS)),5,2),Substring(digits((c.DDOS)),3,2)),substring(digits((c.DDOS)),1,2)) as DATE_OF_SERVICE,"+
+//                "a.HDIV as DIVISION,b.IPOLCY as POLICY_ID,"+
+//                "concat(b.IFNAM , b.ILNAM) as EMPLOYEE,"+
+//                "c.DDEP as DEPENDENT_CODE , a.HCOVCD as COVERAGE,c.DAMTAL AS AMOUNT_CLAIMED,c.DAMTEX,c.DEXCD,c.DEXCD2,a.htotck as TOTAL_PAID,"+
+//                "HICD1,HICD2,HICD3,HICD4,HICD5,HICD6,HICD7,HICD8,HICD9,HICD10,"+
+//                "e.DESC1 as TYPE_OF_SERVICE, PPROVN as PROVIDER_ID,PNAME as PROVIDER_NAME "+
+//                "from qtemp.clmhdr a "+
+//                "join qtemp.clmdet c on dclmno=hclmno "+
+//                "right join qtemp.insure b on (hgrpno=igrpno and hssn=issn) "+
+//                "join qtemp.codfil e on (e.cdcod5=substring(c.DPRC,6,2) and cdcod1='T')"+
+//                //"left join  qtemp.insdep d on(a.hgrpno=d.DGRPNO and a.hssn=d.dessn and a.hdep=d.dcode)"+
+//                "join qtemp.provdr f on f.PPROVN = a.HPROVD "+
+//                "where"+
+//                "(concat(concat(Substring(digits((c.DDOS)),5,2),Substring(digits((c.DDOS)),3,2)),substring(digits((c.DDOS)),1,2)) between 211001 and 211019)"+
+//                "and (substring(c.DPRC,6,2)='OT' or e.DESC1 like '%COVID%')"+
+//                "order by a.hclmno desc";
 
-        String[] alias = {"qtemp.clmdet","qtemp.clmhdr","qtemp.clmnot","qtemp.codfil","qtemp.insur3","qtemp.insure","qtemp.insdep","qtemp.provdr"};
-        String[] file = {"testdata.clmdet(TRT)","testdata.clmhdr(TRT)","testdata.clmnot(TRT)","testdata.codfil(TRT)","testdata.insur3(TRT)","testdata.insure(TRT)","testdata.insdep(TRT)","testdata.provdr(TRT)"};
 
-
-        String sql = "select c.dprc,a.HCLMNO as CLAIM_NUMBER ,c.DLINE as LINE_NO,"+
-                "concat(concat(Substring(digits((c.DDOS)),5,2),Substring(digits((c.DDOS)),3,2)),substring(digits((c.DDOS)),1,2)) as DATE_OF_SERVICE,"+
-                "a.HDIV as DIVISION,b.IPOLCY as POLICY_ID,"+
-                "concat(b.IFNAM , b.ILNAM) as EMPLOYEE, "+
-                "c.DDEP as DEPENDENT_CODE , a.HCOVCD as COVERAGE,c.DAMTAL AS AMOUNT_CLAIMED,c.DAMTEX,c.DEXCD,c.DEXCD2,a.htotck as TOTAL_PAID,"+
-                "HICD1,HICD2,HICD3,HICD4,HICD5,HICD6,HICD7,HICD8,HICD9,HICD10,"+
-                "e.DESC1 as TYPE_OF_SERVICE, PPROVN as PROVIDER_ID,PNAME as PROVIDER_NAME "+
-                "from qtemp.clmhdr a "+
-                "join qtemp.clmdet c on dclmno=hclmno "+
-                "right join qtemp.insure b on (hgrpno=igrpno and hssn=issn) "+
-                "join qtemp.codfil e on (e.cdcod5=substring(c.DPRC,6,2) and cdcod1='T') "+
+        sb.append("select c.dprc,a.HCLMNO as CLAIM_NUMBER ,c.DLINE as LINE_NO," +
+                "concat(concat(Substring(digits((c.DDOS)),5,2),Substring(digits((c.DDOS)),3,2)),substring(digits((c.DDOS)),1,2)) as DATE_OF_SERVICE," +
+                "a.HDIV as DIVISION,b.IPOLCY as POLICY_ID," +
+                "concat(b.IFNAM , b.ILNAM) as EMPLOYEE, " +
+                "c.DDEP as DEPENDENT_CODE , a.HCOVCD as COVERAGE,c.DAMTAL AS AMOUNT_CLAIMED,c.DAMTEX,c.DEXCD,c.DEXCD2,a.htotck as TOTAL_PAID," +
+                "HICD1,HICD2,HICD3,HICD4,HICD5,HICD6,HICD7,HICD8,HICD9,HICD10," +
+                "e.DESC1 as TYPE_OF_SERVICE, PPROVN as PROVIDER_ID,PNAME as PROVIDER_NAME, c.DEXCD,c.DEXCD2 as Exclusion_Code " +
+                "from qtemp.clmhdr a " +
+                "join qtemp.clmdet c on dclmno=hclmno " +
+                "right join qtemp.insure b on (hgrpno=igrpno and hssn=issn) " +
+                "join qtemp.codfil e on (e.cdcod5=substring(c.DPRC,6,2) and cdcod1='T') " +
                 //"left join  qtemp.insdep d on(a.hgrpno=d.DGRPNO and a.hssn=d.dessn and a.hdep=d.dcode) "+
-                "join qtemp.provdr f on f.PPROVN = a.HPROVD "+
-                "where  "+
-                "(concat(concat(Substring(digits((c.DDOS)),5,2),Substring(digits((c.DDOS)),3,2)),substring(digits((c.DDOS)),1,2)) between "+startDate+" and "+endDate+") "+
-                "and (substring(c.DPRC,6,2)='OT' or e.DESC1 like '%"+keyword+"%') "+
-                "order by a.hclmno desc";
+                "join qtemp.provdr f on f.PPROVN = a.HPROVD " +
+                "where  " +
+                "(concat(concat(Substring(digits((c.DDOS)),5,2),Substring(digits((c.DDOS)),3,2)),substring(digits((c.DDOS)),1,2)) between " + startDate + " and " + endDate + ") ");
 
-        List<String[]> resultList = iSeries.executeSQLByAlias(sql, alias, file);
-        System.out.println("size:"+resultList.size());
-        String[] result;
-        //for (int idx = 0; idx < resultList.size(); idx++) {
-            result = resultList.get(0);
-            System.out.println("lenn::"+result.length);
-            for (int i = 0; i < result.length; i++) {
-                System.out.println("entry:"+result[i].toString().trim());
+        String dQuery = "";
+        if (!cptType.equals("")) {
+            if(serviceType.equals("") && provider.equals("")){
+                dQuery += ("(substring(c.DPRC,6,2)= '" + cptType + "') ");
+            }else{
+                dQuery += ("(substring(c.DPRC,6,2)= '" + cptType + "' ");
             }
-        //}
+
+        }
+        if (!serviceType.equals("")) {
+            if (dQuery.isEmpty()) {
+                dQuery += ("(e.DESC1 like '%" + serviceType + "%'");
+            } else {
+                dQuery += ("or e.DESC1 like '%" + serviceType + "%'");
+            }
+        }
+        if (!provider.equals("")) {
+            if(dQuery.isEmpty()){
+                dQuery += ("(PNAME like '%" + provider + "%') ");
+            }else{
+                dQuery += ("or PNAME like '%" + provider + "%') ");
+            }
+        }else{
+            if(!serviceType.equals("")){
+                dQuery += (") ");
+            }
+        }
+        if (!dQuery.isEmpty()) {
+            sb.append("and ");
+            sb.append(dQuery);
+        }
+        sb.append("order by a.hclmno desc");
+
+        System.out.println("sb:"+sb.toString());
+        List<String[]> resultList = iSeries.executeSQLByAlias(sb.toString(), alias, file);
+        System.out.println("size of report:" + resultList.size());
 
         return resultList;
     }

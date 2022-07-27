@@ -404,6 +404,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             String reference = tReferenceNumber.getText().trim();
             if (reference.equals(referenceS) || checkReference) {
                 if (checkData()) {
+                    referenceS = String.valueOf(Integer.valueOf(referenceS) + 1);
                     System.out.println("Submit button clicked");
                     CrmLogRecord2 record = getData();
                     CRMLOGS.insertCrmLogs(record);
@@ -497,11 +498,11 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
 
                 if(referenceCheck == 0){
-                    referenceCheck = repo.generateRefNumTest();
-                    referenceS = String.valueOf(referenceCheck);
+                referenceCheck = repo.generateRefNumTest();
+                referenceS = String.valueOf(referenceCheck);
                 }
 
-                if(Integer.valueOf(reference)<referenceCheck){
+                if (Integer.valueOf(reference) < referenceCheck) {
                     checkReference = false;
                 }
                 for (int i = 0; i < resultList.size(); i++) {
@@ -610,8 +611,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             providerOrMember = "M";
         }
         String phoneNum = tPhoneNum.getText().trim();
-       String formattedPhone = gePhoneNum(phoneNum);
-        System.out.println("for:"+formattedPhone.length());
+        String formattedPhone = gePhoneNum(phoneNum);
+        System.out.println("for:" + formattedPhone.length());
         String fName = tFName.getText().trim().toUpperCase();
         String lName = tLName.getText().trim().toUpperCase();
         String company = tCompanyName.getText().trim().toUpperCase();
@@ -628,7 +629,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             System.out.println("validation error checkData: refname");
             return false;
         }
-        System.out.println("::"+phoneNum.length());
+        System.out.println("::" + phoneNum.length());
         if (formattedPhone.length() != 10) {
             errMsg = "Invalid Phone Number";
             System.out.println(phoneNum.length() + ": MyFrame");
@@ -978,6 +979,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
     void clearFormGenerate() {
         //tReferenceNumber.setText("");
+        tProvider.setSelectedIndex(0);
         tCallNotes.setText("");
         tClaim.setText("");
         tssn.setText("");
