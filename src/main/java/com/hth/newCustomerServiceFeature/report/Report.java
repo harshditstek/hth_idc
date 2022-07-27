@@ -8,6 +8,7 @@ import com.opencsv.CSVWriter;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.imageio.ImageIO;
+import javax.sound.midi.Soundbank;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -141,7 +142,7 @@ public class Report extends JFrame {
         c.add(pickerTo);
 
         JLabel cptLabel = new JLabel("CPT Code");
-        cptLabel.setSize(150, 30);
+        cptLabel.setSize(200, 30);
         cptLabel.setLocation(250, 400);
         cptLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         c.add(cptLabel);
@@ -149,7 +150,7 @@ public class Report extends JFrame {
         cptText = new HTH_TextField(100, HTH_FONT);
         cptText.setForeground(new Color(0, 0, 150));
         cptText.setFont(new Font("Arial", Font.PLAIN, 15));
-        cptText.setSize(150, 30);
+        cptText.setSize(200, 30);
         cptText.setLocation(250, 430);
         //((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
         c.add(cptText);
@@ -157,53 +158,53 @@ public class Report extends JFrame {
         providerDropdown = new JComboBox(queryList);
         providerDropdown.setFont(new Font("Arial", Font.PLAIN, 15));
         providerDropdown.setSize(60, 30);
-        providerDropdown.setLocation(420, 430);
+        providerDropdown.setLocation(500, 430);
         providerDropdown.setForeground(new Color(79, 145, 200));
         providerDropdown.setBackground(Color.white);
         //select.addActionListener(providerS);
         c.add(providerDropdown);
 
         JLabel providerLabel = new JLabel("Provider Name");
-        providerLabel.setSize(150, 30);
-        providerLabel.setLocation(500, 400);
+        providerLabel.setSize(200, 30);
+        providerLabel.setLocation(610, 400);
         providerLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         c.add(providerLabel);
 
         providerText = new HTH_TextField(100, HTH_FONT);
         providerText.setForeground(new Color(0, 0, 150));
         providerText.setFont(new Font("Arial", Font.PLAIN, 15));
-        providerText.setSize(150, 30);
-        providerText.setLocation(500, 430);
+        providerText.setSize(200, 30);
+        providerText.setLocation(610, 430);
         //((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
         c.add(providerText);
 
         serviceTypeDropdown = new JComboBox(queryList);
         serviceTypeDropdown.setFont(new Font("Arial", Font.PLAIN, 15));
         serviceTypeDropdown.setSize(60, 30);
-        serviceTypeDropdown.setLocation(670, 430);
+        serviceTypeDropdown.setLocation(860, 430);
         serviceTypeDropdown.setForeground(new Color(79, 145, 200));
         serviceTypeDropdown.setBackground(Color.white);
         //select.addActionListener(providerS);
         c.add(serviceTypeDropdown);
 
         JLabel serviceLabel = new JLabel("Service Type");
-        serviceLabel.setSize(150, 30);
-        serviceLabel.setLocation(750, 400);
+        serviceLabel.setSize(200, 30);
+        serviceLabel.setLocation(250, 490);
         serviceLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         c.add(serviceLabel);
 
         serviceText = new HTH_TextField(100, HTH_FONT);
         serviceText.setForeground(new Color(0, 0, 150));
         serviceText.setFont(new Font("Arial", Font.PLAIN, 15));
-        serviceText.setSize(150, 30);
-        serviceText.setLocation(750, 430);
+        serviceText.setSize(200, 30);
+        serviceText.setLocation(250, 520);
         //((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
         c.add(serviceText);
 
         exclusionDropdown = new JComboBox(queryList);
         exclusionDropdown.setFont(new Font("Arial", Font.PLAIN, 15));
         exclusionDropdown.setSize(60, 30);
-        exclusionDropdown.setLocation(920, 430);
+        exclusionDropdown.setLocation(500, 520);
         exclusionDropdown.setForeground(new Color(79, 145, 200));
         exclusionDropdown.setBackground(Color.white);
         //select.addActionListener(providerS);
@@ -211,15 +212,15 @@ public class Report extends JFrame {
 
         JLabel exclusionCodeLabel = new JLabel("Exclusion Code");
         exclusionCodeLabel.setSize(200, 30);
-        exclusionCodeLabel.setLocation(250, 490);
+        exclusionCodeLabel.setLocation(610, 490);
         exclusionCodeLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         c.add(exclusionCodeLabel);
 
         exclusionCodeText = new HTH_TextField(100, HTH_FONT);
         exclusionCodeText.setForeground(new Color(0, 0, 150));
         exclusionCodeText.setFont(new Font("Arial", Font.PLAIN, 15));
-        exclusionCodeText.setSize(150, 30);
-        exclusionCodeText.setLocation(250, 520);
+        exclusionCodeText.setSize(200, 30);
+        exclusionCodeText.setLocation(610, 520);
         //((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
         c.add(exclusionCodeText);
 
@@ -268,19 +269,28 @@ public class Report extends JFrame {
             String provider = providerText.getText().toUpperCase().trim();
             String serviceType = serviceText.getText().toUpperCase().trim();
             String exclusionCode = exclusionCodeText.getText().toUpperCase().trim();
-            String query = "or";
-            System.out.println("sel:"+queryDropdown.getSelectedIndex());
-            if(queryDropdown.getSelectedIndex() == 1){
-                query = "and";
+            String providerQuery = "or";
+            if(providerDropdown.getSelectedIndex() == 1){
+                providerQuery = "and";
             }
-            System.out.println("query:"+query);
-//
+
+            String serviceQuery = "or";
+            if(serviceTypeDropdown.getSelectedIndex() == 1){
+                serviceQuery = "and";
+            }
+
+            String exclusionQuery = "or";
+            if(exclusionDropdown.getSelectedIndex() == 1){
+                exclusionQuery = "and";
+            }
+
 //            String service = "Serivce";
 //            String keyword = showingSelect.getText().trim();
 
             List<String[]> data = null;
             try {
-                data = CRMLOGS.reportData(fromDate, toDate, cpt, provider, serviceType);
+                data = CRMLOGS.
+                        reportData(fromDate, toDate, cpt, provider, serviceType, exclusionCode, providerQuery,serviceQuery, exclusionQuery);
                 if (data.size() == 0) {
                     JOptionPane.showMessageDialog(new JLabel(), "No data found");
                 } else {
