@@ -4,7 +4,6 @@ import com.hth.backend.beans.CRMLOGS;
 import com.hth.id_card.user_interface.HTH_ControlButton;
 import com.hth.id_card.user_interface.HTH_TextField;
 import com.hth.images.HTH_Image;
-import com.opencsv.CSVWriter;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.imageio.ImageIO;
@@ -13,9 +12,6 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,13 +19,11 @@ import java.util.Date;
 import java.util.List;
 
 public class Report extends JFrame {
-
     private static final Font HTH_FONT = new Font("Arial", Font.PLAIN, 15);
     private Container c;
     private JXDatePicker pickerFrom;
     private JXDatePicker pickerTo;
     private JComboBox dateDropdown;
-    private JComboBox queryDropdown;
     private JComboBox providerDropdown;
     private JComboBox serviceTypeDropdown;
     private JComboBox exclusionDropdown;
@@ -46,10 +40,6 @@ public class Report extends JFrame {
     String okKey = "okBtn";
     private String dateList[] = {"Date Of Service", "Process date", "Receieve Date"};
     private String queryList[] = {"OR", "And"};
-
-    private JFrame showDataF;
-    private JTable showTable;
-    private JScrollPane jsp;
 
     public Report() {
         setTitle("Report Logs");
@@ -224,15 +214,6 @@ public class Report extends JFrame {
         //((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
         c.add(exclusionCodeText);
 
-//        queryDropdown = new JComboBox(queryList);
-//        queryDropdown.setFont(new Font("Arial", Font.PLAIN, 15));
-//        queryDropdown.setSize(200, 30);
-//        queryDropdown.setLocation(500, 520);
-//        queryDropdown.setForeground(new Color(79, 145, 200));
-//        queryDropdown.setBackground(Color.white);
-//        //select.addActionListener(providerS);
-//        c.add(queryDropdown);
-
         searchData = new HTH_ControlButton("OK");
         searchData.setFont(new Font("Arial", Font.PLAIN, 15));
         searchData.setSize(100, 27);
@@ -241,16 +222,6 @@ public class Report extends JFrame {
         //claimListBTN2.addActionListener(claimList);
         c.add(searchData);
     }
-
-//    Action exitAction = new AbstractAction(exitKey) {
-//        private static final long serialVersionUID = 10110L;
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            System.exit(0);
-//        }
-//    };
-
 
     Action searchDatabase = new AbstractAction(okKey) {
         private static final long serialVersionUID = 10110L;
@@ -270,27 +241,22 @@ public class Report extends JFrame {
             String serviceType = serviceText.getText().toUpperCase().trim();
             String exclusionCode = exclusionCodeText.getText().toUpperCase().trim();
             String providerQuery = "or";
-            if(providerDropdown.getSelectedIndex() == 1){
+            if (providerDropdown.getSelectedIndex() == 1) {
                 providerQuery = "and";
             }
 
             String serviceQuery = "or";
-            if(serviceTypeDropdown.getSelectedIndex() == 1){
+            if (serviceTypeDropdown.getSelectedIndex() == 1) {
                 serviceQuery = "and";
             }
 
             String exclusionQuery = "or";
-            if(exclusionDropdown.getSelectedIndex() == 1){
+            if (exclusionDropdown.getSelectedIndex() == 1) {
                 exclusionQuery = "and";
             }
-
-//            String service = "Serivce";
-//            String keyword = showingSelect.getText().trim();
-
             List<String[]> data = null;
             try {
-                data = CRMLOGS.
-                        reportData(fromDate, toDate, cpt, provider, serviceType, exclusionCode, providerQuery,serviceQuery, exclusionQuery);
+                data = CRMLOGS.reportData(fromDate, toDate, cpt, provider, serviceType, exclusionCode, providerQuery, serviceQuery, exclusionQuery);
                 if (data.size() == 0) {
                     JOptionPane.showMessageDialog(new JLabel(), "No data found");
                 } else {
@@ -301,73 +267,23 @@ public class Report extends JFrame {
             }
         }
     };
-
     private void showDataFunction(List<String[]> showData) {
         try {
             String[][] data = new String[showData.size()][];
             for (int idx = 0; idx < showData.size(); idx++) {
                 String[] result = new String[showData.get(idx).length];
                 result = showData.get(idx);
-                //for (int i = 0; i < result.length; i++) {
-                //if (i == 3) {
                 Date d = new SimpleDateFormat("yyMMdd").parse(result[3]);
                 SimpleDateFormat d2 = new SimpleDateFormat("MM/dd/yy");
-                System.out.println(d2.format(d));
-                //result[i] = d2.format(d);
-                //result[3] = result[3].replaceAll(result[3],d2.format(d));
                 result[3] = d2.format(d).toString();
-                //}
-                //}
                 data[idx] = result;
             }
-            final String[] columnNames = {"CLAIM_NUMBER", "LINE_NO", "3", "DATE_OF_SERVICE", "DIVISION", "POLICY_ID", "PATIENT_NAME", "DEPENDENT_CODE", "COVERAGE", "AMOUNT_CLAIMED", "DAMTEX", "TOTAL_PAID", "DEXCD", "13", "HICD1", "HICD2", "HICD3", "HICD4", "HICD5", "HICD6", "HICD7", "HICD8", "HICD9", "HICD10", "TYPE_OF_SERVICE", "PROVIDER_ID", "PROVIDER_NAME", "Exclusion_Code"};
-            writeDataLineByLine(columnNames, data);
-            showDataF = new JFrame("Show Data");
-            showDataF.setBounds(400, 90, 1180, 800);
-            JButton download = new JButton("Download");
-            showTable = new JTable(data, columnNames);
-            jsp = new JScrollPane(showTable);
-            showDataF.add(download);
-            showDataF.add(jsp);
-            showDataF.setLayout(new FlowLayout(FlowLayout.CENTER));
-//        JScrollPane scroll = new JScrollPane(showTable);
-//        scroll.setPreferredSize(new Dimension(300, 300));
-//        showDataF.getContentPane().add(scroll);
-//        showDataF.setSize(800, 800);
-//        showDataF.setVisible(true);
+
+            String[] columnNames = {"CLAIM_NUMBER", "LINE_NO", "3", "DATE_OF_SERVICE", "DIVISION", "POLICY_ID", "PATIENT_NAME", "DEPENDENT_CODE", "COVERAGE", "AMOUNT_CLAIMED", "DAMTEX", "TOTAL_PAID", "DEXCD", "13", "HICD1", "HICD2", "HICD3", "HICD4", "HICD5", "HICD6", "HICD7", "HICD8", "HICD9", "HICD10", "TYPE_OF_SERVICE", "PROVIDER_ID", "PROVIDER_NAME"};
+            new ReportTable(columnNames, data);
+
         } catch (Exception e) {
 
-        }
-    }
-
-    public static void writeDataLineByLine(String[] header, String data[][]) {
-        File file = null;
-        JFrame parentFrame = new JFrame();
-
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Select a Location");
-        int userSelection = fileChooser.showSaveDialog(parentFrame);
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            File fileToSave = fileChooser.getSelectedFile();
-            System.out.println("Save as file: " + fileToSave.getAbsolutePath());
-            file = new File(fileToSave.getAbsolutePath() + ".csv");
-        }
-        try {
-
-            FileWriter outputfile = new FileWriter(file);
-
-            CSVWriter writer = new CSVWriter(outputfile);
-            //CSVWriter writer = new CSVWriter(outputfile,',',CSVWriter.NO_QUOTE_CHARACTER);
-
-            writer.writeNext(header);
-
-            for (int i = 0; i < data.length; i++) {
-                writer.writeNext(data[i]);
-            }
-            writer.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 

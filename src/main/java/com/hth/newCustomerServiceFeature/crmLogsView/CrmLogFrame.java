@@ -157,7 +157,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
         setNote();
         setButton();
-        //queryField();
         this.getContentPane().setBackground(Color.WHITE);
 
         setVisible(true);
@@ -333,59 +332,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
     }
 
-//    public void queryField() {
-//        JLabel startLabel = new JLabel("Enter Start Date");
-//        startLabel.setSize(200, 30);
-//        startLabel.setLocation(250, 760);
-//        startLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-//        c.add(startLabel);
-//
-//        pickerFrom = new JXDatePicker();
-//        pickerFrom.setDate(Calendar.getInstance().getTime());
-//        pickerFrom.setFormats(new SimpleDateFormat("dd/MM/yyyy"));
-//        pickerFrom.setSize(200, 30);
-//        pickerFrom.setLocation(250, 790);
-//        c.add(pickerFrom);
-//
-//        JLabel endLabel = new JLabel("Enter End Date");
-//        endLabel.setSize(200, 30);
-//        endLabel.setLocation(550, 760);
-//        endLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-//        c.add(endLabel);
-//
-//        pickerTo = new JXDatePicker();
-//        pickerTo.setDate(Calendar.getInstance().getTime());
-//        pickerTo.setFormats(new SimpleDateFormat("dd/MM/yyyy"));
-//        pickerTo.setSize(200, 30);
-//        pickerTo.setLocation(550, 790);
-//        c.add(pickerTo);
-//
-//        select = new JComboBox(selectList);
-//        select.setFont(new Font("Arial", Font.PLAIN, 15));
-//        select.setSize(200, 30);
-//        select.setLocation(250, 840);
-//        select.setForeground(new Color(79, 145, 200));
-//        select.setBackground(Color.white);
-//        //select.addActionListener(providerS);
-//        c.add(select);
-//
-//        showingSelect = new HTH_TextField(6, HTH_FONT);
-//        showingSelect.setForeground(new Color(0, 0, 150));
-//        showingSelect.setFont(new Font("Arial", Font.PLAIN, 15));
-//        showingSelect.setSize(200, 30);
-//        showingSelect.setLocation(550, 840);
-//        ((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
-//        c.add(showingSelect);
-//
-//        searchData = new HTH_ControlButton("Search Data");
-//        searchData.setFont(new Font("Arial", Font.PLAIN, 15));
-//        searchData.setSize(100, 27);
-//        searchData.setLocation(900, 880);
-//        searchData.addActionListener(searchDatabase);
-//        //claimListBTN2.addActionListener(claimList);
-//        c.add(searchData);
-//    }
-
     Action exitAction = new AbstractAction(exitKey) {
         private static final long serialVersionUID = 10110L;
 
@@ -420,34 +366,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             }
         }
     };
-
-//    Action searchDatabase = new AbstractAction(okKey) {
-//        private static final long serialVersionUID = 10110L;
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            Date from = pickerFrom.getDate();
-//            DateFormat fromFormat = new SimpleDateFormat("yyMMdd");
-//            String fromDate = fromFormat.format(from);
-//
-//            Date to = pickerTo.getDate();
-//            DateFormat toFormat = new SimpleDateFormat("yyMMdd");
-//            String toDate = toFormat.format(to);
-//
-//            String service = "Serivce";
-//            String keyword = showingSelect.getText().trim();
-//
-//            List<String[]> data = null;
-//            try {
-//                data = CRMLOGS.searchData(fromDate, toDate, keyword);
-//            } catch (Exception ex) {
-//                System.out.println(ex.getMessage());
-//            }
-//            showDataFunction(data);
-//        }
-//    };
-
-
     Action claimList = new AbstractAction(listKey) {
         private static final long serialVersionUID = 10110L;
 
@@ -484,7 +402,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         public void keyPressed(KeyEvent e) {
 
         }
-
         @Override
         public void keyReleased(KeyEvent e) {
             CRMLogsSingleton cr = CRMLogsSingleton.singleton();
@@ -495,13 +412,10 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                 //System.out.println(resultList.get(0)[0]);
                 String[] result;
                 Repository repo = Repository.getInstance("");
-
-
-                if(referenceCheck == 0){
-                referenceCheck = repo.generateRefNumTest();
-                referenceS = String.valueOf(referenceCheck);
+                if (referenceCheck == 0) {
+                    referenceCheck = repo.generateRefNumTest();
+                    referenceS = String.valueOf(referenceCheck);
                 }
-
                 if (Integer.valueOf(reference) < referenceCheck) {
                     checkReference = false;
                 }
@@ -529,25 +443,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                         tCallNotes.setText(resultList.get(i)[12].trim());
                     }
                 }
-
-//                if (resultList.size() > 0) {
-//                    checkReference = false;
-//                    //tReferenceNumber.setText(resultList.get(0)[0].trim());
-//                    String provider = resultList.get(0)[1].trim();
-//                    if (provider.equals("M")) {
-//                        tProvider.setSelectedIndex(1);
-//                    } else {
-//                        tProvider.setSelectedIndex(0);
-//                    }
-//                    tPhoneNum.setText(resultList.get(0)[2].trim());
-//                    tFName.setText(resultList.get(0)[3].trim());
-//                    tLName.setText(resultList.get(0)[4].trim());
-//                    tCompanyName.setText(resultList.get(0)[5].trim());
-//                    tCustomerGroup.setText(resultList.get(0)[6].trim());
-//                    tssn.setText(resultList.get(0)[7].trim());
-//                    tClaim.setText(resultList.get(0)[8].trim());
-//                    tCallNotes.setText(resultList.get(0)[12].trim());
-//                }
             }
         }
     };
@@ -767,14 +662,10 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         claimListBTN2 = new HTH_FunctionButton("Audit Log");
         claimListBTN2.setSize(220, 32);
         claimListBTN2.setLocation(0, 100);
-
-        //claimListBTN2.addMouseListener(this);
-
         claimListBTN2.addActionListener(claimList);
         //claimListBTN.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), listKey);
         //claimListBTN.getActionMap().put(listKey, claimList);
         functionPanel.add(claimListBTN2);
-
 
         JPanel dummyPanel = new JPanel();
         dummyPanel.setOpaque(false);
@@ -989,72 +880,5 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         tLName.setText("");
         tPhoneNum.setText("");
     }
-
-//    private void showDataFunction(List<String[]> showData) {
-//        try {
-//            String[][] data = new String[showData.size()][];
-//            for (int idx = 0; idx < showData.size(); idx++) {
-//                String[] result = new String[showData.get(idx).length];
-//                result = showData.get(idx);
-//                //for (int i = 0; i < result.length; i++) {
-//                    //if (i == 3) {
-//                        Date d = new SimpleDateFormat("yyMMdd").parse(result[3]);
-//                        SimpleDateFormat d2 = new SimpleDateFormat("MM/dd/yy");
-//                        System.out.println(d2.format(d));
-//                        //result[i] = d2.format(d);
-//                        //result[3] = result[3].replaceAll(result[3],d2.format(d));
-//                        result[3] = d2.format(d).toString();
-//                    //}
-//                //}
-//                data[idx] = result;
-//            }
-//            final String[] columnNames = {"CLAIM_NUMBER", "LINE_NO", "3", "DATE_OF_SERVICE", "DIVISION", "POLICY_ID", "PATIENT_NAME", "DEPENDENT_CODE", "COVERAGE", "AMOUNT_CLAIMED", "DAMTEX", "TOTAL_PAID", "DEXCD", "13", "HICD1", "HICD2", "HICD3", "HICD4", "HICD5", "HICD6", "HICD7", "HICD8", "HICD9", "HICD10", "TYPE_OF_SERVICE", "25", "26"};
-//            writeDataLineByLine(columnNames, data);
-////        showDataF = new JFrame("Show Data");
-////        showDataF.setBounds(400, 90, 1180, 800);
-////
-////        showTable = new JTable(data, columnNames);
-////        JScrollPane scroll = new JScrollPane(showTable);
-////        scroll.setPreferredSize(new Dimension(300, 300));
-////        showDataF.getContentPane().add(scroll);
-////        showDataF.setSize(800, 800);
-////        showDataF.setVisible(true);
-//        }catch (Exception e){
-//
-//        }
-//    }
-
-//    public static void writeDataLineByLine(String[] header, String data[][]) {
-//        File file = null;
-//        JFrame parentFrame = new JFrame();
-//
-//        JFileChooser fileChooser = new JFileChooser();
-//        fileChooser.setDialogTitle("Select a Location");
-//        int userSelection = fileChooser.showSaveDialog(parentFrame);
-//        if (userSelection == JFileChooser.APPROVE_OPTION) {
-//            File fileToSave = fileChooser.getSelectedFile();
-//            System.out.println("Save as file: " + fileToSave.getAbsolutePath());
-//            file = new File(fileToSave.getAbsolutePath()+".csv");
-//        }
-//        try {
-//
-//            FileWriter outputfile = new FileWriter(file);
-//
-//            CSVWriter writer = new CSVWriter(outputfile);
-//            //CSVWriter writer = new CSVWriter(outputfile,',',CSVWriter.NO_QUOTE_CHARACTER);
-//
-//            writer.writeNext(header);
-//
-//            for(int i=0;i< data.length;i++){
-//                writer.writeNext(data[i]);
-//            }
-//            writer.close();
-//        }
-//        catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//    }
-
 }
 
