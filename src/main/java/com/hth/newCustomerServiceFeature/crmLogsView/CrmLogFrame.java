@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, ListSelectionListener {
-
     private static final Font HTH_FONT = new Font("Arial", Font.PLAIN, 18);
     private Container c;
     private JFrame auditLog;
@@ -79,7 +78,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     String referenceS = "";
     boolean checkReference = true;
     private final List<String> keywords;
-
     public CrmLogFrame() {
         setTitle("Crm Log Files");
         setBounds(355, 140, 1180, 900);
@@ -134,6 +132,14 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         tFName.setSize(200, 30);
         tFName.setLocation(550, 420);
         ((AbstractDocument) tFName.getDocument()).setDocumentFilter(filter);
+        tFName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+
+                if (!(Character.isLetter(evt.getKeyChar()))) {
+                    evt.consume();
+                }
+            }
+        });
         c.add(tFName);
 
         tLName = new HTH_TextField(25, HTH_FONT);
@@ -141,6 +147,13 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         tLName.setSize(200, 30);
         tLName.setLocation(751, 420);
         ((AbstractDocument) tLName.getDocument()).setDocumentFilter(filter);
+        tLName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                if (!(Character.isLetter(evt.getKeyChar()))) {
+                    evt.consume();
+                }
+            }
+        });
         c.add(tLName);
 
         searchName = new HTH_PromptButton();
@@ -175,6 +188,13 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         tReferenceNumber.setSize(100, 30);
         tReferenceNumber.setLocation(550, 300);
         tReferenceNumber.addKeyListener(refrenceText);
+        tReferenceNumber.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                if (!(Character.isDigit(evt.getKeyChar()))) {
+                    evt.consume();
+                }
+            }
+        });
         c.add(tReferenceNumber);
 
         bReferenceNumber = new HTH_ControlButton("Generate");
@@ -187,7 +207,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                 reference = repo.generateRefNumTest();
                 referenceS = String.valueOf(reference);
                 tReferenceNumber.setText(reference.toString());
-                clearFormGenerate();
+                clearFormWithoutGenerate();
             }
         });
         add(bReferenceNumber);
@@ -229,6 +249,13 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         tPhoneNum.setSize(200, 30);
         tPhoneNum.setLocation(550, 380);
         tPhoneNum.addKeyListener(this);
+        tPhoneNum.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                if (!(Character.isDigit(evt.getKeyChar()))) {
+                    evt.consume();
+                }
+            }
+        });
         c.add(tPhoneNum);
     }
 
@@ -265,7 +292,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     }
 
     public void setCustomerSSN() {
-        ssn = new JLabel("SSN/MemberID");
+        ssn = new JLabel("<html><nobr>SSN/MemberID <font color='#ffbebe'>*</font></nobr></html>");
         ssn.setFont(new Font("Arial", Font.PLAIN, 18));
         ssn.setSize(200, 30);
         ssn.setLocation(250, 540);
@@ -276,11 +303,18 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         tssn.setFont(new Font("Arial", Font.PLAIN, 15));
         tssn.setSize(200, 30);
         tssn.setLocation(550, 540);
+        tssn.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                if (!(Character.isDigit(evt.getKeyChar()))) {
+                    evt.consume();
+                }
+            }
+        });
         c.add(tssn);
     }
 
     public void setClaim() {
-        claim = new JLabel("Claim Number");
+        claim = new JLabel("<html><nobr>Claim Number <font color='#ffbebe'>*</font></nobr></html>");
         claim.setFont(new Font("Arial", Font.PLAIN, 18));
         claim.setSize(200, 30);
         claim.setLocation(250, 580);
@@ -402,6 +436,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         public void keyPressed(KeyEvent e) {
 
         }
+
         @Override
         public void keyReleased(KeyEvent e) {
             CRMLogsSingleton cr = CRMLogsSingleton.singleton();
@@ -441,6 +476,9 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                         tssn.setText(resultList.get(i)[7].trim());
                         tClaim.setText(resultList.get(i)[8].trim());
                         tCallNotes.setText(resultList.get(i)[12].trim());
+                        break;
+                    }else{
+                        clearFormWithoutGenerate();
                     }
                 }
             }
@@ -830,6 +868,11 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         searchNameFrame.getContentPane().add(scroll);
         searchNameFrame.setSize(800, 800);
         searchNameFrame.setVisible(true);
+        if(matched.size() == 0){
+            JOptionPane.showMessageDialog(new JLabel(), "No Data found");
+        }else{
+            searchNameFrame.setVisible(true);
+        }
     }
 
     ListSelectionListener fLastNameList = new ListSelectionListener() {
@@ -868,7 +911,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         tPhoneNum.setText("");
     }
 
-    void clearFormGenerate() {
+    void clearFormWithoutGenerate() {
         //tReferenceNumber.setText("");
         tProvider.setSelectedIndex(0);
         tCallNotes.setText("");
