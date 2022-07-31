@@ -481,6 +481,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                         clearFormWithoutGenerate();
                     }
                 }
+            }else{
+                clearFormWithoutGenerate();
             }
         }
     };
@@ -495,17 +497,9 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         String phone = tPhoneNum.getText().trim();
         String format = gePhoneNum(phone);
         if (format.length() == 10) {
-//            List<String[]> resultList = CRMLOGS.searchByPhone(format);
-//            if (resultList.size() > 0) {
-//                //tReferenceNumber.setText(resultList.get(0)[0].trim());
-//                tFName.setText(resultList.get(0)[1].trim());
-//                tLName.setText(resultList.get(0)[2].trim());
-//                tssn.setText(resultList.get(0)[3].trim());
-//            }
             InsureDataSingleton isd = InsureDataSingleton.singleton();
             List<Insure[]> list = isd.getInsureList();
             System.out.println("size:" + list.size());
-
             for (int i = 0; i < list.size(); i++) {
                 for (Insure data : list.get(i)) {
                     System.out.println("pp:" + data.getPhone());
@@ -733,7 +727,12 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
         auditLog = new JFrame("Claim List");
         auditLog.setBounds(400, 90, 1180, 800);
-        auditLog.setTitle("Name Search From Databse");
+        auditLog.setTitle("CRMLOG File Data");
+        try {
+            auditLog.setIconImage(ImageIO.read(HTH_Image.getImageURL("hth_block.png")));
+        }catch (Exception e){
+
+        }
         TableModel model = new AbstractTableModel() {
             public int getColumnCount() {
                 return columnNames.length;
@@ -833,6 +832,11 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         searchNameFrame = new JFrame();
         searchNameFrame.setBounds(400, 90, 1180, 800);
         searchNameFrame.setTitle("Name Search From Databse");
+        try {
+            searchNameFrame.setIconImage(ImageIO.read(HTH_Image.getImageURL("hth_block.png")));
+        }catch (Exception e){
+
+        }
         TableModel model = new AbstractTableModel() {
             public int getColumnCount() {
                 return columnNames.length;
@@ -867,9 +871,10 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         scroll.setPreferredSize(new Dimension(300, 300));
         searchNameFrame.getContentPane().add(scroll);
         searchNameFrame.setSize(800, 800);
-        searchNameFrame.setVisible(true);
+        //searchNameFrame.setVisible(true);
         if(matched.size() == 0){
-            JOptionPane.showMessageDialog(new JLabel(), "No Data found");
+            JOptionPane.showMessageDialog(new JLabel(), "No Data Found");
+
         }else{
             searchNameFrame.setVisible(true);
         }

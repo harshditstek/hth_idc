@@ -1,8 +1,9 @@
 package com.hth.newCustomerServiceFeature.report;
 
 import com.hth.id_card.user_interface.HTH_ControlButton;
-import com.opencsv.CSVWriter;
+import com.hth.images.HTH_Image;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -11,9 +12,6 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 public class ReportTable extends JFrame {
     private JTextField searchField;
@@ -51,14 +49,17 @@ public class ReportTable extends JFrame {
             public void insertUpdate(DocumentEvent e) {
                 search(searchField.getText().toUpperCase());
             }
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 search(searchField.getText().toUpperCase());
             }
+
             @Override
             public void changedUpdate(DocumentEvent e) {
                 search(searchField.getText().toUpperCase());
             }
+
             public void search(String str) {
                 if (str.length() == 0) {
                     sorter.setRowFilter(null);
@@ -70,44 +71,24 @@ public class ReportTable extends JFrame {
         setSize(1600, 1180);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        //setResizable(false);
+        setResizable(false);
+        try {
+            setIconImage(ImageIO.read(HTH_Image.getImageURL("hth_block.png")));
+        }catch (Exception e){
+
+        }
         setVisible(true);
     }
 
     Action searchDatabase = new AbstractAction(okKey) {
         private static final long serialVersionUID = 10110L;
-
         @Override
         public void actionPerformed(ActionEvent e) {
-            writeDataLineByLine(columnNames, rowData);
-
+            setVisible(false);
+            //writeDataLineByLine(columnNames, rowData);
+            String[] args = new String[0];
+            Helper h = new Helper();
+            h.saveFile(args);
         }
     };
-
-    public static void writeDataLineByLine(String[] header, String data[][]) {
-        File file = null;
-        JFrame parentFrame = new JFrame();
-
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Select a Location");
-        int userSelection = fileChooser.showSaveDialog(parentFrame);
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            File fileToSave = fileChooser.getSelectedFile();
-            System.out.println("Save as file: " + fileToSave.getAbsolutePath());
-            file = new File(fileToSave.getAbsolutePath() + ".csv");
-        }
-        try {
-            FileWriter outputfile = new FileWriter(file);
-            CSVWriter writer = new CSVWriter(outputfile);
-            //CSVWriter writer = new CSVWriter(outputfile,',',CSVWriter.NO_QUOTE_CHARACTER);
-            writer.writeNext(header);
-
-            for (int i = 0; i < data.length; i++) {
-                writer.writeNext(data[i]);
-            }
-            writer.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 }
