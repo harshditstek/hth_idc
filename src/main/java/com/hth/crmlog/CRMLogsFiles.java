@@ -1,13 +1,10 @@
-package com.hth.newCustomerServiceFeature;
+package com.hth.crmlog;
 
 
-import com.hth.backend.beans.CRMLOGS;
-import com.hth.newCustomerServiceFeature.View.MyFrame;
-import com.hth.newCustomerServiceFeature.crmLogsView.CrmLogFrame;
-import com.hth.newCustomerServiceFeature.crmLogsView.InsureDataSingleton;
+import com.hth.crmlog.beans.CRMLOGS;
+import com.hth.crmlog.crmLogsView.CrmLogFrame;
+import com.hth.crmlog.crmLogsView.InsureDataSingleton;
 import com.hth.util.Insure;
-
-import java.util.List;
 
 
 public class CRMLogsFiles {

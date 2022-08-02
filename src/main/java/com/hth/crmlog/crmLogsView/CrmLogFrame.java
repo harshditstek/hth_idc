@@ -1,12 +1,12 @@
-package com.hth.newCustomerServiceFeature.crmLogsView;
+package com.hth.crmlog.crmLogsView;
 
-import com.hth.backend.beans.CRMLOGS;
+import com.hth.crmlog.beans.CRMLOGS;
 import com.hth.id_card.user_interface.HTH_ControlButton;
 import com.hth.id_card.user_interface.HTH_FunctionButton;
 import com.hth.id_card.user_interface.HTH_PromptButton;
 import com.hth.id_card.user_interface.HTH_TextField;
 import com.hth.images.HTH_Image;
-import com.hth.newCustomerServiceFeature.CRMLogsFiles;
+import com.hth.crmlog.CRMLogsFiles;
 import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord2;
 import com.hth.newCustomerServiceFeature.Repository.Repository;
 import com.hth.newCustomerServiceFeature.UppercaseDocumentFilter;

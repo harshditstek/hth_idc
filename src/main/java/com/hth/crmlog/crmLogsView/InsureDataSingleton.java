@@ -1,4 +1,4 @@
-package com.hth.newCustomerServiceFeature.crmLogsView;
+package com.hth.crmlog.crmLogsView;
 
 import com.hth.util.Insure;
 

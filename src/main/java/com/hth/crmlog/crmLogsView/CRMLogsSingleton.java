@@ -1,7 +1,4 @@
-package com.hth.newCustomerServiceFeature.crmLogsView;
-
-import com.hth.backend.beans.CRMLOGS;
-import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord2;
+package com.hth.crmlog.crmLogsView;
 
 import java.util.LinkedList;
 import java.util.List;

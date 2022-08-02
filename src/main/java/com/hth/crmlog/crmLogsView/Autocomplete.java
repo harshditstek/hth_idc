@@ -1,4 +1,4 @@
-package com.hth.newCustomerServiceFeature.crmLogsView;
+package com.hth.crmlog.crmLogsView;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
