@@ -10,7 +10,7 @@ import com.hth.crmlog.CRMLogsFiles;
 import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord2;
 import com.hth.newCustomerServiceFeature.Repository.Repository;
 import com.hth.newCustomerServiceFeature.UppercaseDocumentFilter;
-import com.hth.util.Insure;
+import com.hth.crmlog.util.Insure;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

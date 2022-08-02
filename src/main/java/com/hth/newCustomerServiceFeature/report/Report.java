@@ -1,6 +1,6 @@
 package com.hth.newCustomerServiceFeature.report;
 
-import com.hth.backend.beans.CRMLOGS;
+import com.hth.crmlog.beans.CRMLOGS;
 import com.hth.id_card.user_interface.HTH_ControlButton;
 import com.hth.id_card.user_interface.HTH_TextField;
 import com.hth.images.HTH_Image;

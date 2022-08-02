@@ -1,6 +1,6 @@
 package com.hth.crmlog.crmLogsView;
 
-import com.hth.util.Insure;
+import com.hth.crmlog.util.Insure;
 
 import java.util.LinkedList;
 import java.util.List;

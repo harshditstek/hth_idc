@@ -2,7 +2,7 @@ package com.hth.crmlog.beans;
 
 import com.hth.backend.iSeries;
 import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord2;
-import com.hth.util.Insure;
+import com.hth.crmlog.util.Insure;
 
 import java.util.List;
 

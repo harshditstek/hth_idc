@@ -4,7 +4,7 @@ package com.hth.crmlog;
 import com.hth.crmlog.beans.CRMLOGS;
 import com.hth.crmlog.crmLogsView.CrmLogFrame;
 import com.hth.crmlog.crmLogsView.InsureDataSingleton;
-import com.hth.util.Insure;
+import com.hth.crmlog.util.Insure;
 
 
 public class CRMLogsFiles {
