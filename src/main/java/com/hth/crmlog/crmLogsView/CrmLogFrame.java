@@ -1,5 +1,6 @@
 package com.hth.crmlog.crmLogsView;
 
+import com.hth.backend.iSeries;
 import com.hth.crmlog.beans.CRMLOGS;
 import com.hth.id_card.user_interface.HTH_ControlButton;
 import com.hth.id_card.user_interface.HTH_FunctionButton;
@@ -298,18 +299,18 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         ssn.setLocation(250, 540);
         c.add(ssn);
 
-        tssn = new HTH_TextField(10, HTH_FONT);
+        tssn = new HTH_TextField(9, HTH_FONT);
         tssn.setForeground(new Color(0, 0, 150));
         tssn.setFont(new Font("Arial", Font.PLAIN, 15));
         tssn.setSize(200, 30);
         tssn.setLocation(550, 540);
-        tssn.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                if (!(Character.isDigit(evt.getKeyChar()))) {
-                    evt.consume();
-                }
-            }
-        });
+//        tssn.addKeyListener(new java.awt.event.KeyAdapter() {
+//            public void keyTyped(java.awt.event.KeyEvent evt) {
+//                if (!(Character.isDigit(evt.getKeyChar()))) {
+//                    evt.consume();
+//                }
+//            }
+//        });
         c.add(tssn);
     }
 
@@ -388,6 +389,11 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                     System.out.println("Submit button clicked");
                     CrmLogRecord2 record = getData();
                     CRMLOGS.insertCrmLogs(record);
+
+                   // String loadCardCL = "CALL PDLIB/CRMCLMC PARM('TRT' '1234567' '123456789      ' 'DABRE P   ' '          ' ' ')";
+                    //String loadCardCL = "CALL PDLIB/CRMCLMC PARM(TRT)";
+                    //iSeries.executeCL(loadCardCL);
+                    //System.out.println("hello");
 
                     JOptionPane j = new JOptionPane("KK");
                     j.setSize(250, 250);
@@ -496,6 +502,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     public void keyReleased(KeyEvent e) {
         String phone = tPhoneNum.getText().trim();
         String format = gePhoneNum(phone);
+        tPhoneNum.setText(format);
         if (format.length() == 10) {
             InsureDataSingleton isd = InsureDataSingleton.singleton();
             List<Insure[]> list = isd.getInsureList();

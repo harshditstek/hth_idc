@@ -12,18 +12,16 @@ public class CRMLogsFiles {
     public static String secondFlag = "";
 
     public static void main(String[] args) {
-        CrmLogFrame f = new CrmLogFrame();
-        Insure[] insureData = CRMLOGS.searchByName();
-        System.out.println("main:"+insureData.length);
-        InsureDataSingleton ids = InsureDataSingleton.singleton();
-        ids.setInsureList(insureData);
-
-
         if (args.length == 2){
             user = args[0];
             secondFlag = args[1] ;
 
         }
+        CrmLogFrame f = new CrmLogFrame();
+        Insure[] insureData = CRMLOGS.searchByName();
+        System.out.println("main:"+insureData.length);
+        InsureDataSingleton ids = InsureDataSingleton.singleton();
+        ids.setInsureList(insureData);
     }
 }
 
