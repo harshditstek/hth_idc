@@ -272,9 +272,15 @@ public class Report extends JFrame {
             for (int idx = 0; idx < showData.size(); idx++) {
                 String[] result = new String[showData.get(idx).length];
                 result = showData.get(idx);
+                //result[1] = "abc,xyz";
                 Date d = new SimpleDateFormat("yyMMdd").parse(result[3]);
                 SimpleDateFormat d2 = new SimpleDateFormat("MM/dd/yy");
                 result[3] = d2.format(d).toString();
+//                for(int i=0 ;i<result.length;i++){
+//                    if(result[i].contains(",")){
+//                        result[i] = "\""+result[i]+"\"";
+//                    }
+//                }
                 data[idx] = result;
             }
             ReportData rd = ReportData.singleton();
