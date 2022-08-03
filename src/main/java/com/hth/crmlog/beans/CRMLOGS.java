@@ -7,6 +7,40 @@ import com.hth.crmlog.util.Insure;
 import java.util.List;
 
 public class CRMLOGS {
+    public static List<String[]> searchAllClaim() {
+        String alias = "QTEMP.CLMHDR";
+        String file = "testdata.CLMHDR(TRT)";
+        String sql = "SELECT HCLMNO FROM QTEMP.CLMHDR";
+        List<String[]> resultList = iSeries.executeSQLByAlias(sql, alias, file);
+        System.out.println(resultList.size());
+        String[] result;
+        for (int idx = 0; idx < resultList.size(); idx++) {
+            result = resultList.get(idx);
+            for (int i = 0; i < result.length; i++) {
+                System.out.println(result[i].toString());
+            }
+        }
+
+        return resultList;
+    }
+    public static List<String[]> searchClaim(String claim) {
+        String alias = "QTEMP.CLMHDR";
+        String file = "testdata.CLMHDR(TRT)";
+        String sql = "SELECT HCLMNO FROM QTEMP.CLMHDR where HCLMNO = '" + claim + "'";
+        List<String[]> resultList = iSeries.executeSQLByAlias(sql, alias, file);
+        System.out.println(resultList.size());
+
+        return resultList;
+    }
+    public static List<String[]> getPDLIBData() {
+        String alias = "QTEMP.LDAWRKF";
+        String file = "PDLIB.LDAWRKF(TRT)";
+        String sql = "SELECT * FROM QTEMP.LDAWRKF";
+        List<String[]> resultList = iSeries.executeSQLByAlias(sql, alias, file);
+        System.out.println(resultList.size());
+
+        return resultList;
+    }
     public static List<String[]> getCrmLogs(String maxId) {
         String alias = "QTEMP.CRMLOG";
         String file = "PDLIB.CRMLOG(TRT)";
@@ -21,7 +55,6 @@ public class CRMLOGS {
 //      }
         return resultList;
     }
-
     public static CrmLogRecord2[] getCrmLogs2() {
         String alias = "QTEMP.CRMLOG";
         String file = "PDLIB.CRMLOG(TRT)";
@@ -49,7 +82,6 @@ public class CRMLOGS {
         }
         return crmLogList;
     }
-
     public static void insertCrmLogs(CrmLogRecord2 crmLogRecord) {
         String claimType = crmLogRecord.getClaimType();
         String claimPhone = crmLogRecord.getPhoneNum();
@@ -175,8 +207,6 @@ public class CRMLOGS {
         }
         return resultList;
     }
-
-
     public static List<String[]> reportData(String startDate, String endDate, String cptType, String provider, String serviceType, String exclusionCode, String providerQuery, String serviceQuery, String exclusionQuery) {
         StringBuilder sb = new StringBuilder();
         String[] alias = {"qtemp.clmdet", "qtemp.clmhdr", "qtemp.clmnot", "qtemp.codfil", "qtemp.insur3", "qtemp.insure", "qtemp.insdep", "qtemp.provdr"};
@@ -207,57 +237,56 @@ public class CRMLOGS {
                 dQuery += ("substring(c.DPRC,6,2)= '" + cptType + "' ");
             }
         }
-        if(!provider.equals("")){
-            if(providerQuery.equals("and")){
-                if(dQuery.isEmpty()){
-                    dQuery += ("PNAME like '%" + provider +"%' ");
-                }else{
-                    dQuery += (providerQuery+" PNAME like '%" + provider + "%' ");
+        if (!provider.equals("")) {
+            if (providerQuery.equals("and")) {
+                if (dQuery.isEmpty()) {
+                    dQuery += ("PNAME like '%" + provider + "%' ");
+                } else {
+                    dQuery += (providerQuery + " PNAME like '%" + provider + "%' ");
                 }
-            }
-            else{
-                if(serviceQuery.equals("or") && exclusionQuery.equals("or")) {
+            } else {
+                if (serviceQuery.equals("or") && exclusionQuery.equals("or")) {
                     if (dQuery.isEmpty()) {
-                        dQueryOr += ("PNAME like '%" + provider + "%' ");
+                        dQuery += ("PNAME like '%" + provider + "%' ");
                     } else {
                         dQuery += (providerQuery + " PNAME like '%" + provider + "%' ");
                     }
+                } else {
+
                 }
             }
         }
-        if(!serviceType.equals("")){
-            if(serviceQuery.equals("and")){
-                if(dQuery.isEmpty()){
+        if (!serviceType.equals("")) {
+            if (serviceQuery.equals("and")) {
+                if (dQuery.isEmpty()) {
                     dQuery += ("e.DESC1 like '%" + serviceType + "%' ");
-                }else{
-                    dQuery += (serviceQuery+" e.DESC1 like '%" + serviceType + "%' ");
+                } else {
+                    dQuery += (serviceQuery + " e.DESC1 like '%" + serviceType + "%' ");
                 }
-            }
-            else{
-                if(dQuery.contains(provider)){
+            } else {
+                if (dQuery.contains(provider)) {
                     dQueryOr += ("e.DESC1 like '%" + serviceType + "%' ");
-                }else{
-                    dQuery += (serviceQuery+" e.DESC1 like '%" + serviceType + "%' ");
+                } else {
+                    dQuery += (serviceQuery + " e.DESC1 like '%" + serviceType + "%' ");
                 }
             }
         }
-        if(!exclusionCode.equals("")){
-            if(exclusionQuery.equals("and")){
-                if(dQuery.isEmpty()){
+        if (!exclusionCode.equals("")) {
+            if (exclusionQuery.equals("and")) {
+                if (dQuery.isEmpty()) {
                     dQuery += ("c.DEXCD like '%" + exclusionCode + "%' ");
-                }else{
-                    dQuery += (serviceQuery+" c.DEXCD like '%" + exclusionCode + "%' ");
+                } else {
+                    dQuery += (serviceQuery + " c.DEXCD like '%" + exclusionCode + "%' ");
                 }
-            }
-            else{
-                if(dQuery.contains(provider)){
+            } else {
+                if (dQuery.contains(provider)) {
                     dQueryOr += ("c.DEXCD like '%" + exclusionCode + "%' ");
-                }else{
-                    dQuery += (exclusionQuery+" c.DEXCD like '%" + exclusionCode + "%' ");
+                } else {
+                    dQuery += (exclusionQuery + " c.DEXCD like '%" + exclusionCode + "%' ");
                 }
             }
         }
-        if(!dQuery.equals("")){
+        if (!dQuery.equals("")) {
             sb.append("and (");
             sb.append(dQuery);
             sb.append(") ");

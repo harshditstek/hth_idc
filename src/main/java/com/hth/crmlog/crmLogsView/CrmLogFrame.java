@@ -79,6 +79,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     String referenceS = "";
     boolean checkReference = true;
     private final List<String> keywords;
+
     public CrmLogFrame() {
         setTitle("Crm Log Files");
         setBounds(355, 140, 1180, 900);
@@ -205,6 +206,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             @Override
             public void actionPerformed(ActionEvent e) {
                 Repository repo = Repository.getInstance("");
+                //List<String[]> list = CRMLOGS.searchAllClaim();
                 reference = repo.generateRefNumTest();
                 referenceS = String.valueOf(reference);
                 tReferenceNumber.setText(reference.toString());
@@ -390,7 +392,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                     CrmLogRecord2 record = getData();
                     CRMLOGS.insertCrmLogs(record);
 
-                   // String loadCardCL = "CALL PDLIB/CRMCLMC PARM('TRT' '1234567' '123456789      ' 'DABRE P   ' '          ' ' ')";
+                    //String loadCardCL = "CALL PDLIB/CRMCLMC PARM('TRT' '1234567' '123456789      ' 'DABRE P   ' '          ' ' ')";
                     //String loadCardCL = "CALL PDLIB/CRMCLMC PARM(TRT)";
                     //iSeries.executeCL(loadCardCL);
                     //System.out.println("hello");
@@ -483,11 +485,11 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                         tClaim.setText(resultList.get(i)[8].trim());
                         tCallNotes.setText(resultList.get(i)[12].trim());
                         break;
-                    }else{
+                    } else {
                         clearFormWithoutGenerate();
                     }
                 }
-            }else{
+            } else {
                 clearFormWithoutGenerate();
             }
         }
@@ -552,6 +554,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         String company = tCompanyName.getText().trim().toUpperCase();
         String ssn = tssn.getText().trim().toUpperCase();
         String claimNum = tClaim.getText().trim().toUpperCase();
+        List<String[]> claimExist = CRMLOGS.searchClaim(claimNum);
+        String notes = tCallNotes.getText().trim().toUpperCase();
         String errMsg = "";
         if (refNum.length() != 10) {
             errMsg = "Invalid Reference Number";
@@ -602,6 +606,18 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             errMsg = "Invalid Claim Number";
             JOptionPane.showMessageDialog(new JLabel(), errMsg);
             System.out.println("validation error checkData: claimNum");
+            return false;
+        }
+        if (claimExist.size() > 0) {
+            errMsg = "Claim Number Already Exist";
+            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            System.out.println("validation error checkData: claimExist");
+            return false;
+        }
+        if (notes.length() > 100) {
+            errMsg = "Notes length limit reached";
+            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            System.out.println("validation error checkData: call notes");
             return false;
         }
         return true;
@@ -737,7 +753,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         auditLog.setTitle("CRMLOG File Data");
         try {
             auditLog.setIconImage(ImageIO.read(HTH_Image.getImageURL("hth_block.png")));
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         TableModel model = new AbstractTableModel() {
@@ -841,7 +857,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         searchNameFrame.setTitle("Name Search From Databse");
         try {
             searchNameFrame.setIconImage(ImageIO.read(HTH_Image.getImageURL("hth_block.png")));
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         TableModel model = new AbstractTableModel() {
@@ -879,10 +895,10 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         searchNameFrame.getContentPane().add(scroll);
         searchNameFrame.setSize(800, 800);
         //searchNameFrame.setVisible(true);
-        if(matched.size() == 0){
+        if (matched.size() == 0) {
             JOptionPane.showMessageDialog(new JLabel(), "No Data Found");
 
-        }else{
+        } else {
             searchNameFrame.setVisible(true);
         }
     }
