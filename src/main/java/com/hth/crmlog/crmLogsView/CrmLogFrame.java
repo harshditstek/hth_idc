@@ -1,6 +1,5 @@
 package com.hth.crmlog.crmLogsView;
 
-import com.hth.backend.iSeries;
 import com.hth.crmlog.beans.CRMLOGS;
 import com.hth.id_card.user_interface.HTH_ControlButton;
 import com.hth.id_card.user_interface.HTH_FunctionButton;
@@ -81,6 +80,11 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     private final List<String> keywords;
 
     public CrmLogFrame() {
+//        JWindow window = CRMLogsFiles.loader();
+//        window.setVisible(false);
+//        window.dispose();
+
+        //window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
         setTitle("Crm Log Files");
         setBounds(355, 140, 1180, 900);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -206,10 +210,15 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             @Override
             public void actionPerformed(ActionEvent e) {
                 Repository repo = Repository.getInstance("");
+
+                //loader code uncommented
+               //JWindow window = CRMLogsFiles.loader();
+               //window.setVisible(true);
                 //List<String[]> list = CRMLOGS.searchAllClaim();
                 reference = repo.generateRefNumTest();
                 referenceS = String.valueOf(reference);
                 tReferenceNumber.setText(reference.toString());
+                //window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
                 clearFormWithoutGenerate();
             }
         });
@@ -395,7 +404,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                     //String loadCardCL = "CALL PDLIB/CRMCLMC PARM('TRT' '1234567' '123456789      ' 'DABRE P   ' '          ' ' ')";
                     //String loadCardCL = "CALL PDLIB/CRMCLMC PARM(TRT)";
                     //iSeries.executeCL(loadCardCL);
-                    //System.out.println("hello");
+                    System.out.println("hello");
 
                     JOptionPane j = new JOptionPane("KK");
                     j.setSize(250, 250);
