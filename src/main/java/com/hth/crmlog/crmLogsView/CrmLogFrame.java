@@ -1,10 +1,7 @@
 package com.hth.crmlog.crmLogsView;
 
 import com.hth.crmlog.beans.CRMLOGS;
-import com.hth.id_card.user_interface.HTH_ControlButton;
-import com.hth.id_card.user_interface.HTH_FunctionButton;
-import com.hth.id_card.user_interface.HTH_PromptButton;
-import com.hth.id_card.user_interface.HTH_TextField;
+import com.hth.id_card.user_interface.*;
 import com.hth.images.HTH_Image;
 import com.hth.crmlog.CRMLogsFiles;
 import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord2;
@@ -29,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, ListSelectionListener {
-    private static final Font HTH_FONT = new Font("Arial", Font.PLAIN, 18);
+    private static final Font HTH_FONT = new Font("Arial", Font.PLAIN, 15);
     private Container c;
     private JFrame auditLog;
     private JFrame searchNameFrame;
@@ -66,6 +63,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     String exitKey = "exitBtn";
     String okKey = "okBtn";
     String listKey = "listBtn";
+    String referenceKey = "generateBtn";
     String providerKey = "providerCombo";
 
     String submitKey = "submitBtn";
@@ -80,11 +78,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     private final List<String> keywords;
 
     public CrmLogFrame() {
-//        JWindow window = CRMLogsFiles.loader();
-//        window.setVisible(false);
-//        window.dispose();
-
-        //window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
         setTitle("Crm Log Files");
         setBounds(355, 140, 1180, 900);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -133,14 +126,11 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         keywords.add("harshit");
         Autocomplete autoComplete = new Autocomplete(tFName, keywords);
         tFName.getDocument().addDocumentListener(autoComplete);
-
-        tFName.setFont(new Font("Arial", Font.PLAIN, 15));
         tFName.setSize(200, 30);
         tFName.setLocation(550, 420);
         ((AbstractDocument) tFName.getDocument()).setDocumentFilter(filter);
         tFName.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-
                 if (!(Character.isLetter(evt.getKeyChar()))) {
                     evt.consume();
                 }
@@ -149,7 +139,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         c.add(tFName);
 
         tLName = new HTH_TextField(25, HTH_FONT);
-        tLName.setFont(new Font("Arial", Font.PLAIN, 15));
         tLName.setSize(200, 30);
         tLName.setLocation(751, 420);
         ((AbstractDocument) tLName.getDocument()).setDocumentFilter(filter);
@@ -166,6 +155,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         searchName.setFont(new Font("Arial", Font.PLAIN, 18));
         searchName.setSize(21, 21);
         searchName.setLocation(955, 423);
+        searchName.addMouseListener(new CrmLogFrame.PromptMouseListener());
         searchName.addActionListener(new SearchByName());
         c.add(searchName);
 
@@ -190,7 +180,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
         tReferenceNumber = new HTH_TextField(10, HTH_FONT);
         tReferenceNumber.setForeground(new Color(0, 0, 150));
-        tReferenceNumber.setFont(new Font("Arial", Font.PLAIN, 15));
         tReferenceNumber.setSize(100, 30);
         tReferenceNumber.setLocation(550, 300);
         tReferenceNumber.addKeyListener(refrenceText);
@@ -206,24 +195,24 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         bReferenceNumber = new HTH_ControlButton("Generate");
         bReferenceNumber.setSize(75, 28);
         bReferenceNumber.setLocation(660, 300);
-        bReferenceNumber.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Repository repo = Repository.getInstance("");
-
-                //loader code uncommented
-               //JWindow window = CRMLogsFiles.loader();
-               //window.setVisible(true);
-                //List<String[]> list = CRMLOGS.searchAllClaim();
-                reference = repo.generateRefNumTest();
-                referenceS = String.valueOf(reference);
-                tReferenceNumber.setText(reference.toString());
-                //window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
-                clearFormWithoutGenerate();
-            }
-        });
+        bReferenceNumber.addMouseListener(new CrmLogFrame.PromptMouseListener());
+        bReferenceNumber.addActionListener(generateReference);
         add(bReferenceNumber);
     }
+
+    Action generateReference = new AbstractAction(referenceKey) {
+        private static final long serialVersionUID = 10111L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Repository repo = Repository.getInstance("");
+            //List<String[]> list = CRMLOGS.searchAllClaim();
+            reference = repo.generateRefNumTest();
+            referenceS = String.valueOf(reference);
+            tReferenceNumber.setText(reference.toString());
+            clearFormWithoutGenerate();
+        }
+    };
 
     public void setProvider() {
         provider = new JLabel("Provider Or Member");
@@ -280,7 +269,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
         tCompanyName = new HTH_TextField(25, HTH_FONT);
         tCompanyName.setForeground(new Color(0, 0, 150));
-        tCompanyName.setFont(new Font("Arial", Font.PLAIN, 15));
         tCompanyName.setSize(200, 30);
         tCompanyName.setLocation(550, 460);
         ((AbstractDocument) tCompanyName.getDocument()).setDocumentFilter(filter);
@@ -296,7 +284,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
         tCustomerGroup = new HTH_TextField(10, HTH_FONT);
         tCustomerGroup.setForeground(new Color(0, 0, 150));
-        tCustomerGroup.setFont(new Font("Arial", Font.PLAIN, 15));
         tCustomerGroup.setSize(200, 30);
         tCustomerGroup.setLocation(550, 500);
         ((AbstractDocument) tCustomerGroup.getDocument()).setDocumentFilter(filter);
@@ -315,18 +302,11 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         tssn.setFont(new Font("Arial", Font.PLAIN, 15));
         tssn.setSize(200, 30);
         tssn.setLocation(550, 540);
-//        tssn.addKeyListener(new java.awt.event.KeyAdapter() {
-//            public void keyTyped(java.awt.event.KeyEvent evt) {
-//                if (!(Character.isDigit(evt.getKeyChar()))) {
-//                    evt.consume();
-//                }
-//            }
-//        });
         c.add(tssn);
     }
 
     public void setClaim() {
-        claim = new JLabel("<html><nobr>Claim Number <font color='#ffbebe'>*</font></nobr></html>");
+        claim = new JLabel("Claim Number");
         claim.setFont(new Font("Arial", Font.PLAIN, 18));
         claim.setSize(200, 30);
         claim.setLocation(250, 580);
@@ -334,7 +314,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
         tClaim = new HTH_TextField(7, HTH_FONT);
         tClaim.setForeground(new Color(0, 0, 150));
-        tClaim.setFont(new Font("Arial", Font.PLAIN, 15));
         tClaim.setSize(200, 30);
         tClaim.setLocation(550, 580);
         ((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
@@ -356,7 +335,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         tCallNotes.setBackground(new Color(255, 255, 255));
         tCallNotes.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         c.add(tCallNotes);
-
     }
 
     public void setButton() {
@@ -366,6 +344,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         exit.setFont(new Font("Arial", Font.PLAIN, 14));
         exit.setSize(75, 27);
         exit.setLocation(815, 720);
+        exit.addMouseListener(new CrmLogFrame.PromptMouseListener());
         exit.addActionListener(exitAction);
         c.add(exit);
 
@@ -373,9 +352,9 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         ok.setFont(new Font("Arial", Font.PLAIN, 15));
         ok.setSize(75, 27);
         ok.setLocation(900, 720);
+        ok.addMouseListener(new CrmLogFrame.PromptMouseListener());
         ok.addActionListener(submitAction);
         c.add(ok);
-
     }
 
     Action exitAction = new AbstractAction(exitKey) {
@@ -406,13 +385,12 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                     //iSeries.executeCL(loadCardCL);
                     System.out.println("hello");
 
-                    JOptionPane j = new JOptionPane("KK");
-                    j.setSize(250, 250);
-                    j.showMessageDialog(null, "Data Inserted Successfully done.", "INFORMATION", JOptionPane.PLAIN_MESSAGE);
+                    showDialog("Data Inserted Successfully");
                     clearForm();
                 }
             } else {
-                JOptionPane.showMessageDialog(new JLabel(), "Please regenerate Reference Number");
+                showDialog("Please regenerate Reference Number");
+                //JOptionPane.showMessageDialog(new JLabel(), "Please regenerate Reference Number");
                 clearForm();
             }
         }
@@ -430,7 +408,6 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         public void actionPerformed(ActionEvent e) {
             tProvider = (JComboBox) e.getSource();
             String provider = (String) tProvider.getSelectedItem();
-            System.out.println(provider);
             if (provider.trim().equals("Provider")) {
                 company.setText("<html><nobr>Company Name <font color='#ffbebe'>*</font></nobr></html>");
             } else {
@@ -515,6 +492,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         String format = gePhoneNum(phone);
         tPhoneNum.setText(format);
         if (format.length() == 10) {
+            tPhoneNum.addMouseListener(new CrmLogFrame.PromptMouseListener());
             InsureDataSingleton isd = InsureDataSingleton.singleton();
             List<Insure[]> list = isd.getInsureList();
             System.out.println("size:" + list.size());
@@ -550,6 +528,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     }
 
     private boolean checkData() {
+        List<String[]> claimExist = null;
         String refNum = tReferenceNumber.getText().trim().toUpperCase();
         String providerOrMember = "P";
         if (tProvider.getSelectedIndex() == 1) {
@@ -563,69 +542,75 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         String company = tCompanyName.getText().trim().toUpperCase();
         String ssn = tssn.getText().trim().toUpperCase();
         String claimNum = tClaim.getText().trim().toUpperCase();
-        List<String[]> claimExist = CRMLOGS.searchClaim(claimNum);
+        if (!claimNum.equals("")) {
+            claimExist = CRMLOGS.searchClaim(claimNum);
+        }
         String notes = tCallNotes.getText().trim().toUpperCase();
         String errMsg = "";
         if (refNum.length() != 10) {
             errMsg = "Invalid Reference Number";
-            contentScreen = new JLayeredPane();
-            contentScreen.setOpaque(false);
-            //Dimension dialogSize = new Dimension(contentScreen.getSize().width * 40 / 100, contentScreen.getSize().height * 2 / 10);
-            //showMessage("CRM LOgsFile", errMsg, dialogSize, JOptionPane.ERROR_MESSAGE);
-            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            //contentScreen = new JLayeredPane();
+            //contentScreen.setOpaque(false);
+            showDialog(errMsg);
             System.out.println("validation error checkData: refname");
             return false;
         }
-        System.out.println("::" + phoneNum.length());
+
         if (formattedPhone.length() != 10) {
             errMsg = "Invalid Phone Number";
-            System.out.println(phoneNum.length() + ": MyFrame");
-            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            //System.out.println(phoneNum.length() + ": MyFrame");
+            //JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            showDialog(errMsg);
             System.out.println("validation error checkData: phoneNum");
             return false;
         }
-
         if (fName.length() < 2) {
             errMsg = "Invalid First Name";
-            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            //JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            showDialog(errMsg);
             System.out.println("validation error checkData: fName");
             return false;
         }
         if (lName.length() < 2) {
             errMsg = "Invalid Last Name";
-            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            //JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            showDialog(errMsg);
             System.out.println("validation error checkData: lName");
             return false;
         }
         if (providerOrMember.equals("P")) {
             if (company.length() < 3) {
                 errMsg = "Invalid Company";
-                JOptionPane.showMessageDialog(new JLabel(), errMsg);
+                //JOptionPane.showMessageDialog(new JLabel(), errMsg);
+                showDialog(errMsg);
                 System.out.println("validation error checkData: company");
                 return false;
             }
         }
         if (ssn.length() != 9) {
             errMsg = "Invalid SSN Number";
-            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            //JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            showDialog(errMsg);
             System.out.println("validation error checkData: memberid");
             return false;
         }
-        if (claimNum.length() != 7) {
-            errMsg = "Invalid Claim Number";
-            JOptionPane.showMessageDialog(new JLabel(), errMsg);
-            System.out.println("validation error checkData: claimNum");
-            return false;
-        }
-        if (claimExist.size() == 0) {
+//        if (claimNum.length() != 7) {
+//            errMsg = "Invalid Claim Number";
+//            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+//            System.out.println("validation error checkData: claimNum");
+//            return false;
+//        }
+        if (claimExist != null) {
             errMsg = "Claim Number Does't Exist";
-            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            //JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            showDialog(errMsg);
             System.out.println("validation error checkData: claimExist");
             return false;
         }
         if (notes.length() > 100) {
-            errMsg = "Notes length limit reached";
-            JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            errMsg = "Notes length limit reached \n 100 characters max.";
+            //JOptionPane.showMessageDialog(new JLabel(), errMsg);
+            showDialog(errMsg);
             System.out.println("validation error checkData: call notes");
             return false;
         }
@@ -905,7 +890,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         searchNameFrame.setSize(800, 800);
         //searchNameFrame.setVisible(true);
         if (matched.size() == 0) {
-            JOptionPane.showMessageDialog(new JLabel(), "No Data Found");
+            //JOptionPane.showMessageDialog(new JLabel(), "No Data Found");
+            showDialog("Data Not Found");
 
         } else {
             searchNameFrame.setVisible(true);
@@ -960,5 +946,42 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         tLName.setText("");
         tPhoneNum.setText("");
     }
+
+    public void showDialog(String errMsg) {
+        HTH_Dialog.showMessageDialog(new HTH_Frame("") {
+            @Override
+            protected void addFunctionKeys(HTH_FunctionButton... keyList) {
+                super.addFunctionKeys(keyList);
+            }
+        }, "", errMsg, new
+                Dimension(300, 150), JOptionPane.YES_OPTION);
+    }
+
+    private class PromptMouseListener implements MouseListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+    }
+
 }
 
