@@ -1,4 +1,4 @@
-package com.hth.newCustomerServiceFeature.report;
+package com.hth.report;
 
 import com.hth.id_card.user_interface.HTH_ControlButton;
 import com.hth.images.HTH_Image;
@@ -85,7 +85,6 @@ public class ReportTable extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             setVisible(false);
-            //writeDataLineByLine(columnNames, rowData);
             String[] args = new String[0];
             Helper h = new Helper();
             h.saveFile(args);

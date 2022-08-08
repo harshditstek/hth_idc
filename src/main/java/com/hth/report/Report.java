@@ -1,4 +1,4 @@
-package com.hth.newCustomerServiceFeature.report;
+package com.hth.report;
 
 import com.hth.crmlog.beans.CRMLOGS;
 import com.hth.id_card.user_interface.HTH_ControlButton;
@@ -42,7 +42,7 @@ public class Report extends JFrame {
 
     public Report() {
         setTitle("Report Logs");
-        setBounds(355, 140, 1080, 700);
+        setBounds(355, 140, 1180, 900);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBackground(Color.white);
         setResizable(false);

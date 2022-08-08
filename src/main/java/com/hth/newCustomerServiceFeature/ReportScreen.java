@@ -1,6 +1,6 @@
 package com.hth.newCustomerServiceFeature;
 
-import com.hth.newCustomerServiceFeature.report.Report;
+import com.hth.report.Report;
 
 public class ReportScreen {
 

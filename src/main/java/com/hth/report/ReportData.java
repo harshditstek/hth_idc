@@ -1,4 +1,4 @@
-package com.hth.newCustomerServiceFeature.report;
+package com.hth.report;
 
 import java.util.Collections;
 import java.util.LinkedList;
