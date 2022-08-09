@@ -8,6 +8,7 @@ import com.hth.newCustomerServiceFeature.DomainModel.CrmLogRecord2;
 import com.hth.newCustomerServiceFeature.Repository.Repository;
 import com.hth.newCustomerServiceFeature.UppercaseDocumentFilter;
 import com.hth.crmlog.util.Insure;
+import com.hth.report.ReportTable;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -28,7 +29,6 @@ import java.util.List;
 public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, ListSelectionListener {
     private static final Font HTH_FONT = new Font("Arial", Font.PLAIN, 15);
     private Container c;
-    private JFrame auditLog;
     private JFrame searchNameFrame;
     private JTable logTable;
     private JTable searchNameTable;
@@ -735,56 +735,62 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         List<String[]> newResultList = cr.getCrmlogList();
         //CRMLogsSingleton.Singleton();
         String[] result;
-        final Object[][] data = new Object[newResultList.size()][];
+        String[][] data = new String[newResultList.size()][];
         for (int idx = 0; idx < newResultList.size(); idx++) {
             result = newResultList.get(idx);
             data[idx] = result;
         }
-        final String[] columnNames = {"REFRENCE#", "Type", "Phone Number", "FName", "LName", "Company Name", "Customer Group", "Customer SSN", "Claim", "Time", "Date", "user", "Note", "Filler"};
+        String[] columnNames = {"REFRENCE#", "Type", "Phone Number", "FName", "LName", "Company Name", "Customer Group", "Customer SSN", "Claim", "Time", "Date", "user", "Note", "Filler"};
 
-        auditLog = new JFrame("Claim List");
-        auditLog.setBounds(400, 90, 1180, 800);
-        auditLog.setTitle("CRMLOG File Data");
-        try {
-            auditLog.setIconImage(ImageIO.read(HTH_Image.getImageURL("hth_block.png")));
-        } catch (Exception e) {
-
-        }
-        TableModel model = new AbstractTableModel() {
-            public int getColumnCount() {
-                return columnNames.length;
-            }
-
-            public int getRowCount() {
-                return data.length;
-            }
-
-            public Object getValueAt(int row, int col) {
-                return data[row][col];
-            }
-
-            public String getColumnName(int column) {
-                return columnNames[column];
-            }
-
-            public Class getColumnClass(int col) {
-                return getValueAt(0, col).getClass();
-            }
-
-            public void setValueAt(Object aValue, int row, int column) {
-                data[row][column] = aValue;
-            }
-        };
-
-        logTable = new JTable(model);
+        ReportTable rt = new ReportTable();
+        logTable = rt.reportTable(columnNames, data, false,true);
         ListSelectionModel listModel = logTable.getSelectionModel();
         listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listModel.addListSelectionListener(auditLogList);
-        JScrollPane scroll = new JScrollPane(logTable);
-        scroll.setPreferredSize(new Dimension(300, 300));
-        auditLog.getContentPane().add(scroll);
-        auditLog.setSize(800, 800);
-        auditLog.setVisible(true);
+
+        //        auditLog = new JFrame("Claim List");
+//        auditLog.setBounds(400, 90, 1180, 800);
+//        auditLog.setTitle("CRMLOG File Data");
+//        try {
+//            auditLog.setIconImage(ImageIO.read(HTH_Image.getImageURL("hth_block.png")));
+//        } catch (Exception e) {
+//
+//        }
+//        TableModel model = new AbstractTableModel() {
+//            public int getColumnCount() {
+//                return columnNames.length;
+//            }
+//
+//            public int getRowCount() {
+//                return data.length;
+//            }
+//
+//            public Object getValueAt(int row, int col) {
+//                return data[row][col];
+//            }
+//
+//            public String getColumnName(int column) {
+//                return columnNames[column];
+//            }
+//
+//            public Class getColumnClass(int col) {
+//                return getValueAt(0, col).getClass();
+//            }
+//
+//            public void setValueAt(Object aValue, int row, int column) {
+//                data[row][column] = aValue;
+//            }
+//        };
+//
+//        logTable = new JTable(model);
+//        ListSelectionModel listModel = logTable.getSelectionModel();
+//        listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//        listModel.addListSelectionListener(auditLogList);
+//        JScrollPane scroll = new JScrollPane(logTable);
+//        scroll.setPreferredSize(new Dimension(300, 300));
+//        auditLog.getContentPane().add(scroll);
+//        auditLog.setSize(800, 800);
+//        auditLog.setVisible(true);
 
         return resultList;
 
@@ -800,7 +806,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                 if (sel.length > 0) {
                     TableModel tm = logTable.getModel();
                     checkReference = false;
-                    auditLog.setVisible(false);
+                    //logTable.setVisible(false);
+                    ReportTable rt = new ReportTable();
                     tReferenceNumber.setText(tm.getValueAt(sel[0], 0).toString().trim());
                     String provider = tm.getValueAt(sel[0], 1).toString().trim();
                     if (provider.equals("M")) {

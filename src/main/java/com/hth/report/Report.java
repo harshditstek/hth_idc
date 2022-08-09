@@ -272,21 +272,17 @@ public class Report extends JFrame {
             for (int idx = 0; idx < showData.size(); idx++) {
                 String[] result = new String[showData.get(idx).length];
                 result = showData.get(idx);
-                //result[1] = "abc,xyz";
                 Date d = new SimpleDateFormat("yyMMdd").parse(result[3]);
                 SimpleDateFormat d2 = new SimpleDateFormat("MM/dd/yy");
                 result[3] = d2.format(d).toString();
-//                for(int i=0 ;i<result.length;i++){
-//                    if(result[i].contains(",")){
-//                        result[i] = "\""+result[i]+"\"";
-//                    }
-//                }
+
                 data[idx] = result;
             }
             ReportData rd = ReportData.singleton();
             rd.setReportData(data);
             String[] columnNames = {"CLAIM_NUMBER", "LINE_NO", "3", "DATE_OF_SERVICE", "DIVISION", "POLICY_ID", "PATIENT_NAME", "DEPENDENT_CODE", "COVERAGE", "AMOUNT_CLAIMED", "DAMTEX", "TOTAL_PAID", "DEXCD", "13", "HICD1", "HICD2", "HICD3", "HICD4", "HICD5", "HICD6", "HICD7", "HICD8", "HICD9", "HICD10", "TYPE_OF_SERVICE", "PROVIDER_ID", "PROVIDER_NAME"};
-            new ReportTable(columnNames, data);
+           ReportTable rt = new ReportTable();
+           rt.reportTable(columnNames, data, true, false);
 
         } catch (Exception e) {
 

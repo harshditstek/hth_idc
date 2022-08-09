@@ -7,6 +7,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -20,12 +22,11 @@ public class ReportTable extends JFrame {
     private JTable table;
     private TableRowSorter sorter;
     private JScrollPane jsp;
-
     String okKey = "okBtn";
     String[] columnNames;
     String[][] rowData;
 
-    public ReportTable(String[] columnNames, String[][] rowData) {
+    public JTable reportTable(String[] columnNames, String[][] rowData, boolean buttonShow, boolean hideFrame) {
         this.columnNames = columnNames;
         this.rowData = rowData;
         setTitle("Report Data");
@@ -42,8 +43,18 @@ public class ReportTable extends JFrame {
         download.addActionListener(searchDatabase);
         add(searchLbl);
         add(searchField);
+        if (buttonShow){
         add(download);
+        }
         add(jsp);
+
+        ListSelectionModel listModel = table.getSelectionModel();
+        listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        if(hideFrame){
+            listModel.addListSelectionListener(auditLogList);
+        }
+
+
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -74,14 +85,32 @@ public class ReportTable extends JFrame {
         setResizable(false);
         try {
             setIconImage(ImageIO.read(HTH_Image.getImageURL("hth_block.png")));
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         setVisible(true);
+        return table;
     }
+
+    ListSelectionListener auditLogList = new ListSelectionListener() {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            int[] sel;
+            Object value;
+            if (!e.getValueIsAdjusting()) {
+                sel = table.getSelectedRows();
+                if (sel.length > 0) {
+
+                    setVisible(false);
+
+                }
+            }
+        }
+    };
 
     Action searchDatabase = new AbstractAction(okKey) {
         private static final long serialVersionUID = 10110L;
+
         @Override
         public void actionPerformed(ActionEvent e) {
             setVisible(false);
