@@ -491,8 +491,9 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         String phone = tPhoneNum.getText().trim();
         String format = gePhoneNum(phone);
         tPhoneNum.setText(format);
-        if (format.length() == 10) {
-            tPhoneNum.addMouseListener(new CrmLogFrame.PromptMouseListener());
+        if (format.length() > 9) {
+            setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            //tPhoneNum.addMouseListener(new CrmLogFrame.PromptMouseListener());
             InsureDataSingleton isd = InsureDataSingleton.singleton();
             List<Insure[]> list = isd.getInsureList();
             System.out.println("size:" + list.size());
@@ -508,6 +509,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                     }
                 }
             }
+            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
     }
 
