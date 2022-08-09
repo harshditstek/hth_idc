@@ -43,14 +43,14 @@ public class ReportTable extends JFrame {
         download.addActionListener(searchDatabase);
         add(searchLbl);
         add(searchField);
-        if (buttonShow){
-        add(download);
+        if (buttonShow) {
+            add(download);
         }
         add(jsp);
 
         ListSelectionModel listModel = table.getSelectionModel();
         listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        if(hideFrame){
+        if (hideFrame) {
             listModel.addListSelectionListener(auditLogList);
         }
 
@@ -80,7 +80,7 @@ public class ReportTable extends JFrame {
             }
         });
         setSize(1600, 1180);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        //setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
         try {
@@ -100,9 +100,7 @@ public class ReportTable extends JFrame {
             if (!e.getValueIsAdjusting()) {
                 sel = table.getSelectedRows();
                 if (sel.length > 0) {
-
                     setVisible(false);
-
                 }
             }
         }

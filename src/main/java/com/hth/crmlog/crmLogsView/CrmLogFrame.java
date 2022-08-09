@@ -509,8 +509,9 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                     }
                 }
             }
-            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
         }
+        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
 
     @Override
@@ -793,6 +794,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 //        auditLog.getContentPane().add(scroll);
 //        auditLog.setSize(800, 800);
 //        auditLog.setVisible(true);
+        //setVisible(true);
 
         return resultList;
 
@@ -808,7 +810,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                 if (sel.length > 0) {
                     TableModel tm = logTable.getModel();
                     checkReference = false;
-                    //logTable.setVisible(false);
+                    //setVisible(false);
                     ReportTable rt = new ReportTable();
                     tReferenceNumber.setText(tm.getValueAt(sel[0], 0).toString().trim());
                     String provider = tm.getValueAt(sel[0], 1).toString().trim();
@@ -825,6 +827,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                     tssn.setText(tm.getValueAt(sel[0], 7).toString().trim());
                     tClaim.setText(tm.getValueAt(sel[0], 8).toString().trim());
                     tCallNotes.setText(tm.getValueAt(sel[0], 12).toString().trim());
+
                 }
             }
         }
