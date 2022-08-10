@@ -39,7 +39,7 @@ public class ReportTable extends JFrame {
         table.setRowSorter(sorter);
         setLayout(new FlowLayout(FlowLayout.CENTER));
         jsp = new JScrollPane(table);
-        jsp.setPreferredSize(new Dimension(1500, 1000));
+        jsp.setPreferredSize(new Dimension(1500, 900));
         download.addActionListener(searchDatabase);
         add(searchLbl);
         add(searchField);
@@ -79,7 +79,7 @@ public class ReportTable extends JFrame {
                 }
             }
         });
-        setSize(1600, 1180);
+        setSize(1600, 1000);
         //setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);

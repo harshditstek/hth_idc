@@ -497,8 +497,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             InsureDataSingleton isd = InsureDataSingleton.singleton();
             List<Insure[]> list = isd.getInsureList();
             System.out.println("size:" + list.size());
-            for (int i = 0; i < list.size(); i++) {
-                for (Insure data : list.get(i)) {
+            for (Insure[] lis:list) {
+                for (Insure data : lis) {
                     System.out.println("pp:" + data.getPhone());
                     if (data.getPhone().contains(format)) {
                         System.out.println("phone:" + data.getPhone());
