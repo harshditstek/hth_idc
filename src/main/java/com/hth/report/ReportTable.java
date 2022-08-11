@@ -75,7 +75,7 @@ public class ReportTable extends JFrame {
                 if (str.length() == 0) {
                     sorter.setRowFilter(null);
                 } else {
-                    sorter.setRowFilter(RowFilter.regexFilter(str));
+                    sorter.setRowFilter(RowFilter.regexFilter(str, 0,7));
                 }
             }
         });

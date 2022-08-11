@@ -603,12 +603,14 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 //            System.out.println("validation error checkData: claimNum");
 //            return false;
 //        }
-        if (claimExist.size()>0) {
-            errMsg = "Claim Number Does't Exist";
-            //JOptionPane.showMessageDialog(new JLabel(), errMsg);
-            showDialog(errMsg);
-            System.out.println("validation error checkData: claimExist");
-            return false;
+        if(claimExist!=null) {
+            if (claimExist.size() == 0) {
+                errMsg = "Claim Number Does't Exist";
+                //JOptionPane.showMessageDialog(new JLabel(), errMsg);
+                showDialog(errMsg);
+                System.out.println("validation error checkData: claimExist");
+                return false;
+            }
         }
         if (notes.length() > 100) {
             errMsg = "Notes Length Limit Reached \n 100 Characters Max.";
