@@ -603,7 +603,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 //            System.out.println("validation error checkData: claimNum");
 //            return false;
 //        }
-        if (claimExist != null) {
+        if (claimExist.size()>0) {
             errMsg = "Claim Number Does't Exist";
             //JOptionPane.showMessageDialog(new JLabel(), errMsg);
             showDialog(errMsg);
