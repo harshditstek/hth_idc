@@ -497,7 +497,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             InsureDataSingleton isd = InsureDataSingleton.singleton();
             List<Insure[]> list = isd.getInsureList();
             System.out.println("size:" + list.size());
-            for (Insure[] lis:list) {
+            for (Insure[] lis : list) {
                 for (Insure data : lis) {
                     System.out.println("pp:" + data.getPhone());
                     if (data.getPhone().contains(format)) {
@@ -603,7 +603,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 //            System.out.println("validation error checkData: claimNum");
 //            return false;
 //        }
-        if(claimExist!=null) {
+        if (claimExist != null) {
             if (claimExist.size() == 0) {
                 errMsg = "Claim Number Does't Exist";
                 //JOptionPane.showMessageDialog(new JLabel(), errMsg);
@@ -748,7 +748,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         String[] columnNames = {"REFRENCE#", "Type", "Phone Number", "FName", "LName", "Company Name", "Customer Group", "Customer SSN", "Claim", "Time", "Date", "user", "Note", "Filler"};
 
         ReportTable rt = new ReportTable();
-        logTable = rt.reportTable(columnNames, data, false,true);
+        logTable = rt.reportTable(columnNames, data, false, true);
         ListSelectionModel listModel = logTable.getSelectionModel();
         listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listModel.addListSelectionListener(auditLogList);

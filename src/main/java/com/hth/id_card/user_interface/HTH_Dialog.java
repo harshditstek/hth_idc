@@ -34,7 +34,7 @@ public class HTH_Dialog extends JDialog {
 
 	private static HTH_Dialog dialog = null;
 	
-	private String msg;
+	private static String msg;
 	private Dimension size;
 //	private int type;
 	private int option;
@@ -114,8 +114,13 @@ public class HTH_Dialog extends JDialog {
 		JPanel contentPanel = new JPanel();
 		contentPanel.setLayout(new BorderLayout());
 		contentPanel.setOpaque(false);
+		JPanel msgPanel = null;
+		if(msg.equals("Data Inserted Successfully")){
+			msgPanel = getMsgPanel(Color.GREEN);
+		}else{
+			msgPanel = getMsgPanel(Color.RED);
+		}
 
-		JPanel msgPanel = getMsgPanel(Color.RED);
 		contentPanel.add(msgPanel, BorderLayout.CENTER);
 		
 		JPanel btnPanel = getControlPanel(okBtn);
