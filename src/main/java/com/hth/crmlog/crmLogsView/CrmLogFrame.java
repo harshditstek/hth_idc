@@ -389,7 +389,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                     clearForm();
                 }
             } else {
-                showDialog("Please regenerate Reference Number");
+                showDialog("Please Regenerate Reference Number");
                 //JOptionPane.showMessageDialog(new JLabel(), "Please regenerate Reference Number");
                 clearForm();
             }
@@ -411,7 +411,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             if (provider.trim().equals("Provider")) {
                 company.setText("<html><nobr>Company Name <font color='#ffbebe'>*</font></nobr></html>");
             } else {
-                company.setText("Company Name");
+                company.setText("Company Name ");
             }
         }
     };
@@ -583,7 +583,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         }
         if (providerOrMember.equals("P")) {
             if (company.length() < 3) {
-                errMsg = "Invalid Company";
+                errMsg = "Invalid Company Name";
                 //JOptionPane.showMessageDialog(new JLabel(), errMsg);
                 showDialog(errMsg);
                 System.out.println("validation error checkData: company");
@@ -611,7 +611,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             return false;
         }
         if (notes.length() > 100) {
-            errMsg = "Notes length limit reached \n 100 characters max.";
+            errMsg = "Notes Length Limit Reached \n 100 Characters Max.";
             //JOptionPane.showMessageDialog(new JLabel(), errMsg);
             showDialog(errMsg);
             System.out.println("validation error checkData: call notes");
