@@ -1,10 +1,9 @@
 package com.hth.report;
 
 import com.hth.crmlog.beans.CRMLOGS;
-import com.hth.id_card.user_interface.HTH_ControlButton;
-import com.hth.id_card.user_interface.HTH_TextField;
+import com.hth.id_card.user_interface.*;
 import com.hth.images.HTH_Image;
-import org.jdesktop.swingx.JXDatePicker;
+import com.toedter.calendar.JDateChooser;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -20,8 +19,8 @@ import java.util.List;
 public class Report extends JFrame {
     private static final Font HTH_FONT = new Font("Arial", Font.PLAIN, 15);
     private Container c;
-    private JXDatePicker pickerFrom;
-    private JXDatePicker pickerTo;
+    private JDateChooser pickerFrom;
+    private JDateChooser pickerTo;
     private JComboBox dateDropdown;
     private JComboBox providerDropdown;
     private JComboBox serviceTypeDropdown;
@@ -107,38 +106,40 @@ public class Report extends JFrame {
         JLabel startLabel = new JLabel("Enter Start Date");
         startLabel.setSize(200, 30);
         startLabel.setLocation(500, 300);
-        startLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        startLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         c.add(startLabel);
 
-        pickerFrom = new JXDatePicker();
+        pickerFrom = new JDateChooser();
         pickerFrom.setDate(Calendar.getInstance().getTime());
-        pickerFrom.setFormats(new SimpleDateFormat("dd/MM/yyyy"));
+        //pickerFrom.setFormats(new SimpleDateFormat("dd/MM/yyyy"));
         pickerFrom.setSize(200, 30);
         pickerFrom.setLocation(500, 340);
+        pickerFrom.setFont(new Font("Arial", Font.PLAIN, 18));
         c.add(pickerFrom);
 
         JLabel endLabel = new JLabel("Enter End Date");
         endLabel.setSize(200, 30);
         endLabel.setLocation(750, 300);
-        endLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        endLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         c.add(endLabel);
 
-        pickerTo = new JXDatePicker();
+        pickerTo = new JDateChooser();
         pickerTo.setDate(Calendar.getInstance().getTime());
-        pickerTo.setFormats(new SimpleDateFormat("dd/MM/yyyy"));
+        //pickerTo.setFormats(new SimpleDateFormat("dd/MM/yyyy"));
         pickerTo.setSize(200, 30);
         pickerTo.setLocation(750, 340);
+        pickerTo.setFont(new Font("Arial", Font.PLAIN, 18));
         c.add(pickerTo);
 
         JLabel cptLabel = new JLabel("CPT Code");
         cptLabel.setSize(200, 30);
         cptLabel.setLocation(250, 400);
-        cptLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        cptLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         c.add(cptLabel);
 
         cptText = new HTH_TextField(100, HTH_FONT);
         cptText.setForeground(new Color(0, 0, 150));
-        cptText.setFont(new Font("Arial", Font.PLAIN, 15));
+        cptText.setFont(new Font("Arial", Font.PLAIN, 18));
         cptText.setSize(200, 30);
         cptText.setLocation(250, 430);
         //((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
@@ -156,12 +157,12 @@ public class Report extends JFrame {
         JLabel providerLabel = new JLabel("Provider Name");
         providerLabel.setSize(200, 30);
         providerLabel.setLocation(610, 400);
-        providerLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        providerLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         c.add(providerLabel);
 
         providerText = new HTH_TextField(100, HTH_FONT);
         providerText.setForeground(new Color(0, 0, 150));
-        providerText.setFont(new Font("Arial", Font.PLAIN, 15));
+        providerText.setFont(new Font("Arial", Font.PLAIN, 18));
         providerText.setSize(200, 30);
         providerText.setLocation(610, 430);
         //((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
@@ -179,12 +180,12 @@ public class Report extends JFrame {
         JLabel serviceLabel = new JLabel("Service Type");
         serviceLabel.setSize(200, 30);
         serviceLabel.setLocation(250, 490);
-        serviceLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        serviceLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         c.add(serviceLabel);
 
         serviceText = new HTH_TextField(100, HTH_FONT);
         serviceText.setForeground(new Color(0, 0, 150));
-        serviceText.setFont(new Font("Arial", Font.PLAIN, 15));
+        serviceText.setFont(new Font("Arial", Font.PLAIN, 18));
         serviceText.setSize(200, 30);
         serviceText.setLocation(250, 520);
         //((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
@@ -202,12 +203,12 @@ public class Report extends JFrame {
         JLabel exclusionCodeLabel = new JLabel("Exclusion Code");
         exclusionCodeLabel.setSize(200, 30);
         exclusionCodeLabel.setLocation(610, 490);
-        exclusionCodeLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        exclusionCodeLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         c.add(exclusionCodeLabel);
 
         exclusionCodeText = new HTH_TextField(100, HTH_FONT);
         exclusionCodeText.setForeground(new Color(0, 0, 150));
-        exclusionCodeText.setFont(new Font("Arial", Font.PLAIN, 15));
+        exclusionCodeText.setFont(new Font("Arial", Font.PLAIN, 18));
         exclusionCodeText.setSize(200, 30);
         exclusionCodeText.setLocation(610, 520);
         //((AbstractDocument) tClaim.getDocument()).setDocumentFilter(filter);
@@ -217,6 +218,7 @@ public class Report extends JFrame {
         searchData.setFont(new Font("Arial", Font.PLAIN, 15));
         searchData.setSize(100, 27);
         searchData.setLocation(900, 600);
+        searchData.addMouseListener(new Report.PromptMouseListener());
         searchData.addActionListener(searchDatabase);
         //claimListBTN2.addActionListener(claimList);
         c.add(searchData);
@@ -230,10 +232,12 @@ public class Report extends JFrame {
             Date from = pickerFrom.getDate();
             DateFormat fromFormat = new SimpleDateFormat("yyMMdd");
             String fromDate = fromFormat.format(from);
+            System.out.println("fr:"+fromDate);
 
             Date to = pickerTo.getDate();
             DateFormat toFormat = new SimpleDateFormat("yyMMdd");
             String toDate = toFormat.format(to);
+            System.out.println("to:"+toDate);
 
             String cpt = cptText.getText().toUpperCase().trim();
             String provider = providerText.getText().toUpperCase().trim();
@@ -257,7 +261,8 @@ public class Report extends JFrame {
             try {
                 data = CRMLOGS.reportData(fromDate, toDate, cpt, provider, serviceType, exclusionCode, providerQuery, serviceQuery, exclusionQuery);
                 if (data.size() == 0) {
-                    JOptionPane.showMessageDialog(new JLabel(), "No data found");
+                    showDialog("Data Not Found");
+                    //JOptionPane.showMessageDialog(new JLabel(), "No data found");
                 } else {
                     showDataFunction(data);
                 }
@@ -336,4 +341,40 @@ public class Report extends JFrame {
         functionKeyPanel.setLayout(new BoxLayout(functionKeyPanel, BoxLayout.Y_AXIS));
         functionPanel.add(functionKeyPanel, BorderLayout.CENTER);
     }
+    public void showDialog(String errMsg) {
+        HTH_Dialog.showMessageDialog(new HTH_Frame("") {
+            @Override
+            protected void addFunctionKeys(HTH_FunctionButton... keyList) {
+                super.addFunctionKeys(keyList);
+            }
+        }, "", errMsg, new
+                Dimension(300, 150), JOptionPane.YES_OPTION);
+    }
+
+    private class PromptMouseListener implements MouseListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+    }
+
 }

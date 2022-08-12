@@ -122,12 +122,9 @@ public class iSeries {
 
 	public static List<String[]> executeSQLByAlias(String sql, String[] alias, String[] file) {
 		String[] aliasSQL = new String[alias.length];
-		
-		//String aliasSQL = "CREATE ALIAS " + alias + " FOR " + file;
 		for(int i=0;i<alias.length;i++){
 			aliasSQL[i] = "CREATE ALIAS " + alias[i] + " FOR " + file[i];
 		}
-		System.out.println("l:"+aliasSQL.length);
 		List<String[]> resultList = new ArrayList<>();
 		String[] result;
 		Statement statement;
