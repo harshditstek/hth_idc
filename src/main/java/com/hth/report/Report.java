@@ -12,6 +12,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +27,7 @@ public class Report extends JFrame {
     private JComboBox providerDropdown;
     private JComboBox serviceTypeDropdown;
     private JComboBox exclusionDropdown;
-    private JLayeredPane contentScreen, promptScreen;
+    private JLayeredPane contentScreen;
     private JTextField cptText;
     private JTextField providerText;
     private JTextField serviceText;
@@ -229,48 +231,100 @@ public class Report extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Date from = pickerFrom.getDate();
-            DateFormat fromFormat = new SimpleDateFormat("yyMMdd");
-            String fromDate = fromFormat.format(from);
-            System.out.println("fr:"+fromDate);
+            if(checkDate()) {
+                Date from = pickerFrom.getDate();
+                DateFormat fromFormat = new SimpleDateFormat("yyMMdd");
+                String fromDate = fromFormat.format(from);
 
-            Date to = pickerTo.getDate();
-            DateFormat toFormat = new SimpleDateFormat("yyMMdd");
-            String toDate = toFormat.format(to);
-            System.out.println("to:"+toDate);
+                Date to = pickerTo.getDate();
+                DateFormat toFormat = new SimpleDateFormat("yyMMdd");
+                String toDate = toFormat.format(to);
 
-            String cpt = cptText.getText().toUpperCase().trim();
-            String provider = providerText.getText().toUpperCase().trim();
-            String serviceType = serviceText.getText().toUpperCase().trim();
-            String exclusionCode = exclusionCodeText.getText().toUpperCase().trim();
-            String providerQuery = "or";
-            if (providerDropdown.getSelectedIndex() == 1) {
-                providerQuery = "and";
-            }
-
-            String serviceQuery = "or";
-            if (serviceTypeDropdown.getSelectedIndex() == 1) {
-                serviceQuery = "and";
-            }
-
-            String exclusionQuery = "or";
-            if (exclusionDropdown.getSelectedIndex() == 1) {
-                exclusionQuery = "and";
-            }
-            List<String[]> data = null;
-            try {
-                data = CRMLOGS.reportData(fromDate, toDate, cpt, provider, serviceType, exclusionCode, providerQuery, serviceQuery, exclusionQuery);
-                if (data.size() == 0) {
-                    showDialog("Data Not Found");
-                    //JOptionPane.showMessageDialog(new JLabel(), "No data found");
-                } else {
-                    showDataFunction(data);
+                String cpt = cptText.getText().toUpperCase().trim();
+                String provider = providerText.getText().toUpperCase().trim();
+                String serviceType = serviceText.getText().toUpperCase().trim();
+                String exclusionCode = exclusionCodeText.getText().toUpperCase().trim();
+                String providerQuery = "or";
+                if (providerDropdown.getSelectedIndex() == 1) {
+                    providerQuery = "and";
                 }
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
+
+                String serviceQuery = "or";
+                if (serviceTypeDropdown.getSelectedIndex() == 1) {
+                    serviceQuery = "and";
+                }
+
+                String exclusionQuery = "or";
+                if (exclusionDropdown.getSelectedIndex() == 1) {
+                    exclusionQuery = "and";
+                }
+                List<String[]> data = null;
+                try {
+                    data = CRMLOGS.reportData(fromDate, toDate, cpt, provider, serviceType, exclusionCode, providerQuery, serviceQuery, exclusionQuery);
+                    if (data.size() == 0) {
+                        showDialog("Data Not Found");
+                        //JOptionPane.showMessageDialog(new JLabel(), "No data found");
+                    } else {
+                        showDataFunction(data);
+                    }
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
             }
         }
     };
+
+    public boolean checkDate() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+
+        Date from = pickerFrom.getDate();
+        DateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String fromDate = fromFormat.format(from);
+
+        Date to = pickerTo.getDate();
+        DateFormat toFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String toDate = toFormat.format(to);
+
+        String format = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        Date cd = null;  // current date
+        Date fromDateFormat = null;
+        Date toDateFormat = null;
+
+        try {
+            cd = sdf.parse(dtf.format(now));
+            fromDateFormat = sdf.parse(fromDate);
+            toDateFormat = sdf.parse(toDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        long diff = cd.getTime() - fromDateFormat.getTime();
+        int diffDays = (int) (diff / (24 * 1000 * 60 * 60));
+        if (diffDays < 0) {
+            showDialog("Invalid Start date");
+            return false;
+        }
+
+        long diffTo = cd.getTime() - toDateFormat.getTime();
+        int diffDaysTo = (int) (diffTo / (24 * 1000 * 60 * 60));
+        if (diffDaysTo < 0) {
+            showDialog("Invalid End date");
+            return false;
+        }
+
+        long diffToFrom = fromDateFormat.getTime() - toDateFormat.getTime();
+        int diffDaysToFrom = (int) (diffToFrom / (24 * 1000 * 60 * 60));
+        System.out.println(diffDaysToFrom);
+        if (diffDaysToFrom > 0) {
+            showDialog("Invalid End date");
+            return false;
+        }
+
+        return true;
+    }
+
     private void showDataFunction(List<String[]> showData) {
         try {
             String[][] data = new String[showData.size()][];
@@ -286,8 +340,8 @@ public class Report extends JFrame {
             ReportData rd = ReportData.singleton();
             rd.setReportData(data);
             String[] columnNames = {"CLAIM_NUMBER", "LINE_NO", "3", "DATE_OF_SERVICE", "DIVISION", "POLICY_ID", "PATIENT_NAME", "DEPENDENT_CODE", "COVERAGE", "AMOUNT_CLAIMED", "DAMTEX", "TOTAL_PAID", "DEXCD", "13", "HICD1", "HICD2", "HICD3", "HICD4", "HICD5", "HICD6", "HICD7", "HICD8", "HICD9", "HICD10", "TYPE_OF_SERVICE", "PROVIDER_ID", "PROVIDER_NAME"};
-           ReportTable rt = new ReportTable();
-           rt.reportTable(columnNames, data, true, false);
+            ReportTable rt = new ReportTable();
+            rt.reportTable(columnNames, data, true, false);
 
         } catch (Exception e) {
 
@@ -341,6 +395,7 @@ public class Report extends JFrame {
         functionKeyPanel.setLayout(new BoxLayout(functionKeyPanel, BoxLayout.Y_AXIS));
         functionPanel.add(functionKeyPanel, BorderLayout.CENTER);
     }
+
     public void showDialog(String errMsg) {
         HTH_Dialog.showMessageDialog(new HTH_Frame("") {
             @Override
