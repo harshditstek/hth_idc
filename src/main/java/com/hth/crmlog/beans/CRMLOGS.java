@@ -213,7 +213,7 @@ public class CRMLOGS {
         return resultList;
     }
 
-    public static List<String[]> reportData(String startDate, String endDate, String cptType, String provider, String serviceType, String exclusionCode, String providerQuery, String serviceQuery, String exclusionQuery) {
+    public static List<String[]> reportData(String startDate, String endDate, String cptType, String provider, String serviceType, String exclusionCode, String providerQuery, String serviceQuery, String exclusionQuery){
         StringBuilder sb = new StringBuilder();
         String[] alias = {"qtemp.clmdet", "qtemp.clmhdr", "qtemp.clmnot", "qtemp.codfil", "qtemp.insur3", "qtemp.insure", "qtemp.insdep", "qtemp.provdr"};
         String[] file = {"testdata.clmdet(TRT)", "testdata.clmhdr(TRT)", "testdata.clmnot(TRT)", "testdata.codfil(TRT)", "testdata.insur3(TRT)", "testdata.insure(TRT)", "testdata.insdep(TRT)", "testdata.provdr(TRT)"};
@@ -235,115 +235,45 @@ public class CRMLOGS {
                 "(concat(concat(Substring(digits((c.DDOS)),5,2),Substring(digits((c.DDOS)),3,2)),substring(digits((c.DDOS)),1,2)) between " + startDate + " and " + endDate + ") ");
 
         String dQuery = "";
-        String dQueryOr = "";
 
-        if(providerQuery.equals("and") && serviceQuery.equals("and") && exclusionQuery.equals("")){
             if (!cptType.equals("")) {
-                dQuery += ("substring(c.DPRC,6,2)= '" + cptType + "' ");
+                dQuery += "( substring(c.DPRC,6,2)= '" + cptType + "' ";
             }
-            if(provider.equals("")){
+            if(!provider.equals("")){
                 if(dQuery.isEmpty()){
-                    dQuery += ("PNAME like '%" + provider + "%' ");
+                    dQuery += "( PNAME like '%" + provider + "%') ";
                 }else{
-                    dQuery += (providerQuery+" PNAME like '%" + provider + "%' ");
+                    dQuery += providerQuery+" PNAME like '%" + provider + "%') ";
+                }
+            }
+            else {
+                if (!dQuery.isEmpty()) {
+                    dQuery += ")";
                 }
             }
             if(!serviceType.equals("")){
                 if(dQuery.isEmpty()){
-                    dQuery += ("e.DESC1 like '%"+ serviceType+"%' ");
+                    dQuery += "(e.DESC1 like '%"+ serviceType+"%' ";
                 }else{
-                    dQuery += (serviceQuery+" e.DESC1 like '%"+ serviceType+"%' ");
+                    dQuery += serviceQuery+" ( e.DESC1 like '%"+ serviceType+"%' ";
                 }
             }
             if(!exclusionCode.equals("")){
                 if(dQuery.isEmpty()){
-                    dQuery += ("c.DEXCD,c.DEXCD2 like '%"+exclusionCode+"%' ");
+                    dQuery += "(c.DEXCD like '%"+exclusionCode+"%' or c.DEXCD2 like '%"+exclusionCode+"%') ";
                 }else{
-                    dQuery += (exclusionQuery+" c.DEXCD,c.DEXCD2 like '%"+exclusionCode+"%' ");
+                    dQuery += exclusionQuery+" (c.DEXCD like '%"+exclusionCode+"%' or c.DEXCD2 like '%"+exclusionCode+"%'))";
                 }
             }
-        }
+            else{
+                if(!dQuery.isEmpty() && (dQuery.lastIndexOf("(")>dQuery.lastIndexOf(")"))){
+                    dQuery += ")";
+                }
+            }
 
-
-        if (!cptType.equals("")) {
-            dQuery += ("substring(c.DPRC,6,2)= '" + cptType + "' ");
-            //dQueryOr += ("substring(c.DPRC,6,2)= '" + cptType + "' ");
-        }
-
-        if (providerQuery.equals("and")) {
-            if (!provider.equals("")) {
-                if (dQuery.isEmpty()) {
-                    dQuery += ("PNAME like '%" + provider + "%' ");
-                } else {
-                    dQuery += (providerQuery + " PNAME like '%" + provider + "%' ");
-                }
-            }
-        } else {
-            if (!provider.equals("")) {
-                if (dQuery.isEmpty()) {
-                    if(serviceQuery.equals("or") && exclusionQuery.equals("or")){
-                        dQuery += ("PNAME like '%" + provider + "%' ");
-                    }
-
-                } else {
-                    dQueryOr += (providerQuery+" PNAME like '%" + provider + "%' ");
-                }
-            }
-        }
-        //}
-        if (serviceQuery.equals("and")) {
-            if (!serviceType.equals("")) {
-                if (dQuery.isEmpty()) {
-                    dQuery += ("e.DESC1 like '%"+ serviceType+"%' ");
-                } else {
-                    dQuery += (providerQuery + " e.DESC1 like '%"+ serviceType +"%' ");
-                }
-            }
-        } else {
-            if (!serviceType.equals("")) {
-                if (dQueryOr.isEmpty()) {
-                    dQuery += ("e.DESC1 like '%"+ serviceType +"%' ");
-                } else {
-                    dQueryOr += (serviceQuery+" e.DESC1 like '%"+ serviceType+"%' ");
-                }
-            }
-        }
-        ///
-        if (exclusionQuery.equals("and")) {
-            if (!exclusionCode.equals("")) {
-                if (dQuery.isEmpty()) {
-                    dQuery += ("c.DEXCD like '%"+exclusionCode+"%' or c.DEXCD2 like '%"+exclusionCode+"%' ");
-                } else {
-                    dQuery += (exclusionQuery + " c.DEXCD like '%"+exclusionCode+"%' or c.DEXCD2 like '%"+exclusionCode+"%' ");
-                }
-            }
-        } else {
-            if (!serviceType.equals("")) {
-                if (dQueryOr.isEmpty()) {
-                    dQuery += ("c.DEXCD like '%"+exclusionCode+"%' or c.DEXCD2 like '%"+exclusionCode+"%' ");
-                } else {
-                    dQueryOr += (serviceQuery+" c.DEXCD like '%"+exclusionCode+"%' or c.DEXCD2 like '%"+exclusionCode+"%' ");
-                }
-            }
-        }
-        if(providerQuery.equals("or") && serviceQuery.equals("or") && exclusionQuery.equals("or")){
-            dQuery = "";
-        }else if(providerQuery.equals("and") && serviceQuery.equals("and") && exclusionQuery.equals("and")){
-            dQueryOr = "";
-        }
-          ///
-        if (!dQuery.equals("")) {
-            sb.append("and (");
-            sb.append(dQuery);
-            sb.append(") ");
-        }
-        //String main = dQuery+ dQueryOr;
-        if (!dQueryOr.equals("")) {
-            sb.append("and (");
-            sb.append(dQueryOr);
-            sb.append(") ");
-        }
-        sb.append("order by a.hclmno desc");
+        if(!dQuery.isEmpty())
+        {sb.append( "and "+dQuery);}
+        sb.append(" order by a.hclmno desc");
 
         System.out.println("sb:" + sb.toString());
 
