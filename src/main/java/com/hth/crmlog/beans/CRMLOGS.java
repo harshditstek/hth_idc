@@ -272,10 +272,8 @@ public class CRMLOGS {
             }
 
         if(!dQuery.isEmpty())
-        {sb.append( "and "+dQuery);}
+        {sb.append( "and ("+dQuery+")");}
         sb.append(" order by a.hclmno desc");
-
-        System.out.println("sb:" + sb.toString());
 
         List<String[]> resultList = iSeries.executeSQLByAlias(sb.toString(), alias, file);
         System.out.println("size of report:" + resultList.size());
