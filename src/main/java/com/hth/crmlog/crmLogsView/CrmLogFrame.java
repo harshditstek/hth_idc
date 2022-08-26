@@ -748,7 +748,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         String[] columnNames = {"REFRENCE#", "Type", "Phone Number", "FName", "LName", "Company Name", "Customer Group", "Customer SSN", "Claim", "Time", "Date", "user", "Note", "Filler"};
 
         ReportTable rt = new ReportTable();
-        logTable = rt.reportTable(columnNames, data, false, true);
+        logTable = rt.reportTable(columnNames, data, false, true, false);
         ListSelectionModel listModel = logTable.getSelectionModel();
         listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listModel.addListSelectionListener(auditLogList);

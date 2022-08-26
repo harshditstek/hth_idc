@@ -266,6 +266,7 @@ public class Report extends JFrame {
                         //JOptionPane.showMessageDialog(new JLabel(), "No data found");
                     } else {
                         showDataFunction(data);
+                        searchData.addMouseListener(new Report.PromptMouseListener());
                     }
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
@@ -339,9 +340,9 @@ public class Report extends JFrame {
             }
             ReportData rd = ReportData.singleton();
             rd.setReportData(data);
-            String[] columnNames = {"CLAIM_NUMBER", "LINE_NO", "3", "DATE_OF_SERVICE", "DIVISION", "POLICY_ID", "PATIENT_NAME", "DEPENDENT_CODE", "COVERAGE", "AMOUNT_CLAIMED", "DAMTEX", "TOTAL_PAID", "DEXCD", "13", "HICD1", "HICD2", "HICD3", "HICD4", "HICD5", "HICD6", "HICD7", "HICD8", "HICD9", "HICD10", "TYPE_OF_SERVICE", "PROVIDER_ID", "PROVIDER_NAME"};
+            String[] columnNames = {"PROCEDURE","CLAIM_NUMBER", "LINE_NO", "DATE_OF_SERVICE", "DIVISION", "POLICY_ID", "PATIENT_NAME", "DEPENDENT_CODE", "COVERAGE", "AMOUNT_CLAIMED", "DAMTEX", "TOTAL_PAID", "DEXCD", "13", "HICD1", "HICD2", "HICD3", "HICD4", "HICD5", "HICD6", "HICD7", "HICD8", "HICD9", "HICD10", "TYPE_OF_SERVICE", "PROVIDER_ID", "PROVIDER_NAME"};
             ReportTable rt = new ReportTable();
-            rt.reportTable(columnNames, data, true, false);
+            rt.reportTable(columnNames, data, true, false, true);
 
         } catch (Exception e) {
 

@@ -218,7 +218,7 @@ public class CRMLOGS {
         String[] alias = {"qtemp.clmdet", "qtemp.clmhdr", "qtemp.clmnot", "qtemp.codfil", "qtemp.insur3", "qtemp.insure", "qtemp.insdep", "qtemp.provdr"};
         String[] file = {"testdata.clmdet(TRT)", "testdata.clmhdr(TRT)", "testdata.clmnot(TRT)", "testdata.codfil(TRT)", "testdata.insur3(TRT)", "testdata.insure(TRT)", "testdata.insdep(TRT)", "testdata.provdr(TRT)"};
 
-        sb.append("select c.dprc,a.HCLMNO as CLAIM_NUMBER ,c.DLINE as LINE_NO," +
+        sb.append("select c.dprc PROCEDURE,a.HCLMNO as CLAIM_NUMBER ,c.DLINE as LINE_NO," +
                 "concat(concat(Substring(digits((c.DDOS)),5,2),Substring(digits((c.DDOS)),3,2)),substring(digits((c.DDOS)),1,2)) as DATE_OF_SERVICE," +
                 "a.HDIV as DIVISION,b.IPOLCY as POLICY_ID," +
                 "concat(b.IFNAM , b.ILNAM) as EMPLOYEE, " +

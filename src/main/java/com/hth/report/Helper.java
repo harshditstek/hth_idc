@@ -4,7 +4,9 @@ import javafx.application.Application;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -14,20 +16,25 @@ public class Helper extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        String[] header = {"CLAIM_NUMBER", "LINE_NO", "3", "DATE_OF_SERVICE", "DIVISION", "POLICY_ID", "PATIENT_NAME", "DEPENDENT_CODE", "COVERAGE", "AMOUNT_CLAIMED", "DAMTEX", "TOTAL_PAID", "DEXCD", "13", "HICD1", "HICD2", "HICD3", "HICD4", "HICD5", "HICD6", "HICD7", "HICD8", "HICD9", "HICD10", "TYPE_OF_SERVICE", "PROVIDER_ID", "PROVIDER_NAME"};
+        String[] header = {"PROCEDURE","CLAIM_NUMBER", "LINE_NO", "DATE_OF_SERVICE", "DIVISION", "POLICY_ID", "PATIENT_NAME", "DEPENDENT_CODE", "COVERAGE", "AMOUNT_CLAIMED", "DAMTEX", "TOTAL_PAID", "DEXCD", "13", "HICD1", "HICD2", "HICD3", "HICD4", "HICD5", "HICD6", "HICD7", "HICD8", "HICD9", "HICD10", "TYPE_OF_SERVICE", "PROVIDER_ID", "PROVIDER_NAME"};
         List<String[][]> showData = ReportData.singleton().getReportData();
         primaryStage.setTitle("JavaFX App");
         FileChooser fileChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter extFilter =
+                new FileChooser.ExtensionFilter("TEXT files (*.csv)", "*.csv");
+        fileChooser.getExtensionFilters().add(extFilter);
+
 
         //File selectedFile = fileChooser.showOpenDialog(primaryStage);
         File selectedFile = fileChooser.showSaveDialog(primaryStage);
         System.out.println(":'." + selectedFile.getAbsolutePath());
         String path = selectedFile.getAbsolutePath();
-        if (path.endsWith(".csv")) {
-            path = path;
-        } else {
-            path = path + ".csv";
-        }
+//        if (path.endsWith(".csv")) {
+//            path = path;
+//        } else {
+//            path = path + ".csv";
+//        }
 
         File csvFile = new File(path);
         FileWriter fileWriter = new FileWriter(csvFile);

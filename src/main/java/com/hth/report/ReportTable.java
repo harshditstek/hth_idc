@@ -14,25 +14,28 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class ReportTable extends JFrame {
     private JTextField searchField;
     private JLabel searchLbl;
     private TableModel model;
     private JTable table;
+    private JButton download;
     private TableRowSorter sorter;
     private JScrollPane jsp;
     String okKey = "okBtn";
     String[] columnNames;
     String[][] rowData;
 
-    public JTable reportTable(String[] columnNames, String[][] rowData, boolean buttonShow, boolean hideFrame) {
+    public JTable reportTable(String[] columnNames, String[][] rowData, boolean buttonShow, boolean hideFrame, boolean searchString) {
         this.columnNames = columnNames;
         this.rowData = rowData;
         setTitle("Report Data");
         searchField = new JTextField(15);
         searchLbl = new JLabel("Search");
-        JButton download = new HTH_ControlButton("Download");
+        download = new HTH_ControlButton("Download");
         model = new DefaultTableModel(rowData, columnNames);
         sorter = new TableRowSorter<>(model);
         table = new JTable(model);
@@ -41,6 +44,7 @@ public class ReportTable extends JFrame {
         jsp = new JScrollPane(table);
         jsp.setPreferredSize(new Dimension(1500, 900));
         download.addActionListener(searchDatabase);
+        //download.addMouseListener(new PromptMouseListener());
         add(searchLbl);
         add(searchField);
         if (buttonShow) {
@@ -75,7 +79,12 @@ public class ReportTable extends JFrame {
                 if (str.length() == 0) {
                     sorter.setRowFilter(null);
                 } else {
-                    sorter.setRowFilter(RowFilter.regexFilter(str, 0,7));
+                    if(searchString){
+                        sorter.setRowFilter(RowFilter.regexFilter(str));
+                    }else{
+                        sorter.setRowFilter(RowFilter.regexFilter(str, 0,7));
+                    }
+
                 }
             }
         });
@@ -115,6 +124,33 @@ public class ReportTable extends JFrame {
             String[] args = new String[0];
             Helper h = new Helper();
             h.saveFile(args);
+            download.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
     };
+
+    private class PromptMouseListener implements MouseListener {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+    }
 }
