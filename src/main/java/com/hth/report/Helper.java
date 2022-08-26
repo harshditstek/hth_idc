@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.List;
 
 public class Helper extends Application {
@@ -30,10 +31,13 @@ public class Helper extends Application {
 
         File csvFile = new File(path);
         FileWriter fileWriter = new FileWriter(csvFile);
-
+        StringBuilder line = new StringBuilder();
+        line.append(String.join(",",header));
+        line.append("\n");
+        fileWriter.write(line.toString());
         for (int id = 0; id < showData.size(); id++) {
             for (String[] data : showData.get(0)) {
-                StringBuilder line = new StringBuilder();
+                 line = new StringBuilder();
                 for (int i = 0; i < data.length; i++) {
                     if (data[i].contains(",")) {
                         line.append("\"");
