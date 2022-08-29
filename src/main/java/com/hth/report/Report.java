@@ -41,7 +41,7 @@ public class Report extends JFrame {
     private String dateList[] = {"Date Of Service", "Process date", "Receieve Date"};
     private String queryList[] = {"OR", "And"};
 
-    public Report() {
+    public Report(String name) {
         setTitle("Report Logs");
         setBounds(355, 140, 1180, 900);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -78,6 +78,11 @@ public class Report extends JFrame {
         this.getContentPane().setBackground(Color.WHITE);
 
         setVisible(true);
+    }
+
+    public Report() {
+        c.addMouseListener(new Report.PromptMouseListener());
+        //new Report("hello");
     }
 
     private void setBorder() {
@@ -265,8 +270,11 @@ public class Report extends JFrame {
                         showDialog("Data Not Found");
                         //JOptionPane.showMessageDialog(new JLabel(), "No data found");
                     } else {
+                        setVisible(false);
+                        new Report("harsh");
                         showDataFunction(data);
                         searchData.addMouseListener(new Report.PromptMouseListener());
+
                     }
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
@@ -405,6 +413,10 @@ public class Report extends JFrame {
             }
         }, "", errMsg, new
                 Dimension(300, 150), JOptionPane.YES_OPTION);
+    }
+
+    public void set(){
+        c.addMouseListener(new Report.PromptMouseListener());
     }
 
     private class PromptMouseListener implements MouseListener {

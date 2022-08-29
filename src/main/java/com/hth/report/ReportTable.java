@@ -44,7 +44,7 @@ public class ReportTable extends JFrame {
         jsp = new JScrollPane(table);
         jsp.setPreferredSize(new Dimension(1500, 900));
         download.addActionListener(searchDatabase);
-        //download.addMouseListener(new PromptMouseListener());
+        //download.addMouseListener(new ReportTable.PromptMouseListener());
         add(searchLbl);
         add(searchField);
         if (buttonShow) {
@@ -89,7 +89,7 @@ public class ReportTable extends JFrame {
             }
         });
         setSize(1600, 1000);
-        //setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
         try {
@@ -119,12 +119,13 @@ public class ReportTable extends JFrame {
         private static final long serialVersionUID = 10110L;
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e){
             setVisible(false);
             String[] args = new String[0];
             Helper h = new Helper();
+           // download.addMouseListener(new ReportTable.PromptMouseListener());
             h.saveFile(args);
-            download.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+           // download.addMouseListener(new ReportTable.PromptMouseListener());
         }
     };
 
