@@ -39,7 +39,7 @@ public class Report extends JFrame {
     private JPanel mainPanel;
     String okKey = "okBtn";
     private String dateList[] = {"Date Of Service", "Process date", "Receieve Date"};
-    private String queryList[] = {"OR", "And"};
+    private String queryList[] = {"Or", "And"};
 
     public Report(String name) {
         setTitle("Report Logs");
@@ -117,6 +117,7 @@ public class Report extends JFrame {
         c.add(startLabel);
 
         pickerFrom = new JDateChooser();
+        pickerFrom.setDateFormatString("MM/dd/yyyy");
         pickerFrom.setDate(Calendar.getInstance().getTime());
         //pickerFrom.setFormats(new SimpleDateFormat("dd/MM/yyyy"));
         pickerFrom.setSize(200, 30);
@@ -133,6 +134,7 @@ public class Report extends JFrame {
         pickerTo = new JDateChooser();
         pickerTo.setDate(Calendar.getInstance().getTime());
         //pickerTo.setFormats(new SimpleDateFormat("dd/MM/yyyy"));
+        pickerTo.setDateFormatString("MM/dd/yyyy");
         pickerTo.setSize(200, 30);
         pickerTo.setLocation(750, 340);
         pickerTo.setFont(new Font("Arial", Font.PLAIN, 18));
