@@ -20,12 +20,13 @@ import com.ibm.as400.access.IFSFileInputStream;
 import com.ibm.as400.access.IFSFileOutputStream;
 
 public class iSeries {
+	static ApplicationProperties properties = new ApplicationProperties();
 	private static final String DRIVER = "com.ibm.as400.access.AS400JDBCDriver";
 	private static final String SERVER = "printers.hi-techhealth.com";
-	private static final String URL = "jdbc:as400://printers.hi-techhealth.com";
+	private static final String URL = properties.readProperty("url");
 	//private static final String HOSTNAME = "JAVA2018";
-	private static final String HOSTNAME = "JAVALOOK";
-	private static final String PASSWORD = "TWMC1990";
+	private static final String HOSTNAME = properties.readProperty("hostname");
+	private static final String PASSWORD = properties.readProperty("password");
 
 	private static AS400 system = null;
 

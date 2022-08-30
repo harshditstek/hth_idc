@@ -1,6 +1,7 @@
 package com.hth.report;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -10,6 +11,29 @@ import java.io.IOException;
 import java.util.List;
 
 public class Helper extends Application {
+    private static volatile boolean javaFxLaunched = false;
+
+    public static void myLaunch(Class<? extends Application> applicationClass) {
+        if (!javaFxLaunched) { // First time
+            Platform.setImplicitExit(false);
+            new Thread(()->Application.launch(applicationClass)).start();
+            javaFxLaunched = true;
+        } else { // Next times
+            Platform.setImplicitExit(false);
+            Platform.runLater(()-> {
+
+                    try {
+                        Application application = applicationClass.newInstance();
+                        Stage primaryStage = new Stage();
+                        application.start(primaryStage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+            });
+        }
+    }
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -69,7 +93,7 @@ public class Helper extends Application {
 
     public void saveFile(String[] args){
 
-        launch(args);
+        Helper.myLaunch(Helper.class);
     }
 
 }
