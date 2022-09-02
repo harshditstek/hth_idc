@@ -24,19 +24,15 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
@@ -49,6 +45,10 @@ import com.hth.id_card.user_interface.HTH_ControlButton;
 import com.hth.id_card.user_interface.HTH_Frame;
 import com.hth.id_card.user_interface.HTH_FunctionButton;
 import com.hth.util.IDCard;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * HTH ID printer window.
@@ -128,7 +128,7 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
 	/**
 	 * Function keys in this printer screen.
 	 */
-	private HTH_FunctionButton prevBtn, nextBtn, turnBtn, pdfBtn, printBtn;
+	private HTH_FunctionButton prevBtn, nextBtn, turnBtn, pdfBtn, printBtn, download;
 
 	/**
 	 * Boolean indicates the face of the ID card.
@@ -201,6 +201,7 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
 		printBtn = new HTH_FunctionButton("Print all");
 		prevBtn = new HTH_FunctionButton("Previous ID card");
 		nextBtn = new HTH_FunctionButton("Next ID card");
+		download = new HTH_FunctionButton("Download");
 	}
 
 	/**
@@ -273,7 +274,28 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
 		nextBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F8, InputEvent.SHIFT_DOWN_MASK), nextKey);
 		nextBtn.getActionMap().put(nextKey, nextAction);
 
-		addFunctionKeys(turnBtn, pdfBtn, printBtn);
+		String downloadKey = "Download";
+		Action downloadCSV = new AbstractAction(downloadKey) {
+			private static final long serialVersionUID = 10131L;
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//System.exit(0);
+				//IDCard id = new IDCard()
+				try {
+					downloadFun();
+					DataSingleton.destroy();
+				} catch (IOException ex) {
+					throw new RuntimeException(ex);
+				}
+				;
+			}
+		};
+		download.setToolTipText("Download csv");
+		download.addActionListener(downloadCSV);
+		//download.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F8, InputEvent.SHIFT_DOWN_MASK), nextKey);
+		//download.getActionMap().put(nextKey, nextAction);
+
+		addFunctionKeys(turnBtn, pdfBtn, printBtn, download);
 	}
 
 	/**
@@ -293,7 +315,7 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
 
 		if (cardList.length > 1) {
 			resetFunctionKeys();
-			addFunctionKeys(prevBtn, nextBtn, turnBtn, pdfBtn, printBtn);
+			addFunctionKeys(prevBtn, nextBtn, turnBtn, pdfBtn, printBtn, download);
 		}
 
 		isFront = true;
@@ -389,6 +411,7 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
 		turnBtn.setEnabled(isEnable);
 		pdfBtn.setEnabled(isEnable);
 		printBtn.setEnabled(isEnable);
+		download.setEnabled(isEnable);
 	}
 
 	/**
@@ -655,4 +678,75 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
 	public void windowOpened(WindowEvent e) {
 
 	}
+
+	public static void downloadFun() throws IOException, FileNotFoundException {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet spreadsheet = workbook.createSheet(" IDCARD REPORT ");
+		XSSFRow row;
+		Map<String, Object[]> studentData = new TreeMap<String, Object[]>();
+		//studentData.put("1",new Object[]{"IDCARD REPORT"});
+		studentData.put("1",new Object[] { "User", "Group", "EmpID", "FirstName", "LastName", "card Number", "Number Of Cards", "Coverage", "Effective Data", "Date", "Time"});
+
+		List<String[]> listData = DataSingleton.singleton().getInsureList();
+		for(int i=0; i<listData.size(); i++){
+			int num = 2+i;
+			Object[] data = new String[11];
+			Object[] all =new String[listData.get(i).length];
+			all = listData.get(i);
+			data[0]="";       //User
+			data[1]=all[95];  //Group
+			data[2]=all[96];      //empid
+			data[3]=all[97]; //first
+			data[4]=all[98]; //last
+			data[5]=all[99]; //card number
+			data[6]="";      //no of card
+			data[7]=all[100]; //coverage
+			data[8]="";      //effective data
+			data[9]=all[101]; //date
+			data[10]=all[102];//time
+			studentData.put(String.valueOf(num), data);
+		}
+
+		//studentData.put("4", new Object[] { "MAC", "129", "54322", "Prince", "verma", "7564654", "1", " ", " ","02012022","1100" });
+		Set<String> keyid = studentData.keySet();
+		System.out.println(keyid);
+
+		int rowid = 0;
+		for (String key : keyid) {
+
+			row = spreadsheet.createRow(rowid++);
+			Object[] objectArr = studentData.get(key);
+			int cellid = 0;
+
+			for (Object obj : objectArr) {
+				Cell cell = row.createCell(cellid++);
+				cell.setCellValue((String)obj);
+			}
+		}
+
+		File file = null;
+		JFrame parentFrame = new JFrame();
+
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter restrict = new FileNameExtensionFilter("xlsx files", ".xlsx");
+		fileChooser.addChoosableFileFilter(restrict);
+		fileChooser.setDialogTitle("Select a Location");
+		int userSelection = fileChooser.showSaveDialog(parentFrame);
+		if (userSelection == JFileChooser.APPROVE_OPTION) {
+			File fileToSave = fileChooser.getSelectedFile();
+			System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+			file = new File(fileToSave.getAbsolutePath()+".xlsx");
+		}
+
+		System.out.println(":'." + file.getAbsolutePath());
+		String path = file.getAbsolutePath();
+
+		FileOutputStream out = new FileOutputStream(new File(path));
+
+		workbook.write(out);
+		out.close();
+
+
+	}
+
 }
