@@ -696,13 +696,13 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
             all = listData.get(i);
             data[0] = HTH_IDC.userID;       //User
             data[1] = all[95];  //Group
-            data[2] = all[96];      //empid
-            data[3] = all[97]; //first
-            data[4] = all[98]; //last
-            data[5] = all[99]; //card number
-            data[6] = "";      //no of card
+            data[2] = all[96];  //empid
+            data[3] = all[97];  //first
+            data[4] = all[98];  //last
+            data[5] = all[99];  //card number
+            data[6] = "";       //no of card
             data[7] = all[100]; //coverage
-            data[8] = "";      //effective data
+            data[8] = "";       //effective data
             System.out.println("date1:"+all[101]);
             System.out.println("time1:"+all[102]);
             if(all[101].length() == 5)
