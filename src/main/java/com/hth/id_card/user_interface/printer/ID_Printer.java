@@ -287,15 +287,12 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //System.exit(0);
-                //IDCard id = new IDCard()
                 try {
                     downloadFun();
                     //DataSingleton.destroy();
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
-                ;
             }
         };
         download.setToolTipText("Download csv");
@@ -685,8 +682,7 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
         XSSFSheet spreadsheet = workbook.createSheet(" IDCARD REPORT ");
         XSSFRow row;
         Map<String, String[]> studentData = new TreeMap<String, String[]>();
-        //studentData.put("1",new Object[]{"IDCARD REPORT"});
-        studentData.put("1", new String[]{"User", "Group", "EmpID", "FirstName", "LastName", "card Number", "Number Of Cards", "Coverage", "Effective Data", "Date", "Time"});
+        studentData.put("1", new String[]{"User", "Group", "EmpID", "FirstName", "LastName", "Card Number", "Number Of Cards", "Coverage", "Effective Date", "Date", "Time"});
 
         List<String[]> listData = DataSingleton.singleton().getInsureList();
         for (int i = 0; i < listData.size(); i++) {
@@ -695,37 +691,36 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
             String[] all = new String[listData.get(i).length];
             all = listData.get(i);
             data[0] = HTH_IDC.userID;       //User
-            data[1] = all[95];  //Group
-            data[2] = all[96];  //empid
-            data[3] = all[97];  //first
-            data[4] = all[98];  //last
-            data[5] = all[99];  //card number
-            data[6] = "";       //no of card
-            data[7] = all[100]; //coverage
-            data[8] = "";       //effective data
-            System.out.println("date1:"+all[101]);
-            System.out.println("time1:"+all[102]);
-            if(all[101].length() == 5)
-                all[101] = "0"+all[101];
-            if(all[102].length() == 5)
-                all[102] = "0"+all[102];
-            Date d = new SimpleDateFormat("MMddyy").parse(all[101].toString());
-            SimpleDateFormat d2 = new SimpleDateFormat("MM/dd/yy");
-            data[9] = d2.format(d).toString();
+            data[1] = all[0];  //Group 0
+            data[2] = all[1];  //empid 1
+            data[3] = all[2];  //first 2
+            data[4] = all[3];  //last 3
+            data[5] = all[4];  //card number 4
+            data[6] = "1";       //no of card 5
+            data[7] = all[5]; //coverage 6
+           // data[8] = all[7];       //effective data 7
+            if(all[7].length() == 5)
+                all[7] = "0"+all[7];
+            Date effectiveDate = new SimpleDateFormat("MMddyy").parse(all[7].toString());
+            SimpleDateFormat dateFormat1 = new SimpleDateFormat("MM/dd/yy");
+            data[8] = dateFormat1.format(effectiveDate).toString();// 8
 
 
-            System.out.println("date2:"+d2.format(d).toString());
-            Date time = new SimpleDateFormat("HHmmss").parse(all[102].toString());
+            if(all[8].length() == 5)
+                all[8] = "0"+all[8];
+            if(all[9].length() == 5)
+                all[9] = "0"+all[9];
+            Date date = new SimpleDateFormat("MMddyy").parse(all[8].toString());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
+            data[9] = dateFormat.format(date).toString();// 8
+
+            Date time = new SimpleDateFormat("HHmmss").parse(all[9].toString());
             SimpleDateFormat time2 = new SimpleDateFormat("HH:mm:ss");
-            data[10] = time2.format(time).toString();//time
-            System.out.println("tim2:"+time2.format(time).toString());
+            data[10] = time2.format(time).toString();//time 9
 
             studentData.put(String.valueOf(num), data);
         }
-
-        //studentData.put("4", new Object[] { "MAC", "129", "54322", "Prince", "verma", "7564654", "1", " ", " ","02012022","1100" });
         Set<String> keyid = studentData.keySet();
-        System.out.println(keyid);
 
         int rowid = 0;
         for (String key : keyid) {
@@ -750,19 +745,15 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
         int userSelection = fileChooser.showSaveDialog(parentFrame);
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
-            System.out.println("Save as file: " + fileToSave.getAbsolutePath());
             file = new File(fileToSave.getAbsolutePath() + ".xlsx");
         }
 
-        System.out.println(":'." + file.getAbsolutePath());
         String path = file.getAbsolutePath();
 
         FileOutputStream out = new FileOutputStream(new File(path));
 
         workbook.write(out);
         out.close();
-
-
     }
 
 }

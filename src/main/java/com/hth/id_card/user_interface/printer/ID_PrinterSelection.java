@@ -52,9 +52,6 @@ import com.hth.util.Division;
 import com.hth.util.GroupMaster;
 import com.hth.util.IDCard;
 import com.hth.util.enums.CardType;
-import com.hth.util.enums.GroupStatus;
-
-import static java.lang.System.currentTimeMillis;
 
 public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
 	private static final long serialVersionUID = 102L;
@@ -210,6 +207,7 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
 		okBtn.addActionListener(okAction);
 		okBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), okKey);
 		okBtn.getActionMap().put(okKey, okAction);
+		okBtn.addMouseListener(new PromptMouseListener());
 		controlPanel.add(okBtn);
 
 		controlKeys = new HTH_ControlButton[] {exitBtn, okBtn};
