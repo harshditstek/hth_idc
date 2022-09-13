@@ -1846,12 +1846,6 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
 					IDCard[] cardList = IDCPRV.generateIDCARD(grpList, idList, HTH_IDC.DEVICE);
 					//---test
 
-					for(int i =0 ;i<cardList.length; i++){
-						System.out.println(cardList[i]);
-						System.out.println("4:"+cardList[4].getCardNumber());
-						System.out.println("5:"+cardList[5].getFrontTexts().toString());
-					}
-
 					// Wait up to 2 minutes if window is not ready.
 					int timer = 0;
 					while (printerWindow == null && timer <= 120) {
