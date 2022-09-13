@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -36,6 +35,8 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
+import com.hth.backend.beans.IDWORK;
+import com.hth.backend.iSeries;
 import com.hth.id_card.HTH_IDC;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -677,14 +678,17 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
 
     }
 
-    public static void downloadFun() throws IOException, FileNotFoundException, ParseException {
+    public static void downloadFun() throws IOException, ParseException {
+        clCalGroup();
+        List<String[]> listData = downloadExcel();
+       // List<String[]> listData = IDCPRV.downloadExcel();
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet spreadsheet = workbook.createSheet(" IDCARD REPORT ");
         XSSFRow row;
         Map<String, String[]> studentData = new TreeMap<String, String[]>();
         studentData.put("1", new String[]{"User", "Group", "EmpID", "FirstName", "LastName", "Card Number", "Number Of Cards", "Coverage", "Effective Date", "Date", "Time"});
 
-        List<String[]> listData = DataSingleton.singleton().getInsureList();
+        //List<String[]> listData = DataSingleton.singleton().getInsureList();
         for (int i = 0; i < listData.size(); i++) {
             int num = 2 + i;
             String[] data = new String[11];
@@ -704,7 +708,6 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
             Date effectiveDate = new SimpleDateFormat("MMddyy").parse(all[7].toString());
             SimpleDateFormat dateFormat1 = new SimpleDateFormat("MM/dd/yy");
             data[8] = dateFormat1.format(effectiveDate).toString();// 8
-
 
             if(all[8].length() == 5)
                 all[8] = "0"+all[8];
@@ -754,6 +757,83 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
 
         workbook.write(out);
         out.close();
+    }
+    private static List<String[]> downloadExcel(){
+        String member = HTH_IDC.member;
+        String[] idList = IDWORK.getInQueueID(HTH_IDC.userID);
+        String[] grp = IDWORK.getGrpList();
+        clCall(idList);
+
+        String[] alias = {"QTEMP.IDCPRV","QTEMP.INSURE", "QTEMP.COVCOD", "QTEMP.INSHST"};
+        String[] file = {"DFLIB.IDCPRV(" + member + ")", "DFLIB.INSURE(" + member + ")", "DFLIB.COVCOD(" + member + ")", "DFLIB.INSHST(" + member + ")"};
+        String sql;
+        List<String[]> resultList;
+        StringBuilder whereClause = new StringBuilder("(");
+        whereClause.append("(a.PGRP='").append(grp[0]).append("' AND a.PSSN='").append(idList[0]).append("')");
+        for (int idx = 1; idx < grp.length; idx++) {
+            whereClause.append(" OR (a.PGRP='").append(grp[idx]).append("' AND a.PSSN='").append(idList[idx]).append("')");
+        }
+        whereClause.append(")");
+        sql = "SELECT a.PGRP, a.PSSN, a.PFNAM, a.PLNAM, a.ICRD#, c.TDES, "
+                + "b.IOCV1, d.HPTER, d.HPEFF, a.PTIME "
+                + "FROM QTEMP.IDCPRV as a "
+                + "INNER JOIN QTEMP.INSURE as b ON b.ISSN = a.PSSN "
+                + "JOIN QTEMP.INSHST as d ON d.HSSN = a.PSSN "
+                + "JOIN QTEMP.COVCOD as c ON c.TCODE = d.HPLNC "
+                + "WHERE a.PDEV='" + HTH_IDC.DEVICE + "' AND " + whereClause
+                + " ORDER BY a.PGRP, a.PDIV, a.PLNAM, a.PFNAM";
+
+        System.out.println(sql);
+        resultList = iSeries.executeSQLByAlias(sql, alias, file);
+        return resultList;
+    }
+
+    public static void clCalGroup(){
+        String parameter = HTH_IDC.member + " " + HTH_IDC.userID + " " + ID_PrinterSelection.group + " " + ID_PrinterSelection.nameS + " " + ID_PrinterSelection.nameE + " " + ID_PrinterSelection.date;
+        StringBuilder parm = new StringBuilder(parameter);
+        while (parm.length() < 60) {
+            parm.append(" ");
+        }
+//			String loadCardCL = "CALL DFLIB/LOADGRPID PARM('" + parm + "')";
+        String loadCardCL = "CALL pdlib/LOADGRPID PARM('" + parm + "')";
+
+        iSeries.executeCL(loadCardCL);
+    }
+
+    public static void clCall(String[] idList){
+        String clCommand = "CALL DFLIB/LOADIDC PARM('" + HTH_IDC.member + "' '" + HTH_IDC.DEVICE + " ' '%s')";
+
+        // Compile CL statement to create 100 ID cards at a time.
+        System.out.println(clCommand);
+        StringBuilder idValue = new StringBuilder(idList[0]);
+        for (int idx = 1; idx < idList.length; idx++) {
+            //---2 print card cycle we added || idx == idList.length-1
+//						if (idx % 30 == 0 || idx == idList.length-1) {
+            if (idx % 300 == 0 || idx == idList.length-1 ) {
+                if (idx == idList.length-1){
+                    idValue.append("\\&").append(idList[idx]);
+                }
+                while (idValue.length() < 1100) {
+                    idValue.append(" ");
+                }
+                long timeBefore = System.currentTimeMillis() ;
+                System.out.println(String.format(clCommand, idValue));
+
+                iSeries.executeCL(String.format(clCommand, idValue));
+                long timeAfter = System.currentTimeMillis();
+                System.out.println("time for cl= "+(timeAfter -timeBefore));
+                System.out.println("RUN1: " + (String.format(clCommand, idValue)));
+
+                idValue = new StringBuilder(idList[idx]);
+            } else {
+
+                idValue.append("\\&").append(idList[idx]);
+            }
+        }
+        //---- added to solve the issue with one individual card
+        if (idList.length ==1){
+            iSeries.executeCL(String.format(clCommand, idValue));
+        }
     }
 
 }

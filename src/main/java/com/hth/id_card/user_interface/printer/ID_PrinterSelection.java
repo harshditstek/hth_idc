@@ -75,6 +75,11 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
 	private HTH_FunctionButton[] functionKeys;
 	private HTH_ControlButton[] controlKeys;
 
+	public static String group = "";
+	public static String nameS = "";
+	public static String nameE = "";
+	public static String date ="";
+
 	public ID_PrinterSelection() {
 		super(SELECTION_TITLE);
 		addWindowListener(this);
@@ -280,6 +285,7 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
 				loadGroupList();
 			}
 		};
+
 
 		HTH_ControlButton exitBtn = new HTH_ControlButton("Exit");
 		exitBtn.setToolTipText("F3=Exit");
@@ -1448,10 +1454,10 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
 	}
 
 	private void loadGroupList() {
-		String group = grpField.getText().trim();
-		String nameS = nameStrField.getText().trim();
-		String nameE = nameEndField.getText().trim();
-		String date = dateField.getText().trim().replaceAll("/", "");
+		group = grpField.getText().trim();
+		nameS = nameStrField.getText().trim();
+		nameE = nameEndField.getText().trim();
+		date = dateField.getText().trim().replaceAll("/", "");
 		if (date.isEmpty()) {
 			Date today = Calendar.getInstance().getTime();
 			SimpleDateFormat format = new SimpleDateFormat("MMddyy");

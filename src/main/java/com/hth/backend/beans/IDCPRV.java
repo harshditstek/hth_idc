@@ -6,44 +6,13 @@ import java.util.List;
 
 import com.hth.backend.iSeries;
 import com.hth.id_card.HTH_IDC;
-import com.hth.id_card.user_interface.printer.DataSingleton;
 import com.hth.util.IDCard;
 import com.hth.util.IDMask;
 
 public class IDCPRV {
 
-    public static List<String[]> downloadExcel(String[] grpList, String[] ssnList, String device){
-        String member = HTH_IDC.member;
-
-        String[] alias = {"QTEMP.IDCPRV", "QTEMP.INSURE", "QTEMP.COVCOD", "QTEMP.INSHST"};
-        String[] file = {"DFLIB.IDCPRV(" + member + ")", "DFLIB.INSURE(" + member + ")", "DFLIB.COVCOD(" + member + ")", "DFLIB.INSHST(" + member + ")"};
-        String sql;
-        List<String[]> resultList;
-        StringBuilder whereClause = new StringBuilder("(");
-        StringBuilder ssnClause = new StringBuilder("(");
-        whereClause.append("(a.PGRP='").append(grpList[0]).append("' AND a.PSSN='").append(ssnList[0]).append("')");
-        for (int idx = 1; idx < grpList.length; idx++) {
-            whereClause.append(" OR (a.PGRP='").append(grpList[idx]).append("' AND a.PSSN='").append(ssnList[idx]).append("')");
-        }
-        whereClause.append(")");
-        sql = "SELECT a.PGRP, a.PSSN, a.PFNAM, a.PLNAM, a.ICRD#, c.TDES, "
-                + "b.IOCV1, d.HPTER, d.HPEFF, a.PTIME "
-                + "FROM QTEMP.IDCPRV as a "
-                + "INNER JOIN QTEMP.INSURE as b ON b.ISSN = a.PSSN "
-                + "JOIN QTEMP.INSHST as d ON d.HSSN = a.PSSN "
-                + "JOIN QTEMP.COVCOD as c ON c.TCODE = d.HPLNC "
-                + "WHERE a.PDEV='" + device + "' AND " + whereClause
-                + " ORDER BY a.PGRP, a.PDIV, a.PLNAM, a.PFNAM";
-
-        System.out.println(sql);
-        resultList = iSeries.executeSQLByAlias(sql, alias, file);
-        return resultList;
-    }
-
     public static IDCard[] generateIDCARD(String[] grpList, String[] ssnList, String device) {
-        List<String[]>  res = downloadExcel(grpList, ssnList, device);
         String member = HTH_IDC.member;
-        System.out.println("mem:" + member);
         IDCard[] idCardList = new IDCard[0];
 
         String alias = "QTEMP.IDCPRV";
@@ -52,13 +21,12 @@ public class IDCPRV {
         List<String[]> resultList;
 
         StringBuilder whereClause = new StringBuilder("(");
-        StringBuilder ssnClause = new StringBuilder("(");
         whereClause.append("(PGRP='").append(grpList[0]).append("' AND PSSN='").append(ssnList[0]).append("')");
         for (int idx = 1; idx < grpList.length; idx++) {
             whereClause.append(" OR (PGRP='").append(grpList[idx]).append("' AND PSSN='").append(ssnList[idx]).append("')");
         }
         whereClause.append(")");
-        sql = sql = "SELECT IGRP, IDIV, ICRD#, PLARF, PLARB, " // {idx 0 ~ 4}
+        sql = "SELECT IGRP, IDIV, ICRD#, PLARF, PLARB, " // {idx 0 ~ 4}
                 + "PFL01, PFL02, PFL03, PFL04, PFL05, PFL06, PFL07, PFL08, PFL09, PFL10, PFL11, PFL12, PFL13, PFL14, PFL15, PFL16, PFL17, PFL18, " // {idx 5 ~ 22}
                 + "PBL01, PBL02, PBL03, PBL04, PBL05, PBL06, PBL07, PBL08, PBL09, PBL10, PBL11, PBL12, PBL13, PBL14, PBL15, PBL16, PBL17, PBL18, " // {idx 23 ~ 40}
                 + "PFM01, PFM02, PFM03, PFM04, PFM05, PFM06, PFM07, PFM08, PFM09, PFM10, PFM11, PFM12, PFM13, PFM14, PFM15, PFM16, PFM17, PFM18, " // {idx 41 ~ 58}
@@ -70,8 +38,6 @@ public class IDCPRV {
 
         System.out.println(sql);
         resultList = iSeries.executeSQLByAlias(sql, alias, file);
-
-        DataSingleton.singleton().setInsureList(res);
         if (!resultList.isEmpty()) {
             idCardList = new IDCard[resultList.size()];
             for (int rsIdx = 0; rsIdx < resultList.size(); rsIdx++) {
