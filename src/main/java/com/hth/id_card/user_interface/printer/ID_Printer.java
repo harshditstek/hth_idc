@@ -781,10 +781,12 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
                 + "JOIN QTEMP.INSHST as d ON d.HSSN = a.PSSN "
                 + "JOIN QTEMP.COVCOD as c ON c.TCODE = d.HPLNC "
                 + "WHERE a.PDEV='" + HTH_IDC.DEVICE + "' AND " + whereClause
-                + " ORDER BY a.PGRP, a.PDIV, a.PLNAM, a.PFNAM";
+                + " GROUP BY a.PGRP, a.PSSN, a.PFNAM, a.PLNAM, a.ICRD#, c.TDES, b.IOCV1, d.HPTER, d.HPEFF, a.PTIME"
+                + " ORDER BY a.PGRP, a.PLNAM, a.PFNAM";
 
         System.out.println(sql);
         resultList = iSeries.executeSQLByAlias(sql, alias, file);
+        clearIDCARD(grp, idList, HTH_IDC.DEVICE);
         return resultList;
     }
 
@@ -834,6 +836,24 @@ public class ID_Printer extends HTH_Frame implements WindowListener, Printable {
         if (idList.length ==1){
             iSeries.executeCL(String.format(clCommand, idValue));
         }
+    }
+
+    private static void clearIDCARD(String[] grpList, String[] ssnList, String device) {
+        String alias = "QTEMP.IDCPRV";
+        String file = "DFLIB.IDCPRV(" + HTH_IDC.member + ")";
+        String sql;
+
+        StringBuilder whereClause = new StringBuilder("(");
+        whereClause.append("(PGRP='").append(grpList[0]).append("' AND PSSN='").append(ssnList[0]).append("')");
+        for (int idx = 1; idx < grpList.length; idx++) {
+            whereClause.append(" OR (PGRP='").append(grpList[idx]).append("' AND PSSN='").append(ssnList[idx]).append("')");
+        }
+        whereClause.append(")");
+
+        sql = "DELETE FROM " + alias + " WHERE PDEV='" + device + "' AND " + whereClause;
+        System.out.println("delete:"+sql);
+        iSeries.executeSQLByAlias(sql, alias, file);
+        //iSeries.executeSQL(sql);
     }
 
 }

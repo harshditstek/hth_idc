@@ -12,6 +12,7 @@ import com.hth.util.IDMask;
 public class IDCPRV {
 
     public static IDCard[] generateIDCARD(String[] grpList, String[] ssnList, String device) {
+      //  clearIDCARD(grpList, ssnList, device);
         String member = HTH_IDC.member;
         IDCard[] idCardList = new IDCard[0];
 
@@ -134,6 +135,7 @@ public class IDCPRV {
         whereClause.append(")");
 
         sql = "DELETE FROM " + alias + " WHERE PDEV='" + device + "' AND " + whereClause;
+        System.out.println("delete:"+sql);
         iSeries.executeSQLByAlias(sql, alias, file);
     }
 
