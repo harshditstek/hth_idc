@@ -721,13 +721,11 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         //claimListBTN.getActionMap().put(listKey, claimList);
         functionPanel.add(claimListBTN2);
 
-
         JPanel dummyPanel = new JPanel();
         dummyPanel.setOpaque(false);
         //dummyPanel.setPreferredSize(new Dimension(0, 80));
         functionPanel.add(dummyPanel, BorderLayout.NORTH);
         functionKeyPanel = new JPanel();
-        functionKeyPanel.setSize(1180,900);
         functionKeyPanel.setOpaque(false);
         functionKeyPanel.setLayout(new BoxLayout(functionKeyPanel, BoxLayout.Y_AXIS));
         functionPanel.add(functionKeyPanel, BorderLayout.CENTER);
@@ -747,17 +745,15 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             result = newResultList.get(idx);
             data[idx] = result;
         }
-        String[] columnNames = {"REFRENCE#", "Type", "Phone Number", "FName", "LName", "Company Name", "Customer Group", "Customer SSN", "Claim", "Time", "Date", "user", "Note"};
+        String[] columnNames = {"REFRENCE#", "Type", "Phone Number", "FName", "LName", "Company Name", "Customer Group", "Customer SSN", "Claim", "Time", "Date", "user", "Note", "Filler"};
 
         ReportTable rt = new ReportTable();
         logTable = rt.reportTable(columnNames, data, false, true, false);
         ListSelectionModel listModel = logTable.getSelectionModel();
         listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listModel.addListSelectionListener(auditLogList);
-        logTable.setSize(1180,900);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // auditLog = new JFrame("Claim List");
+        //        auditLog = new JFrame("Claim List");
 //        auditLog.setBounds(400, 90, 1180, 800);
 //        auditLog.setTitle("CRMLOG File Data");
 //        try {
@@ -826,21 +822,13 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                         tProvider.setSelectedIndex(0);
                     }
                     tPhoneNum.setText(tm.getValueAt(sel[0], 2).toString().trim());
-                    tPhoneNum.setEnabled(false);
                     tLName.setText(tm.getValueAt(sel[0], 3).toString().trim());
-                    tLName.setEnabled(false);
                     tFName.setText(tm.getValueAt(sel[0], 4).toString().trim());
-                    tFName.setEnabled(false);
                     tCompanyName.setText(tm.getValueAt(sel[0], 5).toString().trim());
-                    tCompanyName.setEnabled(false);
                     tCustomerGroup.setText(tm.getValueAt(sel[0], 6).toString().trim());
-                    tCustomerGroup.setEnabled(false);
                     tssn.setText(tm.getValueAt(sel[0], 7).toString().trim());
-                    tssn.setEnabled(false);
                     tClaim.setText(tm.getValueAt(sel[0], 8).toString().trim());
-                    tClaim.setEnabled(false);
                     tCallNotes.setText(tm.getValueAt(sel[0], 12).toString().trim());
-                    tCallNotes.setEnabled(false);
 
                 }
             }
