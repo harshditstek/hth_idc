@@ -42,9 +42,8 @@ public class ReportTable extends JFrame {
         table.setRowSorter(sorter);
         setLayout(new FlowLayout(FlowLayout.CENTER));
         jsp = new JScrollPane(table);
-        jsp.setPreferredSize(new Dimension(1500, 900));
+        jsp.setPreferredSize(new Dimension(1080, 800));
         download.addActionListener(searchDatabase);
-        //download.addMouseListener(new ReportTable.PromptMouseListener());
         add(searchLbl);
         add(searchField);
         if (buttonShow) {
@@ -88,9 +87,10 @@ public class ReportTable extends JFrame {
                 }
             }
         });
-        setSize(1600, 1000);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        //setSize(1300, 1000);
+        setBounds(355, 140,1180,900);
+        //setDefaultCloseOperation(EXIT_ON_CLOSE);
+        //setLocationRelativeTo(null);
         setResizable(false);
         try {
             setIconImage(ImageIO.read(HTH_Image.getImageURL("hth_block.png")));

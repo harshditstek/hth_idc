@@ -6,7 +6,7 @@ import java.util.Properties;
 public class ApplicationProperties {
     private final Properties properties;
 
-    ApplicationProperties() {
+    public ApplicationProperties() {
         properties = new Properties();
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream("application.properties"));

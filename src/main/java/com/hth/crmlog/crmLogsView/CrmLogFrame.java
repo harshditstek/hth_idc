@@ -1,6 +1,7 @@
 package com.hth.crmlog.crmLogsView;
 
 import com.hth.crmlog.beans.CRMLOGS;
+import com.hth.crmlog.beans.SkinProperty;
 import com.hth.id_card.user_interface.*;
 import com.hth.images.HTH_Image;
 import com.hth.crmlog.CRMLogsFiles;
@@ -291,7 +292,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     }
 
     public void setCustomerSSN() {
-        ssn = new JLabel("<html><nobr>SSN/MemberID <font color='#ffbebe'>*</font></nobr></html>");
+        ssn = new JLabel("<html><nobr>PolicyID/MemberID <font color='#ffbebe'>*</font></nobr></html>");
         ssn.setFont(new Font("Arial", Font.PLAIN, 18));
         ssn.setSize(200, 30);
         ssn.setLocation(250, 540);
@@ -382,14 +383,15 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
 
                     //String loadCardCL = "CALL PDLIB/CRMCLMC PARM('TRT' '1234567' '123456789      ' 'DABRE P   ' '          ' ' ')";
                     //String loadCardCL = "CALL PDLIB/CRMCLMC PARM(TRT)";
-                    //iSeries.executeCL(loadCardCL);
-                    System.out.println("hello");
-
+                    // iSeries.executeCL(loadCardCL);
                     showDialog("Data Inserted Successfully");
                     clearForm();
                 }
             } else {
-                showDialog("Please Regenerate Reference Number");
+                System.exit(0);
+               // setVisible(false);
+                //showDialog("Please Regenerate Reference Number");
+
                 //JOptionPane.showMessageDialog(new JLabel(), "Please regenerate Reference Number");
                 clearForm();
             }
@@ -591,7 +593,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             }
         }
         if (ssn.length() != 9) {
-            errMsg = "Invalid SSN Number";
+            errMsg = "Invalid Member ID Number";
             //JOptionPane.showMessageDialog(new JLabel(), errMsg);
             showDialog(errMsg);
             System.out.println("validation error checkData: memberid");
@@ -676,24 +678,52 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     }
 
     public void setHeaderPanel() {
+        SkinProperty pf = new SkinProperty();
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setLayout(new BorderLayout());
+        JLabel logoLabel = null;
+        ImageIcon logoImage = null;
+        if (SkinProperty.image != null) {
+            logoImage = new ImageIcon(SkinProperty.image);
+            System.out.println("::"+logoImage.getIconHeight());
+            logoLabel = new JLabel(logoImage);
+        } else {
+            logoLabel = new JLabel(new ImageIcon(HTH_Image.getImageURL("hth_logo.png")));
+        }
         mainPanel.setSize(1180, 148);
+        int height = 110;
         mainPanel.setLocation(0, 0);
         //mainPanel.setPreferredSize(new Dimension(0, 140));
-
+        if(logoImage!=null) {
+            if (logoImage.getIconHeight() < 110) {
+                height = 110;
+            }
+        }
         JPanel logo = new JPanel(new BorderLayout());
         logo.setLayout(new FlowLayout(FlowLayout.LEADING));
-        //logo.setPreferredSize(new Dimension(0, 105));
-        logo.setBackground(Color.WHITE);
+        logo.setPreferredSize(new Dimension(0, height));
+        if (SkinProperty.headerBackground != null) {
+            if (!SkinProperty.headerBackground.equals("")) {
+                //title.setBackground(Color.decode(PropertyFile.headerBackground));
+                logo.setBackground(Color.decode(SkinProperty.headerBackground));
+            }
+        } else {
+            logo.setBackground(Color.WHITE);
+        }
 
-        JLabel logoLabel = new JLabel(new ImageIcon(HTH_Image.getImageURL("hth_logo.png")));
+
+       // logo.setBackground(Color.WHITE);
         logo.add(logoLabel);
 
         JPanel title = new JPanel();
         title.setLayout(new BorderLayout());
-        //title.setPreferredSize(new Dimension(0, 35));
-        title.setBackground(new Color(82, 144, 202));
+        if (SkinProperty.stripBackground != null) {
+            if (!SkinProperty.stripBackground.equals("")) {
+                title.setBackground(Color.decode(SkinProperty.stripBackground));
+            }
+        } else {
+            title.setBackground(new Color(82, 144, 202));
+        }
 
         titleLabel = new JLabel("Customer Service ");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 25));
@@ -708,7 +738,18 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     public void setSideBar() {
         functionPanel = new JPanel();
         functionPanel.setLayout(new BorderLayout());
-        functionPanel.setBackground(new Color(83, 89, 105));
+
+        if (SkinProperty.leftSidebarBackground != null) {
+            if (!SkinProperty.leftSidebarBackground.equals("")) {
+                //title.setBackground(Color.decode(PropertyFile.headerBackground));
+                functionPanel.setBackground(Color.decode(SkinProperty.leftSidebarBackground));
+            }
+        } else {
+            functionPanel.setBackground(new Color(83, 89, 105));
+        }
+
+
+
         functionPanel.setPreferredSize(new Dimension(200, 0));
         functionPanel.setLocation(0, 148);
         functionPanel.setSize(220, 800);
@@ -720,6 +761,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         //claimListBTN.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), listKey);
         //claimListBTN.getActionMap().put(listKey, claimList);
         functionPanel.add(claimListBTN2);
+
 
         JPanel dummyPanel = new JPanel();
         dummyPanel.setOpaque(false);
@@ -745,58 +787,15 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
             result = newResultList.get(idx);
             data[idx] = result;
         }
-        String[] columnNames = {"REFRENCE#", "Type", "Phone Number", "FName", "LName", "Company Name", "Customer Group", "Customer SSN", "Claim", "Time", "Date", "user", "Note", "Filler"};
+        String[] columnNames = {"REFRENCE#", "Type", "Phone Number", "FName", "LName", "Company Name", "Customer Group", "Member ID", "Claim", "Time", "Date", "user", "Note"};
 
         ReportTable rt = new ReportTable();
         logTable = rt.reportTable(columnNames, data, false, true, false);
         ListSelectionModel listModel = logTable.getSelectionModel();
         listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listModel.addListSelectionListener(auditLogList);
-
-        //        auditLog = new JFrame("Claim List");
-//        auditLog.setBounds(400, 90, 1180, 800);
-//        auditLog.setTitle("CRMLOG File Data");
-//        try {
-//            auditLog.setIconImage(ImageIO.read(HTH_Image.getImageURL("hth_block.png")));
-//        } catch (Exception e) {
-//
-//        }
-//        TableModel model = new AbstractTableModel() {
-//            public int getColumnCount() {
-//                return columnNames.length;
-//            }
-//
-//            public int getRowCount() {
-//                return data.length;
-//            }
-//
-//            public Object getValueAt(int row, int col) {
-//                return data[row][col];
-//            }
-//
-//            public String getColumnName(int column) {
-//                return columnNames[column];
-//            }
-//
-//            public Class getColumnClass(int col) {
-//                return getValueAt(0, col).getClass();
-//            }
-//
-//            public void setValueAt(Object aValue, int row, int column) {
-//                data[row][column] = aValue;
-//            }
-//        };
-//
-//        logTable = new JTable(model);
-//        ListSelectionModel listModel = logTable.getSelectionModel();
-//        listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//        listModel.addListSelectionListener(auditLogList);
-//        JScrollPane scroll = new JScrollPane(logTable);
-//        scroll.setPreferredSize(new Dimension(300, 300));
-//        auditLog.getContentPane().add(scroll);
-//        auditLog.setSize(800, 800);
-//        auditLog.setVisible(true);
-        //setVisible(true);
+        //logTable.setSize(1180,900);
+        //logTable.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         return resultList;
 
@@ -805,6 +804,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
     ListSelectionListener auditLogList = new ListSelectionListener() {
         @Override
         public void valueChanged(ListSelectionEvent e) {
+            System.out.println("hello");
             int[] sel;
             Object value;
             if (!e.getValueIsAdjusting()) {
@@ -822,6 +822,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                         tProvider.setSelectedIndex(0);
                     }
                     tPhoneNum.setText(tm.getValueAt(sel[0], 2).toString().trim());
+                    tPhoneNum.setBackground(Color.white);
                     tLName.setText(tm.getValueAt(sel[0], 3).toString().trim());
                     tFName.setText(tm.getValueAt(sel[0], 4).toString().trim());
                     tCompanyName.setText(tm.getValueAt(sel[0], 5).toString().trim());
@@ -829,6 +830,7 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
                     tssn.setText(tm.getValueAt(sel[0], 7).toString().trim());
                     tClaim.setText(tm.getValueAt(sel[0], 8).toString().trim());
                     tCallNotes.setText(tm.getValueAt(sel[0], 12).toString().trim());
+                    nonEditable();
 
                 }
             }
@@ -995,6 +997,19 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         public void mouseReleased(MouseEvent e) {
             setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
+    }
+
+    public void nonEditable() {
+        tReferenceNumber.setEditable(false);
+        tPhoneNum.setEditable(false);
+        tPhoneNum.setBackground(Color.white);
+        tLName.setEditable(false);
+        tFName.setEditable(false);
+        tCompanyName.setEditable(false);
+        tCustomerGroup.setEditable(false);
+        tssn.setEditable(false);
+        tClaim.setEditable(false);
+        tCallNotes.setEditable(false);
     }
 
 }

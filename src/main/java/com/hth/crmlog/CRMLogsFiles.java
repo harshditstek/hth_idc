@@ -16,6 +16,9 @@ public class CRMLogsFiles {
         if (args.length == 2) {
             user = args[0];
             secondFlag = args[1];
+        }else{
+            System.out.println("Please Enter parameter");
+            System.exit(0);
         }
         CrmLogFrame f = new CrmLogFrame();
         Insure[] insureData = CRMLOGS.searchByName();
