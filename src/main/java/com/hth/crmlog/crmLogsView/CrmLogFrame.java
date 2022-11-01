@@ -961,6 +961,8 @@ public class CrmLogFrame extends JFrame implements ActionListener, KeyListener, 
         tFName.setText("");
         tLName.setText("");
         tPhoneNum.setText("");
+
+        System.out.println("Heenakshi99");
     }
 
     public void showDialog(String errMsg) {
