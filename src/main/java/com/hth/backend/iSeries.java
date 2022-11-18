@@ -74,6 +74,48 @@ public class iSeries {
 		return resultList;
 	}
 
+	public static String[] executeSQLByAliasArray(String sql, String alias, String file) {
+		String aliasSQL = "CREATE ALIAS " + alias + " FOR " + file;
+		//String[] resultList = null;
+		String[] result = null;
+		Statement statement;
+		ResultSet resultSet;
+		ResultSetMetaData resultSetMetaData;
+		Connection connection = null;
+
+		try {
+			Class.forName(DRIVER);
+			connection = DriverManager.getConnection(URL, HOSTNAME, PASSWORD);
+			statement = connection.createStatement();
+			statement.execute(aliasSQL);
+
+			if (sql.substring(0, 6).equalsIgnoreCase("SELECT")) {
+				resultSet = statement.executeQuery(sql);
+				resultSetMetaData = resultSet.getMetaData();
+
+				while (resultSet.next()) {
+					result = new String[resultSetMetaData.getColumnCount()];
+					for (int idx = 0; idx < result.length; idx++) {
+						result[idx] = resultSet.getString(idx + 1);
+					}
+					//resultList.add(result);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (connection != null) {
+					connection.close();
+				}
+			} catch (SQLException sqle) {
+				sqle.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+
 	public static List<String[]> executeSQLByAlias(String sql, String alias, String file) {
 		String aliasSQL = "CREATE ALIAS " + alias + " FOR " + file;
 		List<String[]> resultList = new ArrayList<>();

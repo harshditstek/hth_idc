@@ -24,6 +24,27 @@ public class HTH_TextField extends JTextField {
 	private static final long serialVersionUID = 4L;
 	
 	private int limit;
+
+	public HTH_TextField(int limit, Font font, Dimension size) {
+		super();
+
+		this.limit = limit;
+
+		setBackground(Color.WHITE);
+		setForeground(new Color(0, 0, 150));
+		setHorizontalAlignment(LEFT);
+		setFont(font);
+		setBorder(BorderFactory.createCompoundBorder(getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+		addMouseListener(new HTH_TextFieldMouseListener(this));
+		getDocument().addDocumentListener(new HTH_DocumentListener(this));
+		AbstractDocument doc = (AbstractDocument) getDocument();
+		doc.setDocumentFilter(new UppercaseDocumentFilter());
+
+		//Dimension size = getTextSize();
+		setPreferredSize(size);
+		setMaximumSize(size);
+		setMinimumSize(size);
+	}
 	
 	public HTH_TextField(int limit, Font font) {
 		super();

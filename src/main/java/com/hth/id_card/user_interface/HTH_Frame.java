@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.hth.crmlog.beans.SkinProperty;
 import com.hth.images.HTH_Image;
 
 public abstract class HTH_Frame extends JFrame {
@@ -89,15 +90,42 @@ public abstract class HTH_Frame extends JFrame {
 		JPanel logoPanel = new JPanel();
 		logoPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		logoPanel.setPreferredSize(new Dimension(0, 105));
-		logoPanel.setBackground(Color.WHITE);
+		if (SkinProperty.headerBackground != null){
+			if (!SkinProperty.headerBackground.equals("")){
+				logoPanel.setBackground(Color.decode(SkinProperty.headerBackground));
+			}
+		}else {
+			logoPanel.setBackground(Color.WHITE);
+		}
 
-		JLabel logoLabel = new JLabel(new ImageIcon(HTH_Image.getImageURL("hth_logo.png")));
-		logoPanel.add(logoLabel);
+		JLabel logoLabel = null;
+		ImageIcon logoImage = null;
+		if (SkinProperty.image != null) {
+			logoImage = new ImageIcon(SkinProperty.image);
+			System.out.println("::"+logoImage.getIconHeight());
+			logoLabel = new JLabel(logoImage);
+			logoPanel.add(logoLabel);
+		} else {
+			logoLabel = new JLabel(new ImageIcon(HTH_Image.getImageURL("hth_logo.png")));
+			logoPanel.add(logoLabel);
+		}
+		//logoPanel.setBackground(Color.WHITE);
+
+//		JLabel logoLabel = new JLabel(new ImageIcon(HTH_Image.getImageURL("hth_logo.png")));
+//		logoPanel.add(logoLabel);
 
 		JPanel titlePanel = new JPanel();
 		titlePanel.setLayout(new BorderLayout());
-		titlePanel.setPreferredSize(new Dimension(0, 35));
-		titlePanel.setBackground(new Color(82, 144, 202));
+		if (SkinProperty.stripBackground != null) {
+			if (!SkinProperty.stripBackground.equals("")) {
+				titlePanel.setBackground(Color.decode(SkinProperty.stripBackground));
+			}
+		} else {
+			titlePanel.setBackground(new Color(82, 144, 202));
+		}
+
+//		titlePanel.setPreferredSize(new Dimension(0, 35));
+//		titlePanel.setBackground(new Color(82, 144, 202));
 
 		titleLabel = new JLabel(title);
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 25));
@@ -112,7 +140,16 @@ public abstract class HTH_Frame extends JFrame {
 	private void initFunctionPanel() {
 		functionPanel = new JPanel();
 		functionPanel.setLayout(new BorderLayout());
-		functionPanel.setBackground(new Color(83, 89, 105));
+		if (SkinProperty.leftSidebarBackground != null) {
+			if (!SkinProperty.leftSidebarBackground.equals("")) {
+				//title.setBackground(Color.decode(PropertyFile.headerBackground));
+				functionPanel.setBackground(Color.decode(SkinProperty.leftSidebarBackground));
+			}
+		} else {
+			functionPanel.setBackground(new Color(83, 89, 105));
+		}
+
+		//functionPanel.setBackground(new Color(83, 89, 105));
 		functionPanel.setPreferredSize(new Dimension(200, 0));
 
 		JPanel dummyPanel = new JPanel();
