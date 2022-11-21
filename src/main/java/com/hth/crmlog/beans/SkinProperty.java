@@ -6,11 +6,17 @@ import java.util.Properties;
 public class SkinProperty {
 
     private static Properties props = new Properties();
+
     static {
         try {
+//            //String filePath = IDRecord.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+//            //String decodedPath = URLDecoder.decode(filePath, "UTF-8");
+//            //System.out.println("file:path:" + decodedPath);
+//            props.load(new FileInputStream(jarDir.toString() + "\\skin.properties"));
+            //System.out.println(jarDir.toString());
+
             props.load(new FileInputStream("/HTHv2.5/@ht/lib/skin.properties"));
         } catch (Exception e) {
-            //System.out.println("Path Not found");
         }
     }
 

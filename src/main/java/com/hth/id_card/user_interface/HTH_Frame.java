@@ -24,7 +24,7 @@ public abstract class HTH_Frame extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	protected static final Dimension FRAME_SIZE = new Dimension(1220, 900);
+	protected static final Dimension FRAME_SIZE = new Dimension(1220, 950);
 
 	private String title;
 

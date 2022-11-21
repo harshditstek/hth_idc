@@ -735,7 +735,31 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
                 TitledBorder.TOP,
                 HTH_FONT,
                 Color.BLACK));
+
+        reqBorderPanel.setFocusable(true);
+        reqBorderPanel.setRequestFocusEnabled(true);
         contentScreen.add(reqBorderPanel, JLayeredPane.DEFAULT_LAYER);
+        contentScreen.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String[] name;
+                super.mouseClicked(e);
+                Component obj = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+                textFieldUpdate = Integer.valueOf(obj.getName());
+                String text = fields.get(textFieldUpdate).getText().trim();
+                if (text.length() >= 7) {
+                    setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                    name = INSURE.getInsureData(fields.get(textFieldUpdate).getText().toUpperCase());
+                    if (name != null) {
+                        names.get(textFieldUpdate).setVisible(true);
+                        names.get(textFieldUpdate).setText(name[0].trim() + " " + name[1].trim());
+                        groupIds.get(textFieldUpdate).setVisible(true);
+                        groupIds.get(textFieldUpdate).setText(name[2].trim());
+                    }
+                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
 
         int fieldCounter = 1;
         for (int row = 0; row < 7; row++) {
@@ -781,6 +805,7 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
                 contentScreen.add(searchName, JLayeredPane.DEFAULT_LAYER);
                 list.add(searchName);
                 fields.put(buttonCounter, field);
+                field.requestFocus();
                 field.addFocusListener(
                         new FocusListener() {
                             @Override
@@ -792,17 +817,17 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
                             public void focusLost(FocusEvent e) {
                                 String[] name = null;
                                 System.out.println("FOCUS OUT");
-                                textFieldUpdate = Integer.valueOf(e.getComponent().getName());
-                                String text = fields.get(textFieldUpdate).getText().trim();
-                                if (text.length() >= 7) {
-                                    name = INSURE.getInsureData(fields.get(textFieldUpdate).getText().toUpperCase());
-                                    if (name != null) {
-                                        names.get(textFieldUpdate).setVisible(true);
-                                        names.get(textFieldUpdate).setText(name[0].trim() + " " + name[1].trim());
-                                        groupIds.get(textFieldUpdate).setVisible(true);
-                                        groupIds.get(textFieldUpdate).setText(name[2].trim());
-                                    }
-                                }
+//                                textFieldUpdate = Integer.valueOf(e.getComponent().getName());
+//                                String text = fields.get(textFieldUpdate).getText().trim();
+//                                if (text.length() >= 7) {
+//                                    name = INSURE.getInsureData(fields.get(textFieldUpdate).getText().toUpperCase());
+//                                    if (name != null) {
+//                                        names.get(textFieldUpdate).setVisible(true);
+//                                        names.get(textFieldUpdate).setText(name[0].trim() + " " + name[1].trim());
+//                                        groupIds.get(textFieldUpdate).setVisible(true);
+//                                        groupIds.get(textFieldUpdate).setText(name[2].trim());
+//                                    }
+//                                }
                             }
                         }
                 );

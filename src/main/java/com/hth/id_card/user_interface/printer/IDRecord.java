@@ -25,7 +25,7 @@ public class IDRecord extends JFrame {
         this.columnNames = columnNames;
         this.rowData = rowData;
         setTitle("ID Record");
-        setBackground(Color.WHITE);
+        getContentPane().setBackground(Color.WHITE);
         searchField = new JTextField(15);
         searchLbl = new JLabel("Search");
         searchLbl.setLayout(new BoxLayout(searchLbl,BoxLayout.X_AXIS));
