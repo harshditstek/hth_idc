@@ -14,8 +14,6 @@ import javax.swing.table.TableModel;
 
 import com.hth.backend.beans.*;
 import com.hth.backend.iSeries;
-import com.hth.crmlog.crmLogsView.InsureDataSingleton;
-import com.hth.crmlog.util.Insure;
 import com.hth.id_card.HTH_IDC;
 import com.hth.id_card.user_interface.HTH_ControlButton;
 import com.hth.id_card.user_interface.HTH_DateField;
@@ -745,18 +743,9 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
                 String[] name;
                 super.mouseClicked(e);
                 Component obj = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-                textFieldUpdate = Integer.valueOf(obj.getName());
-                String text = fields.get(textFieldUpdate).getText().trim();
-                if (text.length() >= 7) {
-                    setCursor(new Cursor(Cursor.WAIT_CURSOR));
-                    name = INSURE.getInsureData(fields.get(textFieldUpdate).getText().toUpperCase());
-                    if (name != null) {
-                        names.get(textFieldUpdate).setVisible(true);
-                        names.get(textFieldUpdate).setText(name[0].trim() + " " + name[1].trim());
-                        groupIds.get(textFieldUpdate).setVisible(true);
-                        groupIds.get(textFieldUpdate).setText(name[2].trim());
-                    }
-                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                if(obj.getName()!=null) {
+                    textFieldUpdate = Integer.valueOf(obj.getName());
+                    showLabel(textFieldUpdate);
                 }
             }
         });
@@ -815,19 +804,8 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
 
                             @Override
                             public void focusLost(FocusEvent e) {
-                                String[] name = null;
-                                System.out.println("FOCUS OUT");
-//                                textFieldUpdate = Integer.valueOf(e.getComponent().getName());
-//                                String text = fields.get(textFieldUpdate).getText().trim();
-//                                if (text.length() >= 7) {
-//                                    name = INSURE.getInsureData(fields.get(textFieldUpdate).getText().toUpperCase());
-//                                    if (name != null) {
-//                                        names.get(textFieldUpdate).setVisible(true);
-//                                        names.get(textFieldUpdate).setText(name[0].trim() + " " + name[1].trim());
-//                                        groupIds.get(textFieldUpdate).setVisible(true);
-//                                        groupIds.get(textFieldUpdate).setText(name[2].trim());
-//                                    }
-//                                }
+                                textFieldUpdate = Integer.valueOf(e.getComponent().getName());
+                                showLabel(textFieldUpdate);
                             }
                         }
                 );
@@ -835,20 +813,54 @@ public class ID_PrinterSelection extends HTH_Frame implements WindowListener {
                     compReqFocus = field;
                 }
                 for (Map.Entry<Integer, HTH_TextField> field : fields.entrySet()) {
-                    field.getValue().addKeyListener(new java.awt.event.KeyAdapter() {
-                        public void keyTyped(java.awt.event.KeyEvent evt) {
-                            String[] name = null;
+                    field.getValue().addKeyListener(new KeyListener() {
+                        @Override
+                        public void keyPressed(KeyEvent e) {
+//                            if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
+//                                System.out.println("hello");
+//                                //textFieldUpdate = Integer.valueOf(field.getValue().getName());
+//                                //showLabel(textFieldUpdate);
+//                            }
+                        }
+
+                        @Override
+                        public void keyReleased(KeyEvent e) {
+                            if (e.getKeyCode() != KeyEvent.VK_TAB) {
+
+                            }
+                        }
+
+                        @Override
+                        public void keyTyped(KeyEvent e) {
                             textFieldUpdate = Integer.valueOf(field.getValue().getName());
-                            names.get(textFieldUpdate).setVisible(false);
-                            groupIds.get(textFieldUpdate).setVisible(false);
-                            //System.out.println(field.getValue().getText());
+                            names.get(textFieldUpdate).setText("");
+                            groupIds.get(textFieldUpdate).setText("");
                         }
                     });
+
+
                 }
                 //field.addMouseListener(mouse);
                 buttonCounter++;
                 searchName.addActionListener(new SearchByName());
                 searchName.addMouseListener(new ID_PrinterSelection.PromptMouseListener());
+            }
+        }
+    }
+
+    public void showLabel(int textFieldUpdate){
+        String[] name = null;
+        if(names.get(textFieldUpdate).getText().equals("")) {
+            if (fields.get(textFieldUpdate).getText().length() >= 7) {
+                setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                name = INSURE.getInsureData(fields.get(textFieldUpdate).getText().toUpperCase());
+                if (name != null) {
+                    names.get(textFieldUpdate).setVisible(true);
+                    names.get(textFieldUpdate).setText(name[0].trim() + " " + name[1].trim());
+                    groupIds.get(textFieldUpdate).setVisible(true);
+                    groupIds.get(textFieldUpdate).setText(name[2].trim());
+                }
+                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         }
     }
