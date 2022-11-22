@@ -1,4 +1,4 @@
-package com.hth.crmlog.beans;
+package com.hth.backend;
 
 import java.io.FileInputStream;
 import java.net.URLDecoder;

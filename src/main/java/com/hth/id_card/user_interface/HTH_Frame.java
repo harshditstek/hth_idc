@@ -15,7 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.hth.crmlog.beans.SkinProperty;
+import com.hth.backend.SkinProperty;
 import com.hth.images.HTH_Image;
 
 public abstract class HTH_Frame extends JFrame {

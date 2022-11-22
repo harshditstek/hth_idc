@@ -1,7 +1,7 @@
 package com.hth.crmlog.crmLogsView;
 
 import com.hth.crmlog.beans.CRMLOGS;
-import com.hth.crmlog.beans.SkinProperty;
+import com.hth.backend.SkinProperty;
 import com.hth.id_card.user_interface.*;
 import com.hth.images.HTH_Image;
 import com.hth.crmlog.CRMLogsFiles;
