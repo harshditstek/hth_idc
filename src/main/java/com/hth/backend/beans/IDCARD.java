@@ -38,9 +38,10 @@ public class IDCARD {
 	}
 
 	public static IDCard getCard(final String group, final String div, final String num) {
+		StringBuilder sql = new StringBuilder();
 		String alias = "QTEMP.IDCARD";
 		String file = "DFLIB.IDCARD2(" + HTH_IDC.member + ")";
-		String sql = "SELECT ICRDDS, "
+		sql.append("SELECT ICRDDS, "
 				+ "IF1, IF2, IF3, IF4, IF5, IF6, IF7, IF8, IF9, IF10, IF11, IF12, IF13, IF14, IF15, IF16, IF17, IF18, "
 				+ "IB1, IB2, IB3, IB4, IB5, IB6, IB7, IB8, IB9, IB10, IB11, IB12, IB13, IB14, IB15, IB16, IB17, IB18, "
 				+ "IFM1, IFM2, IFM3, IFM4, IFM5, IFM6, IFM7, IFM8, IFM9, IFM10, IFM11, IFM12, IFM13, IFM14, IFM15, IFM16, IFM17, IFM18, "
@@ -51,9 +52,15 @@ public class IDCARD {
 				+ "IBM1C, IBM2C, IBM3C, IBM4C, IBM5C, IBM6C, IBM7C, IBM8C, IBM9C, IBM10C, IBM11C, IBM12C, IBM13C, IBM14C, IBM15C, IBM16C, IBM17C, IBM18C, "
 				+ "IFLG1, IFLG2, IFLG3, IFLG4, IFLG5, IFLG6, IFLG7, IFLG8, IFLG9, "
 				+ "IBLG1, IBLG2, IBLG3, IBLG4, IBLG5, IBLG6, IBLG7, IBLG8, IBLG9, "
-				+ "ILARF, ILARB, ICOVF "
-				+ "FROM QTEMP.IDCARD WHERE IGRP='" + group + "' AND IDIV='" + div + "' AND ICRD#='" + num + "'";
-		List<String[]> resultList = iSeries.executeSQLByAlias(sql, alias, file);
+				+ "ILARF, ILARB, ICOVF ");
+		if(!div.isEmpty()) {
+			sql.append("FROM QTEMP.IDCARD WHERE IGRP='" + group + "' AND IDIV='" + div + "' AND ICRD#='" + num + "'");
+		}else if(!num.isEmpty()){
+			sql.append("FROM QTEMP.IDCARD WHERE IGRP='" + group + "' AND ICRD#='" + num + "'");
+		}else{
+			sql.append("FROM QTEMP.IDCARD WHERE IGRP='" + group + "'");
+		}
+		List<String[]> resultList = iSeries.executeSQLByAlias(sql.toString(), alias, file);
 
 		String[] info = resultList.get(0);
 		String desc = "";
@@ -276,6 +283,24 @@ public class IDCARD {
 		String alias = "QTEMP.IDCARD";
 		String file = "DFLIB.IDCARD2(" + HTH_IDC.member + ")";
 		String sql = "SELECT * FROM QTEMP.IDCARD WHERE IGRP='" + group + "' AND IDIV='" + div + "' AND ICRD#='" + num + "'";
+		List<String[]> resultList = iSeries.executeSQLByAlias(sql, alias, file);
+
+		return !resultList.isEmpty();
+	}
+
+	public static boolean isCardExistedWithoutDiv(String group, String num) {
+		String alias = "QTEMP.IDCARD";
+		String file = "DFLIB.IDCARD2(" + HTH_IDC.member + ")";
+		String sql = "SELECT * FROM QTEMP.IDCARD WHERE IGRP='" + group + "' AND ICRD#='" + num + "'";
+		List<String[]> resultList = iSeries.executeSQLByAlias(sql, alias, file);
+
+		return !resultList.isEmpty();
+	}
+
+	public static boolean isCardExistedWithoutCard(String group) {
+		String alias = "QTEMP.IDCARD";
+		String file = "DFLIB.IDCARD2(" + HTH_IDC.member + ")";
+		String sql = "SELECT * FROM QTEMP.IDCARD WHERE IGRP='" + group + "'";
 		List<String[]> resultList = iSeries.executeSQLByAlias(sql, alias, file);
 
 		return !resultList.isEmpty();

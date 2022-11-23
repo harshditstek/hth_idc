@@ -11,8 +11,13 @@ public class IDCMASK {
     String file = "DFLIB.IDCMASK(" + HTH_IDC.member + ")";
     String sql;
     List<String[]> resultList;
-
-    sql = "SELECT IFACE, ILINE, ICOL, ISTR, IEND, IMOD FROM " + alias + " WHERE IGRP='" + grp + "' AND IDIV='" + div + "' AND ICRD#='" + cardNum + "'";
+    if(!div.isEmpty()) {
+      sql = "SELECT IFACE, ILINE, ICOL, ISTR, IEND, IMOD FROM " + alias + " WHERE IGRP='" + grp + "' AND IDIV='" + div + "' AND ICRD#='" + cardNum + "'";
+    }else if(!cardNum.isEmpty()){
+      sql = "SELECT IFACE, ILINE, ICOL, ISTR, IEND, IMOD FROM " + alias + " WHERE IGRP='" + grp + "' AND ICRD#='" + cardNum + "'";
+    }else{
+      sql = "SELECT IFACE, ILINE, ICOL, ISTR, IEND, IMOD FROM " + alias + " WHERE IGRP='" + grp + "'";
+    }
     resultList = iSeries.executeSQLByAlias(sql, alias, file);
 
     IDMask[] masks = new IDMask[0];
