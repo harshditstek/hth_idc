@@ -139,6 +139,7 @@ public class ID_Decorator extends HTH_Frame implements WindowListener, Printable
     private HTH_TextField toGrpField, toDivField, toCrdField;
     private HTH_FunctionButton[] functionKeys;
     private HTH_ControlButton[] controlKeys;
+    private HTH_FunctionButton cpytoAllBtn;
 
     public ID_Decorator() {
         super(DECORATOR_NAME);
@@ -817,15 +818,18 @@ public class ID_Decorator extends HTH_Frame implements WindowListener, Printable
         copyPane.setBounds(0, 0, contentScreen.getSize().width, contentScreen.getSize().height);
         contentScreen.add(copyPane, JLayeredPane.DEFAULT_LAYER);
 
-        HTH_FunctionButton exitBtn = new HTH_FunctionButton("Exit");
-        exitBtn.setToolTipText("F3=Exit");
-        exitBtn.addActionListener(new ActionListener() {
+//        HTH_FunctionButton exitBtn = new HTH_FunctionButton("Exit");
+//        exitBtn.setToolTipText("F3=Exit");
+        cpytoAllBtn = new HTH_FunctionButton("Copy To All Div");
+        cpytoAllBtn.setToolTipText("F3=Copy To All");
+
+        cpytoAllBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setSelectionScreen();
+                copyAll();
             }
         });
-        setFunctionKeys(new HTH_FunctionButton[]{exitBtn});
+        setFunctionKeys(new HTH_FunctionButton[]{cpytoAllBtn});
 
         setCopyPromptLabels(copyPane);
         setCopyPromptFields(copyPane);
@@ -1125,6 +1129,9 @@ public class ID_Decorator extends HTH_Frame implements WindowListener, Printable
         final HTH_TextField searchField = new HTH_TextField(30, HTH_FONT);
         searchField.setBounds(30 + searchLabel.getPreferredSize().width, 5, searchField.getPreferredSize().width, searchField.getPreferredSize().height);
         searchField.setFocusTraversalKeysEnabled(false);
+
+        functionKeys = new HTH_FunctionButton[]{cpyBtnAll};
+        setFunctionKeys(functionKeys);
         searchField.addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent e) {
