@@ -1034,13 +1034,13 @@ public class ID_Decorator extends HTH_Frame implements WindowListener, Printable
                         Thread idLoader = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                selectedCard = IDCARD.getCard(fromGrp, "", "");
-                                updateDivList(fromGrpField);
-                                if (divisionList != null) {
-                                    for (Division div : divisionList) {
-                                        for (int i = 0; i < cardList.length; i++) {
+                                for (int i = 0; i < cardList.length; i++) {
+                                    selectedCard = IDCARD.getCard(fromGrp, "", cardList[i].getCardNumber());
+                                    updateDivList(fromGrpField);
+                                    if (divisionList != null) {
+                                        for (Division div : divisionList) {
                                             selectedCard.setDiv(div.getID());
-                                            selectedCard.setCardNumber(cardList[0].getCardNumber());
+                                            selectedCard.setCardNumber(cardList[i].getCardNumber());
                                             IDCARD.savCard(selectedCard);
                                         }
                                     }
